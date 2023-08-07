@@ -4,6 +4,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/mobiliz-eureka-server/pom.xml" />
+        <option value="$PROJECT_DIR$/mobiliz-auth-server/pom.xml" />
       </list>
     </option>
   </component>
