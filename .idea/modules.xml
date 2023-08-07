@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/Mobiliz Project.iml" filepath="$PROJECT_DIR$/.idea/Mobiliz Project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobiliz-eureka-server/mobiliz-eureka-server.iml" filepath="$PROJECT_DIR$/mobiliz-eureka-server/mobiliz-eureka-server.iml" />
+    </modules>
+  </component>
+</project>
