@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 import java.util.function.Function;
 
 @Service
@@ -60,14 +61,11 @@ public class JwtTokenService {
 
     public String generateToken(User user) {
         logger.info("generateToken method started");
+        Map<String, String> claims = Map.of("userId", user.getId().toString(), "name", user.getName(), "surname", user.getSurName(),
+                "companyId", user.getCompanyId().toString(), "companyName", user.getCompanyName(), "role", user.getRole().name());
         String token = Jwts.builder()
                 .setSubject(user.getUserName())
-                .claim("userId", user.getId())
-                .claim("name", user.getName())
-                .claim("surname", user.getSurName())
-                .claim("companyId", user.getCompanyId())
-                .claim("companyName", user.getCompanyName())
-                .claim("role", user.getRole().toString())
+                .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() +EXPIRES_IN))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
