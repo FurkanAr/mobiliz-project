@@ -20,6 +20,9 @@ public class GatewayConfig {
                 .route("auth-service", r -> r.path("/api/auth/**")
                         .filters(f -> f.filter(filter))
                         .uri("http://localhost:9091"))
+                .route("vehicle-service", r -> r.path("/api/vehicles/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("http://localhost:9092"))
                 .build();
     }
 }

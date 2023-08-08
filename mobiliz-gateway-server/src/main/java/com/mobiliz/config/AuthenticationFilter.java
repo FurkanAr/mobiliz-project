@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+
 @RefreshScope
 @Component
 public class AuthenticationFilter implements GatewayFilter {
@@ -28,8 +29,8 @@ public class AuthenticationFilter implements GatewayFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
 
-        if(validator.isSecured.test(request)){
-            if (authHeaderMissing(request)) {
+        if (validator.isSecured.test(request)) {
+            if (!authHeaderMissing(request)) {
                 return onError(exchange);
             }
 
@@ -37,13 +38,8 @@ public class AuthenticationFilter implements GatewayFilter {
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 authHeader = authHeader.substring(7);
             }
-
-            if (service.isExpired(authHeader)) {
-                return onError(exchange);
-            }
             try {
                 service.validateToken(authHeader);
-
             } catch (Exception e) {
                 return onError(exchange);
             }
@@ -59,6 +55,6 @@ public class AuthenticationFilter implements GatewayFilter {
     }
 
     private boolean authHeaderMissing(ServerHttpRequest request) {
-        return !request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION);
+        return request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION);
     }
 }
