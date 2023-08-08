@@ -45,12 +45,7 @@ public class AuthenticationService {
         checkRequestEmailInUse(userRequest);
         checkRequestUserNameInUse(userRequest);
 
-
-
         User user = userRepository.save(userConverter.convert(userRequest));
-
-        // TODO sent user information to feign client
-        // TODO sent mail to notification service
 
         logger.info("User created: {}", user.getId());
 

@@ -15,7 +15,9 @@ public class UserRequest {
     private String name;
     @NotEmpty(message = "Please enter your surname")
     private String surName;
+    @NotNull(message = "Please enter your companyId")
     private Long companyId;
+    @NotEmpty(message = "Please enter your companyName")
     private String companyName;
     @NotEmpty(message = "Please enter your Email")
     @Email(message = "Invalid Email. Please enter proper Email")

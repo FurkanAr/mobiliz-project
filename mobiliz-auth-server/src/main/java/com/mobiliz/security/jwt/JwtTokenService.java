@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import static java.util.Map.entry;
 
 @Service
 public class JwtTokenService {
@@ -61,13 +64,17 @@ public class JwtTokenService {
 
     public String generateToken(User user) {
         logger.info("generateToken method started");
-        Map<String, String> claims = Map.of("userId", user.getId().toString(), "name", user.getName(), "surname", user.getSurName(),
-                "companyId", user.getCompanyId().toString(), "companyName", user.getCompanyName(), "role", user.getRole().name());
+
+        Map<String, String> claims = Map.ofEntries(entry("userId", user.getId().toString()), entry("name", user.getName()), entry("surname", user.getSurName()),
+                entry("companyId", user.getCompanyId().toString()), entry("companyName", user.getCompanyName()), entry("role", user.getRole().name())
+        );
+
+
         String token = Jwts.builder()
                 .setSubject(user.getUserName())
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() +EXPIRES_IN))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRES_IN))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
         logger.info("generateToken method successfully worked");
