@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/Mobiliz Project.iml" filepath="$PROJECT_DIR$/.idea/Mobiliz Project.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobiliz-auth-server/mobiliz-auth-server.iml" filepath="$PROJECT_DIR$/mobiliz-auth-server/mobiliz-auth-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobiliz-eureka-server/mobiliz-eureka-server.iml" filepath="$PROJECT_DIR$/mobiliz-eureka-server/mobiliz-eureka-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobiliz-gateway-server/mobiliz-gateway-server.iml" filepath="$PROJECT_DIR$/mobiliz-gateway-server/mobiliz-gateway-server.iml" />
     </modules>
   </component>
 </project>
