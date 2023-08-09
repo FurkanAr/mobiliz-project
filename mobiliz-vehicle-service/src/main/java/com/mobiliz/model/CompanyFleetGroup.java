@@ -20,7 +20,7 @@ public class CompanyFleetGroup {
             CascadeType.MERGE,
             CascadeType.REFRESH,
     })
-    @JoinColumn(name = "company_id", nullable = false)
+    @JoinColumn(name = "company_id")
     private Company company;
     @Column(name = "user_id")
     private Long userId;

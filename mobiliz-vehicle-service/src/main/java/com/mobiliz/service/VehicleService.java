@@ -62,4 +62,12 @@ public class VehicleService {
                 -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS + vehicleId));
         return vehicleConverter.convert(vehicle);
     }
+
+    public List<Vehicle> getByCompanyGroupId(Long id) {
+        return vehicleRepository.findAllByCompanyGroupId(id);
+    }
+
+    public List<Vehicle> getCompanyDistrictGroupById(Long id) {
+        return vehicleRepository.findAllByCompanyDistrictGroupId(id);
+    }
 }

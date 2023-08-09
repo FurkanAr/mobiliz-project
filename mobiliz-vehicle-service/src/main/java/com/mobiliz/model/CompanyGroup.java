@@ -20,7 +20,7 @@ public class CompanyGroup {
             CascadeType.MERGE,
             CascadeType.REFRESH,
     })
-    @JoinColumn(name = "company_district_group_id", nullable = false)
+    @JoinColumn(name = "company_district_group_id")
     private CompanyDistrictGroup companyDistrictGroup;
 
     public CompanyGroup() {

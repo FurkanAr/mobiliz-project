@@ -19,21 +19,11 @@ public class VehicleConverter {
 
     public VehicleResponse convert(Vehicle vehicle) {
         VehicleResponse vehicleResponse = new VehicleResponse();
-        vehicleResponse.setId(String.valueOf(vehicle.getId()));
+        vehicleResponse.setId(vehicle.getId());
         vehicleResponse.setLicencePlate(vehicle.getLicencePlate());
-        vehicleResponse.setVehicleIdentificationNumber(vehicle.getVehicleIdentificationNumber());
-        vehicleResponse.setLabel(vehicle.getLabel());
         vehicleResponse.setBrand(vehicle.getBrand());
         vehicleResponse.setModel(vehicle.getModel());
         vehicleResponse.setModelYear(vehicle.getModelYear());
-        vehicleResponse.setStatus(vehicle.getStatus().name());
-        vehicleResponse.setCompanyDistrictGroupId(String.valueOf(vehicle.getCompanyDistrictGroup().getId()));
-
-        if (vehicle.getCompanyGroup() != null) {
-            vehicleResponse.setCompanyGroupId(String.valueOf(vehicle.getCompanyGroup().getId()));
-        }else{
-            vehicleResponse.setCompanyGroupId(NO_INFO);
-        }
         return vehicleResponse;
     }
 

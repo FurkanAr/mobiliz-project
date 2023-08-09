@@ -3,39 +3,28 @@ package com.mobiliz.response;
 
 public class VehicleResponse {
 
-    private String id;
+    private Long id;
     private String licencePlate;
-    private String vehicleIdentificationNumber;
-    private String label;
     private String brand;
     private String model;
     private String modelYear;
-    private String status;
-    private String companyGroupId;
-    private String companyDistrictGroupId;
 
     public VehicleResponse() {
     }
 
-    public VehicleResponse(String id, String licencePlate, String vehicleIdentificationNumber, String label, String brand,
-                           String model, String modelYear, String status, String companyGroupId, String companyDistrictGroupId) {
+    public VehicleResponse(Long id, String licencePlate, String brand, String model, String modelYear) {
         this.id = id;
         this.licencePlate = licencePlate;
-        this.vehicleIdentificationNumber = vehicleIdentificationNumber;
-        this.label = label;
         this.brand = brand;
         this.model = model;
         this.modelYear = modelYear;
-        this.status = status;
-        this.companyGroupId = companyGroupId;
-        this.companyDistrictGroupId = companyDistrictGroupId;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -45,22 +34,6 @@ public class VehicleResponse {
 
     public void setLicencePlate(String licencePlate) {
         this.licencePlate = licencePlate;
-    }
-
-    public String getVehicleIdentificationNumber() {
-        return vehicleIdentificationNumber;
-    }
-
-    public void setVehicleIdentificationNumber(String vehicleIdentificationNumber) {
-        this.vehicleIdentificationNumber = vehicleIdentificationNumber;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public String getBrand() {
@@ -87,29 +60,6 @@ public class VehicleResponse {
         this.modelYear = modelYear;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getCompanyGroupId() {
-        return companyGroupId;
-    }
-
-    public void setCompanyGroupId(String companyGroupId) {
-        this.companyGroupId = companyGroupId;
-    }
-
-    public String getCompanyDistrictGroupId() {
-        return companyDistrictGroupId;
-    }
-
-    public void setCompanyDistrictGroupId(String companyDistrictGroupId) {
-        this.companyDistrictGroupId = companyDistrictGroupId;
-    }
 
     @Override
     public String toString() {
@@ -117,8 +67,6 @@ public class VehicleResponse {
                 "id=" + id +
                 ", licencePlate='" + licencePlate + '\'' +
                 ", brand='" + brand + '\'' +
-                ", companyGroupId=" + companyGroupId +
-                ", companyDistrictGroupId=" + companyDistrictGroupId +
                 '}';
     }
 }
