@@ -23,6 +23,12 @@ public class GatewayConfig {
                 .route("vehicle-service", r -> r.path("/api/vehicles/**")
                         .filters(f -> f.filter(filter))
                         .uri("http://localhost:9092"))
+                .route("vehicle-service", r -> r.path("/api/companies/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("http://localhost:9092"))
+                .route("vehicle-service", r -> r.path("/api/user/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("http://localhost:9092"))
                 .build();
     }
 }
