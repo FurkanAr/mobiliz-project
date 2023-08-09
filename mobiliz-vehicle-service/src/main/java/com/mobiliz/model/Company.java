@@ -1,5 +1,7 @@
 package com.mobiliz.model;
 
+import com.mobiliz.exception.messages.Messages;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +18,18 @@ public class Company {
     private String name;
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<CompanyFleetGroup> companyFleetGroups = new ArrayList<>();
+    @OneToMany(mappedBy="company", cascade = CascadeType.ALL)
+    private List<Vehicle> vehicles = new ArrayList<>();
+    @OneToMany(mappedBy="company", cascade = CascadeType.ALL)
+    private List<CompanyGroup> companyGroups = new ArrayList<>();
+    @OneToMany(mappedBy="company", cascade = CascadeType.ALL)
+    private List<CompanyDistrictGroup> companyDistrictGroups = new ArrayList<>();
     @Column(name = "admin_id", nullable = false)
     private Long adminId;
     @Column(name = "admin_name", nullable = false)
     private String adminName;
     @Column(name = "admin_surname", nullable = false)
     private String adminSurname;
-
 
     public Company() {
     }
@@ -62,6 +69,22 @@ public class Company {
         this.getCompanyFleetGroups().add(companyFleetGroup);
     }
 
+    public List<Vehicle> getVehicles() {
+        return vehicles;
+    }
+
+    public void setVehicles(List<Vehicle> vehicles) {
+        this.vehicles = vehicles;
+    }
+
+    public List<CompanyGroup> getCompanyGroups() {
+        return companyGroups;
+    }
+
+    public void setCompanyGroups(List<CompanyGroup> companyGroups) {
+        this.companyGroups = companyGroups;
+    }
+
     public Long getAdminId() {
         return adminId;
     }
@@ -84,6 +107,14 @@ public class Company {
 
     public void setAdminSurname(String adminSurname) {
         this.adminSurname = adminSurname;
+    }
+
+    public List<CompanyDistrictGroup> getCompanyDistrictGroups() {
+        return companyDistrictGroups;
+    }
+
+    public void setCompanyDistrictGroups(List<CompanyDistrictGroup> companyDistrictGroups) {
+        this.companyDistrictGroups = companyDistrictGroups;
     }
 
     @Override

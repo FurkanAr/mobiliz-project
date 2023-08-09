@@ -6,6 +6,9 @@ spring:
     name: mobiliz-vehicle-service
   main:
     allow-circular-references: true
+  security:
+    user:
+      password: none
   jpa:
     hibernate:
       dialect: org.hibernate.dialect.PostgreSQLDialect

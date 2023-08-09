@@ -17,11 +17,13 @@ public class CompanyGroupDistrictService {
     private final CompanyDistrictGroupRepository companyDistrictGroupRepository;
     private final CompanyFleetGroupService companyFleetGroupService;
     private final CompanyDistrictGroupConverter companyDistrictGroupConverter;
+    private final CompanyService companyService;
 
-    public CompanyGroupDistrictService(CompanyDistrictGroupRepository companyDistrictGroupRepository, CompanyFleetGroupService companyFleetGroupService, CompanyDistrictGroupConverter companyDistrictGroupConverter) {
+    public CompanyGroupDistrictService(CompanyDistrictGroupRepository companyDistrictGroupRepository, CompanyFleetGroupService companyFleetGroupService, CompanyDistrictGroupConverter companyDistrictGroupConverter, CompanyService companyService) {
         this.companyDistrictGroupRepository = companyDistrictGroupRepository;
         this.companyFleetGroupService = companyFleetGroupService;
         this.companyDistrictGroupConverter = companyDistrictGroupConverter;
+        this.companyService = companyService;
     }
 
 
@@ -30,7 +32,7 @@ public class CompanyGroupDistrictService {
         companyDistrictGroup  = companyDistrictGroupRepository.save(companyDistrictGroup);
         companyDistrictGroup.setCompanyFleetGroup(companyFleetGroupService
                 .getCompanyFleetGroupById(companyDistrictGroupRequest.getCompanyFleetGroupId()));
-
+        companyDistrictGroup.setCompany(companyService.getCompanyById(companyDistrictGroupRequest.getCompanyId()));
         return companyDistrictGroupConverter.convert(companyDistrictGroupRepository.save(companyDistrictGroup));
     }
 

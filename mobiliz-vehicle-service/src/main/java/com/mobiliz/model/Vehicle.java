@@ -38,8 +38,26 @@ public class Vehicle {
             CascadeType.MERGE,
             CascadeType.REFRESH,
     })
-    @JoinColumn(name = "company_district_group_id", nullable = false)
+    @JoinColumn(name = "company_district_group_id")
     private CompanyDistrictGroup companyDistrictGroup;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+    })
+    @JoinColumn(name = "company_fleet_group_id")
+    private CompanyFleetGroup companyFleetGroup;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+    })
+    @JoinColumn(name = "company_id")
+    private Company company;
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "sur_name")
+    private String surName;
 
     public Vehicle() {
     }
@@ -74,6 +92,30 @@ public class Vehicle {
 
     public void setVehicleIdentificationNumber(String vehicleIdentificationNumber) {
         this.vehicleIdentificationNumber = vehicleIdentificationNumber;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getSurName() {
+        return surName;
+    }
+
+    public void setSurName(String surName) {
+        this.surName = surName;
     }
 
     public String getLabel() {
@@ -130,6 +172,22 @@ public class Vehicle {
 
     public void setCompanyDistrictGroup(CompanyDistrictGroup companyDistrictGroup) {
         this.companyDistrictGroup = companyDistrictGroup;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public CompanyFleetGroup getCompanyFleetGroup() {
+        return companyFleetGroup;
+    }
+
+    public void setCompanyFleetGroup(CompanyFleetGroup companyFleetGroup) {
+        this.companyFleetGroup = companyFleetGroup;
     }
 
     @Override

@@ -9,7 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
+import java.util.Map;
 import java.util.function.Function;
+
+import static java.util.Map.entry;
 
 @Service
 public class JwtTokenService {
@@ -34,6 +37,7 @@ public class JwtTokenService {
         final Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getKey())
                 .build().parseClaimsJws(token).getBody();
+        logger.info("claims: {}", claims.getSubject());
         logger.info("exportToken method successfully worked");
         return claimFunction.apply(claims);
     }
@@ -42,6 +46,20 @@ public class JwtTokenService {
         return Jwts.parserBuilder()
                 .setSigningKey(getKey())
                 .build().parseClaimsJws(token).getBody();
+    }
+
+    public Map<String, String> getUserCredentials(String token) {
+
+        Map<String, String> claims = Map.ofEntries(
+                entry("userId", getClaims(token).get("userId").toString()),
+                entry("name", getClaims(token).get("name").toString()),
+                entry("surname", getClaims(token).get("surname").toString()),
+                entry("companyId", getClaims(token).get("companyId").toString()),
+                entry("companyName",getClaims(token).get("companyName").toString()),
+                entry("role", getClaims(token).get("role").toString())
+        );
+
+        return claims;
     }
 
     private Key getKey() {

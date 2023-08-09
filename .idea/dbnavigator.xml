@@ -14,6 +14,7 @@
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22">
       <console name="Connection" type="STANDARD" schema="postgres" session="Main" />
+      <console name="Postgres" type="STANDARD" schema="mobiliz" session="Main" />
     </connection>
     <connection id="786240d8-fa7e-47c3-a45f-57bb9073846c">
       <console name="Connection" type="STANDARD" schema="mobiliz" session="Main" />
@@ -56,7 +57,7 @@
           <url-type value="DATABASE" />
           <host value="localhost" />
           <port value="5432" />
-          <database value="mobiliz" />
+          <database value="postgres" />
           <tns-folder value="" />
           <tns-profile value="" />
           <type value="USER_PASSWORD" />

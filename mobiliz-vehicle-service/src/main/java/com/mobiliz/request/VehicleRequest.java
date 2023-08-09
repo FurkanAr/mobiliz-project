@@ -17,16 +17,23 @@ public class VehicleRequest {
     private Long companyGroupId;
     @NotNull(message = "Please enter companyDistrictGroupId")
     private Long companyDistrictGroupId;
+    @NotNull(message = "Please enter company id")
+    private Long companyId;
+    @NotNull(message = "Please enter company fleet group id")
+    private Long companyFleetGroupId;
 
     public VehicleRequest() {
     }
 
-    public VehicleRequest(String licencePlate, String brand, String model, String modelYear, Long companyDistrictGroupId) {
+    public VehicleRequest(String licencePlate, String brand, String model, String modelYear,
+                          Long companyDistrictGroupId, Long companyId, Long companyFleetGroupId) {
         this.licencePlate = licencePlate;
         this.brand = brand;
         this.model = model;
         this.modelYear = modelYear;
         this.companyDistrictGroupId = companyDistrictGroupId;
+        this.companyId = companyId;
+        this.companyFleetGroupId = companyFleetGroupId;
     }
 
     public String getLicencePlate() {
@@ -43,6 +50,14 @@ public class VehicleRequest {
 
     public void setVehicleIdentificationNumber(String vehicleIdentificationNumber) {
         this.vehicleIdentificationNumber = vehicleIdentificationNumber;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
     public String getLabel() {
@@ -91,6 +106,14 @@ public class VehicleRequest {
 
     public void setCompanyDistrictGroupId(Long companyDistrictGroupId) {
         this.companyDistrictGroupId = companyDistrictGroupId;
+    }
+
+    public Long getCompanyFleetGroupId() {
+        return companyFleetGroupId;
+    }
+
+    public void setCompanyFleetGroupId(Long companyFleetGroupId) {
+        this.companyFleetGroupId = companyFleetGroupId;
     }
 
     @Override

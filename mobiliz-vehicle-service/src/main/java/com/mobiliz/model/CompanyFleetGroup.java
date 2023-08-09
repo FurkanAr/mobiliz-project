@@ -16,6 +16,10 @@ public class CompanyFleetGroup {
     private String name;
     @OneToMany(mappedBy = "companyFleetGroup", cascade = CascadeType.ALL)
     private List<CompanyDistrictGroup> companyDistrictGroups = new ArrayList<>();
+    @OneToMany(mappedBy = "companyFleetGroup", cascade = CascadeType.ALL)
+    private List<Vehicle> vehicles = new ArrayList<>();
+    @OneToMany(mappedBy = "companyFleetGroup", cascade = CascadeType.ALL)
+    private List<CompanyGroup> companyGroups = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.REFRESH,
@@ -95,6 +99,22 @@ public class CompanyFleetGroup {
 
     public void setSurName(String surName) {
         this.surName = surName;
+    }
+
+    public List<Vehicle> getVehicles() {
+        return vehicles;
+    }
+
+    public void setVehicles(List<Vehicle> vehicles) {
+        this.vehicles = vehicles;
+    }
+
+    public List<CompanyGroup> getCompanyGroups() {
+        return companyGroups;
+    }
+
+    public void setCompanyGroups(List<CompanyGroup> companyGroups) {
+        this.companyGroups = companyGroups;
     }
 
     @Override

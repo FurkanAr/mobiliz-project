@@ -22,14 +22,18 @@ public class VehicleService {
     private final CompanyGroupService companyGroupService;
     private final CompanyGroupDistrictService companyGroupDistrictService;
     private final VehicleConverter vehicleConverter;
+    private final CompanyService companyService;
+    private final CompanyFleetGroupService companyFleetGroupService;
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    public VehicleService(VehicleRepository vehicleRepository, CompanyGroupService companyGroupService, CompanyGroupDistrictService companyGroupDistrictService, VehicleConverter vehicleConverter) {
+    public VehicleService(VehicleRepository vehicleRepository, CompanyGroupService companyGroupService, CompanyGroupDistrictService companyGroupDistrictService, VehicleConverter vehicleConverter, CompanyService companyService, CompanyFleetGroupService companyFleetGroupService) {
         this.vehicleRepository = vehicleRepository;
         this.companyGroupService = companyGroupService;
         this.companyGroupDistrictService = companyGroupDistrictService;
         this.vehicleConverter = vehicleConverter;
+        this.companyService = companyService;
+        this.companyFleetGroupService = companyFleetGroupService;
     }
 
     public List<VehicleResponse> findAllVehicles() {
@@ -41,15 +45,16 @@ public class VehicleService {
         logger.info("VehicleRequest: {}", vehicleRequest);
 
         Vehicle vehicle = vehicleConverter.convert(vehicleRequest);
-        CompanyDistrictGroup companyDistrictGroup = companyGroupDistrictService
-                .getCompanyDistrictGroupById(vehicleRequest.getCompanyDistrictGroupId());
 
         CompanyGroup companyGroup = null;
         if (vehicleRequest.getCompanyGroupId() != null) {
             companyGroup = companyGroupService.getCompanyGroupById(vehicleRequest.getCompanyGroupId());
         }
         vehicle.setCompanyGroup(companyGroup);
-        vehicle.setCompanyDistrictGroup(companyDistrictGroup);
+        vehicle.setCompany(companyService.getCompanyById(vehicleRequest.getCompanyId()));
+        vehicle.setCompanyFleetGroup(companyFleetGroupService.getCompanyFleetGroupById(vehicleRequest.getCompanyFleetGroupId()));
+        vehicle.setCompanyDistrictGroup(companyGroupDistrictService
+                .getCompanyDistrictGroupById(vehicleRequest.getCompanyDistrictGroupId()));
         vehicle = vehicleRepository.save(vehicle);
         logger.info("vehicle created: {}", vehicle);
 
