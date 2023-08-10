@@ -1,4 +1,4 @@
-package com.mobiliz.response;
+package com.mobiliz.response.companyFleetGroup;
 
 
 import java.util.List;
@@ -7,15 +7,14 @@ public class CompanyFleetGroupResponse {
 
     private Long id;
     private String name;
-    private List<CompanyDistrictGroupResponse> companyDistrictGroupResponses;
 
     public CompanyFleetGroupResponse() {
     }
 
-    public CompanyFleetGroupResponse(Long id, String name, List<CompanyDistrictGroupResponse> companyDistrictGroupResponses) {
+    public CompanyFleetGroupResponse(Long id, String name, Long companyId) {
         this.id = id;
         this.name = name;
-        this.companyDistrictGroupResponses = companyDistrictGroupResponses;
+        this.companyId = companyId;
     }
 
     public Long getId() {
@@ -34,12 +33,12 @@ public class CompanyFleetGroupResponse {
         this.name = name;
     }
 
-    public List<CompanyDistrictGroupResponse> getCompanyDistrictGroupResponses() {
-        return companyDistrictGroupResponses;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setCompanyDistrictGroupResponses(List<CompanyDistrictGroupResponse> companyDistrictGroupResponses) {
-        this.companyDistrictGroupResponses = companyDistrictGroupResponses;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
     @Override

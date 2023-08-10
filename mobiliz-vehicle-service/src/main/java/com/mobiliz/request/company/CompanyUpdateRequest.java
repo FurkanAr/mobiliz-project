@@ -1,10 +1,9 @@
-package com.mobiliz.request;
+package com.mobiliz.request.company;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
-public class CompanyRequest {
+public class CompanyUpdateRequest {
 
     @NotEmpty(message = "Please enter company name")
     private String name;
@@ -15,15 +14,16 @@ public class CompanyRequest {
     @NotEmpty(message = "Please enter admin surname")
     private String adminSurname;
 
-    public CompanyRequest() {
+    public CompanyUpdateRequest() {
     }
 
-    public CompanyRequest(String name, Long adminId, String adminName, String adminSurname) {
+    public CompanyUpdateRequest(String name, Long adminId, String adminName, String adminSurname) {
         this.name = name;
         this.adminId = adminId;
         this.adminName = adminName;
         this.adminSurname = adminSurname;
     }
+
 
     public String getName() {
         return name;
@@ -57,11 +57,13 @@ public class CompanyRequest {
         this.adminSurname = adminSurname;
     }
 
-
     @Override
     public String toString() {
-        return "CompanyRequest{" +
-                "name='" + name + '\'' +
+        return "CompanyUpdateRequest{" +
+                ", name='" + name + '\'' +
+                ", adminId=" + adminId +
+                ", adminName='" + adminName + '\'' +
+                ", adminSurname='" + adminSurname + '\'' +
                 '}';
     }
 }

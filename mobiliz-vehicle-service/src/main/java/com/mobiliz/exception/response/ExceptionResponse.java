@@ -11,6 +11,8 @@ public class ExceptionResponse {
 
     private String message;
     private int httpStatus;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime timestamp;
     private String path;
 

@@ -1,4 +1,4 @@
-package com.mobiliz.request;
+package com.mobiliz.request.companyGroup;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

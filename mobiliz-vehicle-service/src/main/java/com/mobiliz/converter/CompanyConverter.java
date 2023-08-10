@@ -1,7 +1,8 @@
 package com.mobiliz.converter;
 
 import com.mobiliz.model.Company;
-import com.mobiliz.request.CompanyRequest;
+import com.mobiliz.request.company.CompanyRequest;
+import com.mobiliz.request.company.CompanyUpdateRequest;
 import com.mobiliz.response.company.CompanyCreatedResponse;
 import com.mobiliz.response.company.CompanyResponse;
 import org.slf4j.Logger;
@@ -47,11 +48,11 @@ public class CompanyConverter {
         return companyResponses;
     }
 
-    public Company update(Company foundCompany, CompanyRequest companyRequest) {
-        foundCompany.setName(companyRequest.getName());
-        foundCompany.setAdminId(companyRequest.getAdminId());
-        foundCompany.setAdminName(companyRequest.getAdminName());
-        foundCompany.setAdminSurname(companyRequest.getAdminSurname());
-        return foundCompany;
+    public Company update(Company company, CompanyUpdateRequest companyRequest) {
+        company.setName(companyRequest.getName());
+        company.setAdminId(companyRequest.getAdminId());
+        company.setAdminName(companyRequest.getAdminName());
+        company.setAdminSurname(companyRequest.getAdminSurname());
+        return company;
     }
 }

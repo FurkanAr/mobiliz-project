@@ -3,9 +3,13 @@ package com.mobiliz.controller.advice;
 import com.mobiliz.exception.Permission.UserHasNotPermissionException;
 import com.mobiliz.exception.company.AdminAlreadyHasCompanyException;
 import com.mobiliz.exception.company.AdminNotFoundException;
+import com.mobiliz.exception.company.CompanyNameInUseException;
 import com.mobiliz.exception.company.CompanyNotFoundException;
 import com.mobiliz.exception.companyDistrictGroup.CompanyDistrictGroupNotFoundException;
+import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupIdAndAdminIdNotMatchedException;
+import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupNameInUseException;
 import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupNotFoundException;
+import com.mobiliz.exception.companyFleetGroup.CompanyIdAndAdminIdNotMatchedException;
 import com.mobiliz.exception.companyGroup.CompanyGroupNotExistException;
 import com.mobiliz.exception.response.ExceptionResponse;
 import com.mobiliz.exception.response.ExceptionValidatorResponse;
@@ -99,4 +103,34 @@ public class GlobalExceptionHandler {
                         request.getServletPath()));
     }
 
+    @ExceptionHandler(CompanyIdAndAdminIdNotMatchedException.class)
+    public ResponseEntity<ExceptionResponse> handle(CompanyIdAndAdminIdNotMatchedException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .ok(new ExceptionResponse(exception.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getServletPath()));
+    }
+
+    @ExceptionHandler(CompanyFleetGroupIdAndAdminIdNotMatchedException.class)
+    public ResponseEntity<ExceptionResponse> handle(CompanyFleetGroupIdAndAdminIdNotMatchedException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .ok(new ExceptionResponse(exception.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getServletPath()));
+    }
+    @ExceptionHandler(CompanyNameInUseException.class)
+    public ResponseEntity<ExceptionResponse> handle(CompanyNameInUseException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .ok(new ExceptionResponse(exception.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getServletPath()));
+    }
+
+    @ExceptionHandler(CompanyFleetGroupNameInUseException.class)
+    public ResponseEntity<ExceptionResponse> handle(CompanyFleetGroupNameInUseException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .ok(new ExceptionResponse(exception.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getServletPath()));
+    }
 }

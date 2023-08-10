@@ -1,7 +1,8 @@
 package com.mobiliz.converter;
 
 import com.mobiliz.model.CompanyGroup;
-import com.mobiliz.request.CompanyGroupRequest;
+import com.mobiliz.request.companyGroup.CompanyGroupRequest;
+import com.mobiliz.request.companyGroup.CompanyGroupUpdateRequest;
 import com.mobiliz.response.CompanyGroupResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,4 +37,8 @@ public class CompanyGroupConverter {
         return companyGroupResponses;
     }
 
+    public CompanyGroup update(CompanyGroup companyGroup, CompanyGroupUpdateRequest companyGroupUpdateRequest) {
+        companyGroup.setName(companyGroupUpdateRequest.getName());
+        return companyGroup;
+    }
 }

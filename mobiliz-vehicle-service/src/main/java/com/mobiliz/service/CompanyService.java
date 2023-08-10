@@ -4,11 +4,14 @@ import com.mobiliz.constant.Constants;
 import com.mobiliz.converter.CompanyConverter;
 import com.mobiliz.exception.company.AdminAlreadyHasCompanyException;
 import com.mobiliz.exception.company.AdminNotFoundException;
+import com.mobiliz.exception.company.CompanyNameInUseException;
 import com.mobiliz.exception.company.CompanyNotFoundException;
+import com.mobiliz.exception.companyFleetGroup.CompanyIdAndAdminIdNotMatchedException;
 import com.mobiliz.exception.messages.Messages;
 import com.mobiliz.model.Company;
 import com.mobiliz.repository.CompanyRepository;
-import com.mobiliz.request.CompanyRequest;
+import com.mobiliz.request.company.CompanyRequest;
+import com.mobiliz.request.company.CompanyUpdateRequest;
 import com.mobiliz.response.company.CompanyCreatedResponse;
 import com.mobiliz.response.company.CompanyResponse;
 import org.springframework.stereotype.Service;
@@ -26,9 +29,12 @@ public class CompanyService {
     }
 
     @Transactional
-    public CompanyCreatedResponse createCompany(CompanyRequest companyRequest) {
+    public CompanyCreatedResponse createCompany(Long adminId, CompanyRequest companyRequest) {
+        if (companyRepository.findByName(companyRequest.getName()).isPresent()){
+            throw new CompanyNameInUseException(Messages.Company.NAME_IN_USE + companyRequest.getName());
+        }
 
-        if (companyRepository.findByAdminId(companyRequest.getAdminId()).isPresent()) {
+        if (companyRepository.findByAdminId(adminId).isPresent()) {
             throw new AdminAlreadyHasCompanyException(Messages.Company.ADMIN_IN_USE);
         }
 
@@ -39,21 +45,17 @@ public class CompanyService {
 
     public CompanyResponse getCompanyByAdminId(Long adminId) {
 
-        Company foundCompany = companyRepository.findByAdminId(adminId).orElseThrow(
-                () -> new AdminNotFoundException(Messages.Company.ADMIN_NOT_EXIST + adminId));
+        Company foundCompany = findCompanyByAdminId(adminId);
 
         return companyConverter.convertToCompanyResponse(foundCompany);
     }
 
     @Transactional
-    public CompanyResponse updateCompany(CompanyRequest companyRequest) {
+    public CompanyResponse updateCompany(Long adminId, CompanyUpdateRequest companyRequest) {
 
-        Company foundCompany = companyRepository.findByAdminId(companyRequest.getAdminId()).orElseThrow(
-                () -> new AdminNotFoundException(Messages.Company.ADMIN_NOT_EXIST + companyRequest.getAdminId()));
+        Company company = companyConverter.update(findCompanyByAdminId(adminId), companyRequest);
 
-        foundCompany = companyConverter.update(foundCompany, companyRequest);
-
-        return companyConverter.convertToCompanyResponse(foundCompany);
+        return companyConverter.convertToCompanyResponse(company);
     }
 
     @Transactional
@@ -64,9 +66,15 @@ public class CompanyService {
         return Constants.COMPANY_DELETED;
     }
 
-    public Company getCompanyById(Long id) {
+    protected Company getCompanyById(Long id) {
         return companyRepository.findById(id).orElseThrow(
                 () -> new CompanyNotFoundException(Messages.Company.NOT_EXISTS + id));
+    }
+
+    public Company findCompanyByAdminId(Long adminId) {
+
+        return companyRepository.findByAdminId(adminId).orElseThrow(
+                () -> new AdminNotFoundException(Messages.Company.ADMIN_NOT_EXIST + adminId));
     }
 
 }

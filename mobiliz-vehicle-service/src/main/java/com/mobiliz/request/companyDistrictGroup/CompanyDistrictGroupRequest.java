@@ -1,4 +1,4 @@
-package com.mobiliz.request;
+package com.mobiliz.request.companyDistrictGroup;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

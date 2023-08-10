@@ -1,10 +1,9 @@
 package com.mobiliz.converter;
 
 import com.mobiliz.model.CompanyDistrictGroup;
-import com.mobiliz.model.CompanyGroup;
-import com.mobiliz.request.CompanyDistrictGroupRequest;
+import com.mobiliz.request.companyDistrictGroup.CompanyDistrictGroupRequest;
+import com.mobiliz.request.companyDistrictGroup.CompanyDistrictGroupUpdateRequest;
 import com.mobiliz.response.CompanyDistrictGroupResponse;
-import com.mobiliz.response.CompanyGroupResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -40,4 +39,8 @@ public class CompanyDistrictGroupConverter {
     }
 
 
+    public CompanyDistrictGroup update(CompanyDistrictGroup companyDistrictGroup, CompanyDistrictGroupUpdateRequest companyDistrictGroupUpdateRequest) {
+        companyDistrictGroup.setName(companyDistrictGroupUpdateRequest.getName());
+        return companyDistrictGroup;
+    }
 }

@@ -1,4 +1,4 @@
-package com.mobiliz.service;
+package com.mobiliz.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

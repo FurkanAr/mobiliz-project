@@ -1,4 +1,4 @@
-package com.mobiliz.request;
+package com.mobiliz.request.companyFleetGroup;
 
 
 import javax.validation.constraints.NotEmpty;

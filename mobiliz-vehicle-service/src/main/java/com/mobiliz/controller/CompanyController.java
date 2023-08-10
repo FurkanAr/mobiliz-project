@@ -1,6 +1,7 @@
 package com.mobiliz.controller;
 
-import com.mobiliz.request.CompanyRequest;
+import com.mobiliz.request.company.CompanyRequest;
+import com.mobiliz.request.company.CompanyUpdateRequest;
 import com.mobiliz.response.company.CompanyCreatedResponse;
 import com.mobiliz.response.company.CompanyResponse;
 import com.mobiliz.service.CompanyService;
@@ -10,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/companies")
@@ -25,12 +26,7 @@ public class CompanyController {
     }
 
     @GetMapping
-    public ResponseEntity<String> response() {
-        return ResponseEntity.ok("Hello Admin Page");
-    }
-
-    @GetMapping("/admins/{adminId}")
-    public ResponseEntity<CompanyResponse> getCompanyByAdminId(@PathVariable Long adminId){
+    public ResponseEntity<CompanyResponse> getCompanyByAdminId(@RequestParam Long adminId) {
 
         CompanyResponse companyResponse = companyService.getCompanyByAdminId(adminId);
 
@@ -38,23 +34,25 @@ public class CompanyController {
     }
 
     @PostMapping
-    public ResponseEntity<CompanyCreatedResponse> createCompany(@RequestBody CompanyRequest companyRequest){
+    public ResponseEntity<CompanyCreatedResponse> createCompany(@RequestParam Long adminId,
+                                                                @RequestBody @Valid CompanyRequest companyRequest) {
 
-        CompanyCreatedResponse companyResponse = companyService.createCompany(companyRequest);
+        CompanyCreatedResponse companyResponse = companyService.createCompany(adminId, companyRequest);
 
         return new ResponseEntity<>(companyResponse, HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<CompanyResponse> updateCompany(@RequestBody CompanyRequest companyRequest){
+    public ResponseEntity<CompanyResponse> updateCompany(@RequestParam Long adminId,
+                                                         @RequestBody @Valid CompanyUpdateRequest companyRequest) {
 
-        CompanyResponse companyResponse = companyService.updateCompany(companyRequest);
+        CompanyResponse companyResponse = companyService.updateCompany(adminId, companyRequest);
 
         return ResponseEntity.ok(companyResponse);
     }
 
-    @DeleteMapping("{adminId}")
-    public ResponseEntity<String> deleteCompanyByAdminId(@PathVariable Long adminId){
+    @DeleteMapping
+    public ResponseEntity<String> deleteCompanyByAdminId(@RequestParam Long adminId) {
         String response = companyService.deleteCompanyByAdminId(adminId);
         return ResponseEntity.ok(response);
     }
