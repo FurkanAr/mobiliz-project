@@ -27,6 +27,10 @@ public class CompanyDistrictGroupConverter {
         CompanyDistrictGroupResponse response = new CompanyDistrictGroupResponse();
         response.setId(companyDistrictGroup.getId());
         response.setName(companyDistrictGroup.getName());
+        response.setCompanyId(companyDistrictGroup.getCompany().getId());
+        response.setCompanyName(companyDistrictGroup.getCompany().getName());
+        response.setCompanyFleetGroupId(companyDistrictGroup.getCompanyFleetGroup().getId());
+        response.setCompanyFleetGroupName(companyDistrictGroup.getCompanyFleetGroup().getName());
         return response;
     }
 

@@ -106,6 +106,9 @@ public class DataLoad {
         mazda3.setLabel("You have to buy!!");
         mazda3.setVehicleIdentificationNumber("DF895A1");
 
+        List<VehicleRequest> vehicleRequests = List.of(bmw3, bmw5, mercedesC, mercedesCLS, mercedesGLA, toyotaCorolla, hondaCivic, mazda3);
+        vehicleRequests.forEach(vehicle -> vehicleService.createVehicle(2L,vehicle));
+
         VehicleRequest bmw4 = new VehicleRequest("34 KVX 943", "BMW", "BMW 4", "2021", 4L, 2L, 4L);
         VehicleRequest bmw6 = new VehicleRequest("34 GQC 951", "BMW", "BMW 6", "2022", 4L, 2L, 5L);
         bmw3.setCompanyGroupId(3L);
@@ -115,8 +118,9 @@ public class DataLoad {
         bmw5.setLabel("You have to buy!!");
         bmw5.setVehicleIdentificationNumber("CCZD15646");
 
-        List<VehicleRequest> vehicleRequests = List.of(bmw3, bmw5, mercedesC, mercedesCLS, mercedesGLA, toyotaCorolla, hondaCivic, mazda3, bmw4, bmw6);
-        vehicleRequests.forEach(vehicleService::createVehicle);
+
+        List<VehicleRequest> vehicleRequestsMavigator = List.of(bmw4, bmw6);
+        vehicleRequestsMavigator.forEach(vehicle -> vehicleService.createVehicle(3L,vehicle));
 
     }
 

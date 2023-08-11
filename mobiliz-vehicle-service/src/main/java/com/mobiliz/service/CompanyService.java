@@ -55,7 +55,7 @@ public class CompanyService {
 
         Company company = companyConverter.update(findCompanyByAdminId(adminId), companyRequest);
 
-        return companyConverter.convertToCompanyResponse(company);
+        return companyConverter.convertToCompanyResponse(companyRepository.save(company));
     }
 
     @Transactional

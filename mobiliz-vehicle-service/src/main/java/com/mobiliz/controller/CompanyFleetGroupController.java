@@ -2,7 +2,7 @@ package com.mobiliz.controller;
 
 import com.mobiliz.request.companyFleetGroup.CompanyFleetGroupRequest;
 import com.mobiliz.request.companyFleetGroup.CompanyFleetUpdateRequest;
-import com.mobiliz.response.companyFleetGroup.CompanyFleetGroupResponse;
+import com.mobiliz.response.CompanyFleetGroupResponse;
 import com.mobiliz.service.CompanyFleetGroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -4,7 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/Mobiliz Project.iml" filepath="$PROJECT_DIR$/.idea/Mobiliz Project.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobiliz-auth-server/mobiliz-auth-server.iml" filepath="$PROJECT_DIR$/mobiliz-auth-server/mobiliz-auth-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobiliz-company-service/mobiliz-company-service.iml" filepath="$PROJECT_DIR$/mobiliz-company-service/mobiliz-company-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobiliz-district-group-service/mobiliz-district-group-service.iml" filepath="$PROJECT_DIR$/mobiliz-district-group-service/mobiliz-district-group-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobiliz-eureka-server/mobiliz-eureka-server.iml" filepath="$PROJECT_DIR$/mobiliz-eureka-server/mobiliz-eureka-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobiliz-fleet-service/mobiliz-fleet-service.iml" filepath="$PROJECT_DIR$/mobiliz-fleet-service/mobiliz-fleet-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobiliz-gateway-server/mobiliz-gateway-server.iml" filepath="$PROJECT_DIR$/mobiliz-gateway-server/mobiliz-gateway-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobiliz-vehicle-service/mobiliz-vehicle-service.iml" filepath="$PROJECT_DIR$/mobiliz-vehicle-service/mobiliz-vehicle-service.iml" />
     </modules>

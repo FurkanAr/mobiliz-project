@@ -9,18 +9,22 @@ public class CompanyDistrictGroupResponse {
 
     private Long id;
     private String name;
-    private List<CompanyGroupResponse> companyGroupResponses;
-    private List<VehicleResponse> vehicleResponses;
+    private Long companyId;
+    private String companyName;
+    private Long companyFleetGroupId;
+    private String companyFleetGroupName;
+
 
     public CompanyDistrictGroupResponse() {
     }
 
-    public CompanyDistrictGroupResponse(Long id, String name, List<CompanyGroupResponse> companyGroupResponses,
-                                                List<VehicleResponse> vehicleResponses) {
+    public CompanyDistrictGroupResponse(Long id, String name, Long companyId, String companyName, Long companyFleetGroupId, String companyFleetGroupName) {
         this.id = id;
         this.name = name;
-        this.companyGroupResponses = companyGroupResponses;
-        this.vehicleResponses = vehicleResponses;
+        this.companyId = companyId;
+        this.companyName = companyName;
+        this.companyFleetGroupId = companyFleetGroupId;
+        this.companyFleetGroupName = companyFleetGroupName;
     }
 
     public Long getId() {
@@ -39,20 +43,36 @@ public class CompanyDistrictGroupResponse {
         this.name = name;
     }
 
-    public List<CompanyGroupResponse> getCompanyGroupResponses() {
-        return companyGroupResponses;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setCompanyGroupResponses(List<CompanyGroupResponse> companyGroupResponses) {
-        this.companyGroupResponses = companyGroupResponses;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
-    public List<VehicleResponse> getVehicleResponses() {
-        return vehicleResponses;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setVehicleResponses(List<VehicleResponse> vehicleResponses) {
-        this.vehicleResponses = vehicleResponses;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public Long getCompanyFleetGroupId() {
+        return companyFleetGroupId;
+    }
+
+    public void setCompanyFleetGroupId(Long companyFleetGroupId) {
+        this.companyFleetGroupId = companyFleetGroupId;
+    }
+
+    public String getCompanyFleetGroupName() {
+        return companyFleetGroupName;
+    }
+
+    public void setCompanyFleetGroupName(String companyFleetGroupName) {
+        this.companyFleetGroupName = companyFleetGroupName;
     }
 
     @Override
@@ -60,6 +80,8 @@ public class CompanyDistrictGroupResponse {
         return "CompanyDistrictGroupResponse{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", companyId=" + companyId +
+                ", companyFleetGroupId=" + companyFleetGroupId +
                 '}';
     }
 }

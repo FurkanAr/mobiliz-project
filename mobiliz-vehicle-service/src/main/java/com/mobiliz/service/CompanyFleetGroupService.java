@@ -4,21 +4,20 @@ import com.mobiliz.constant.Constants;
 import com.mobiliz.converter.CompanyFleetGroupConverter;
 import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupNameInUseException;
 import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupNotFoundException;
-import com.mobiliz.exception.companyFleetGroup.CompanyIdAndAdminIdNotMatchedException;
 import com.mobiliz.exception.messages.Messages;
 import com.mobiliz.model.Company;
 import com.mobiliz.model.CompanyFleetGroup;
 import com.mobiliz.repository.CompanyFleetGroupRepository;
 import com.mobiliz.request.companyFleetGroup.CompanyFleetGroupRequest;
 import com.mobiliz.request.companyFleetGroup.CompanyFleetUpdateRequest;
-import com.mobiliz.response.companyFleetGroup.CompanyFleetGroupResponse;
+import com.mobiliz.response.CompanyFleetGroupResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.mobiliz.utils.Company.checkAdminIdAndCompanyAdminIdMatch;
-import static com.mobiliz.utils.Company.checkCompanyFleetGroupAndAdminMatch;
+import static com.mobiliz.utils.CompanyMatch.checkAdminIdAndCompanyAdminIdMatch;
+import static com.mobiliz.utils.CompanyMatch.checkCompanyFleetGroupAndAdminMatch;
 
 @Service
 public class CompanyFleetGroupService {
@@ -60,9 +59,8 @@ public class CompanyFleetGroupService {
     @Transactional
     public CompanyFleetGroupResponse updateCompanyFleetGroup(Long adminId, Long companyFleetGroupId,
                                                              CompanyFleetUpdateRequest companyFleetUpdateRequest) {
-
-        CompanyFleetGroup companyFleetGroupFoundById = getCompanyFleetGroupById(companyFleetGroupId);
         Company companyFoundByAdminId = companyService.findCompanyByAdminId(adminId);
+        CompanyFleetGroup companyFleetGroupFoundById = getCompanyFleetGroupById(companyFleetGroupId);
 
         checkCompanyFleetGroupAndAdminMatch(companyFleetGroupFoundById, companyFoundByAdminId);
 
@@ -71,13 +69,13 @@ public class CompanyFleetGroupService {
         CompanyFleetGroup companyFleetGroup = companyFleetGroupConverter
                 .update(companyFleetGroupFoundById, companyFleetUpdateRequest);
 
-        return companyFleetGroupConverter.convert(companyFleetGroup);
+        return companyFleetGroupConverter.convert(companyFleetGroupRepository.save(companyFleetGroup));
     }
 
     @Transactional
     public String deleteCompanyFleetGroup(Long adminId, Long companyFleetGroupId) {
-        CompanyFleetGroup companyFleetGroupFoundById = getCompanyFleetGroupById(companyFleetGroupId);
         Company companyFoundByAdminId = companyService.findCompanyByAdminId(adminId);
+        CompanyFleetGroup companyFleetGroupFoundById = getCompanyFleetGroupById(companyFleetGroupId);
 
         checkCompanyFleetGroupAndAdminMatch(companyFleetGroupFoundById, companyFoundByAdminId);
 

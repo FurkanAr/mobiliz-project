@@ -7,15 +7,12 @@ public class CompanyGroupUpdateRequest {
 
     @NotEmpty(message = "Please enter company group name")
     private String name;
-    @NotNull(message = "Please enter district group id")
-    private Long companyDistrictGroupId;
 
     public CompanyGroupUpdateRequest() {
     }
 
-    public CompanyGroupUpdateRequest(String name, Long companyDistrictGroupId) {
+    public CompanyGroupUpdateRequest(String name ) {
         this.name = name;
-        this.companyDistrictGroupId = companyDistrictGroupId;
     }
 
     public String getName() {
@@ -26,19 +23,11 @@ public class CompanyGroupUpdateRequest {
         this.name = name;
     }
 
-    public Long getCompanyDistrictGroupId() {
-        return companyDistrictGroupId;
-    }
-
-    public void setCompanyDistrictGroupId(Long companyDistrictGroupId) {
-        this.companyDistrictGroupId = companyDistrictGroupId;
-    }
 
     @Override
     public String toString() {
         return "CompanyGroupUpdateRequest{" +
                 "name='" + name + '\'' +
-                ", companyDistrictGroupId=" + companyDistrictGroupId +
                 '}';
     }
 }

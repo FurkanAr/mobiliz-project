@@ -7,6 +7,9 @@
         <option value="$PROJECT_DIR$/mobiliz-auth-server/pom.xml" />
         <option value="$PROJECT_DIR$/mobiliz-gateway-server/pom.xml" />
         <option value="$PROJECT_DIR$/mobiliz-vehicle-service/pom.xml" />
+        <option value="$PROJECT_DIR$/mobiliz-company-service/pom.xml" />
+        <option value="$PROJECT_DIR$/mobiliz-fleet-service/pom.xml" />
+        <option value="$PROJECT_DIR$/mobiliz-district-group-service/pom.xml" />
       </list>
     </option>
   </component>

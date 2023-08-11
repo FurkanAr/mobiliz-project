@@ -26,6 +26,12 @@ public class CompanyGroupConverter {
         CompanyGroupResponse companyGroupResponse = new CompanyGroupResponse();
         companyGroupResponse.setId(companyGroup.getId());
         companyGroupResponse.setName(companyGroup.getName());
+        companyGroupResponse.setCompanyId(companyGroup.getCompany().getId());
+        companyGroupResponse.setCompanyName(companyGroup.getCompany().getName());
+        companyGroupResponse.setCompanyFleetGroupId(companyGroup.getCompanyFleetGroup().getId());
+        companyGroupResponse.setCompanyFleetGroupName(companyGroup.getCompanyFleetGroup().getName());
+        companyGroupResponse.setCompanyDistrictGroupId(companyGroup.getCompanyDistrictGroup().getId());
+        companyGroupResponse.setCompanyDistrictGroupName(companyGroup.getCompanyDistrictGroup().getName());
         return  companyGroupResponse;
     }
 

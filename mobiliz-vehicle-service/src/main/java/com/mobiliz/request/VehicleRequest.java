@@ -4,7 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class VehicleRequest {
-    @NotEmpty(message = "Please enter  licencePlate")
+    @NotEmpty(message = "Please enter licencePlate")
     private String licencePlate;
     private String vehicleIdentificationNumber;
     private String label;

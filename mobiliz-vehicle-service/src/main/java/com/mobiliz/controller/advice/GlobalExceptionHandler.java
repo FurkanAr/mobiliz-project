@@ -5,11 +5,15 @@ import com.mobiliz.exception.company.AdminAlreadyHasCompanyException;
 import com.mobiliz.exception.company.AdminNotFoundException;
 import com.mobiliz.exception.company.CompanyNameInUseException;
 import com.mobiliz.exception.company.CompanyNotFoundException;
+import com.mobiliz.exception.companyDistrictGroup.CompanyDistrictGroupAndCompanyFleetGroupNotMatchException;
+import com.mobiliz.exception.companyDistrictGroup.CompanyDistrictGroupIdAndAdminIdNotMatchedException;
 import com.mobiliz.exception.companyDistrictGroup.CompanyDistrictGroupNotFoundException;
 import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupIdAndAdminIdNotMatchedException;
 import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupNameInUseException;
 import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupNotFoundException;
 import com.mobiliz.exception.companyFleetGroup.CompanyIdAndAdminIdNotMatchedException;
+import com.mobiliz.exception.companyGroup.CompanyGroupAndCompanyDistrictGroupNotMatchException;
+import com.mobiliz.exception.companyGroup.CompanyGroupIdAndAdminIdNotMatchedException;
 import com.mobiliz.exception.companyGroup.CompanyGroupNotExistException;
 import com.mobiliz.exception.response.ExceptionResponse;
 import com.mobiliz.exception.response.ExceptionValidatorResponse;
@@ -133,4 +137,37 @@ public class GlobalExceptionHandler {
                         HttpStatus.BAD_REQUEST.value(),
                         request.getServletPath()));
     }
+
+    @ExceptionHandler(CompanyDistrictGroupIdAndAdminIdNotMatchedException.class)
+    public ResponseEntity<ExceptionResponse> handle(CompanyDistrictGroupIdAndAdminIdNotMatchedException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .ok(new ExceptionResponse(exception.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getServletPath()));
+    }
+
+    @ExceptionHandler(CompanyGroupIdAndAdminIdNotMatchedException.class)
+    public ResponseEntity<ExceptionResponse> handle(CompanyGroupIdAndAdminIdNotMatchedException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .ok(new ExceptionResponse(exception.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getServletPath()));
+    }
+
+    @ExceptionHandler(CompanyDistrictGroupAndCompanyFleetGroupNotMatchException.class)
+    public ResponseEntity<ExceptionResponse> handle(CompanyDistrictGroupAndCompanyFleetGroupNotMatchException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .ok(new ExceptionResponse(exception.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getServletPath()));
+    }
+
+    @ExceptionHandler(CompanyGroupAndCompanyDistrictGroupNotMatchException.class)
+    public ResponseEntity<ExceptionResponse> handle(CompanyGroupAndCompanyDistrictGroupNotMatchException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .ok(new ExceptionResponse(exception.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getServletPath()));
+    }
+
 }

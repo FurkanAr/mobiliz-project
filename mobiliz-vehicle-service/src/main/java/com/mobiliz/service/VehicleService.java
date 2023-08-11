@@ -35,10 +35,6 @@ public class VehicleService {
         this.companyFleetGroupService = companyFleetGroupService;
     }
 
-    public List<VehicleResponse> findAllVehicles() {
-        return vehicleConverter.convert(vehicleRepository.findAll());
-    }
-
     public VehicleResponse createVehicle(Long adminId, VehicleRequest vehicleRequest) {
         logger.info("createVehicle method started");
         Company company = companyService.getCompanyById(vehicleRequest.getCompanyId());
@@ -50,15 +46,15 @@ public class VehicleService {
                 .getCompanyDistrictGroupById(vehicleRequest.getCompanyDistrictGroupId());
 
 
-        CompanyGroup companyGroup = null;
-        if (vehicleRequest.getCompanyGroupId() != null) {
-            companyGroup = companyGroupService.getCompanyGroupById(vehicleRequest.getCompanyGroupId());
-            checkAdminMatch(adminId, companyGroup.getCompany().getId());
-        }
-
         checkAdminMatch(adminId, vehicleRequest.getCompanyId());
         checkAdminMatch(adminId, companyFleetGroup.getCompany().getId());
         checkAdminMatch(adminId, companyDistrictGroup.getCompany().getId());
+
+
+        if (vehicleRequest.getCompanyGroupId() != null) {
+            CompanyGroup companyGroup = companyGroupService.getCompanyGroupById(vehicleRequest.getCompanyGroupId());
+            checkAdminMatch(adminId, companyGroup.getCompany().getId());
+        }
 
         logger.info("VehicleRequest: {}", vehicleRequest);
 
@@ -105,13 +101,6 @@ public class VehicleService {
         return vehicleRepository.findAllByCompanyDistrictGroupId(id);
     }
 
-    private void checkAdminMatch(Long adminId, Long companyId) {
-        Company companyFoundByAdminId = companyService.findCompanyByAdminId(adminId);
-        Company companyFoundByCompanyId = companyService.getCompanyById(companyId);
 
-        if (!companyFoundByCompanyId.getAdminId().equals(companyFoundByAdminId.getAdminId())) {
-            throw new CompanyIdAndAdminIdNotMatchedException(Messages.Company.ADMIN_NOT_MATCHED + companyFoundByAdminId);
-        }
-    }
 
 }

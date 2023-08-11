@@ -1,20 +1,21 @@
-package com.mobiliz.response.companyFleetGroup;
+package com.mobiliz.response;
 
-
-import java.util.List;
 
 public class CompanyFleetGroupResponse {
 
     private Long id;
     private String name;
+    private Long companyId;
+    private String companyName;
 
     public CompanyFleetGroupResponse() {
     }
 
-    public CompanyFleetGroupResponse(Long id, String name, Long companyId) {
+    public CompanyFleetGroupResponse(Long id, String name, Long companyId, String companyName) {
         this.id = id;
         this.name = name;
         this.companyId = companyId;
+        this.companyName = companyName;
     }
 
     public Long getId() {
@@ -41,11 +42,20 @@ public class CompanyFleetGroupResponse {
         this.companyId = companyId;
     }
 
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
     @Override
     public String toString() {
         return "CompanyFleetGroupResponse{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", companyId=" + companyId +
                 '}';
     }
 }

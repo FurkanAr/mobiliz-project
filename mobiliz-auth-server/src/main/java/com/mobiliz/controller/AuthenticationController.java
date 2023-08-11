@@ -1,6 +1,7 @@
 package com.mobiliz.controller;
 
 import com.mobiliz.request.LoginRequest;
+import com.mobiliz.request.TokenRequest;
 import com.mobiliz.request.UserRequest;
 import com.mobiliz.service.AuthenticationService;
 import org.slf4j.Logger;
@@ -39,6 +40,14 @@ public class AuthenticationController {
         logger.info("login method started");
         String response = authenticationService.login(loginRequest);
         logger.info("login successfully worked, username: {}", loginRequest.getUserName());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/token")
+    public ResponseEntity<String> token(@RequestBody TokenRequest tokenRequest) {
+        logger.info("token method started");
+        String response = authenticationService.token(tokenRequest);
+        logger.info("token successfully worked");
         return ResponseEntity.ok(response);
     }
 }

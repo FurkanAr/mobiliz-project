@@ -9,6 +9,7 @@ import com.mobiliz.exception.user.UserNameAlreadyInUseException;
 import com.mobiliz.model.User;
 import com.mobiliz.repository.UserRepository;
 import com.mobiliz.request.LoginRequest;
+import com.mobiliz.request.TokenRequest;
 import com.mobiliz.request.UserRequest;
 import com.mobiliz.security.jwt.JwtTokenService;
 import org.slf4j.Logger;
@@ -90,4 +91,15 @@ public class AuthenticationService {
         logger.info("Email can be use");
     }
 
+    public String token(TokenRequest tokenRequest) {
+        logger.info("token method started");
+
+        User user = userRepository.findById(tokenRequest.getUserId()).orElseThrow(() ->
+                new UsernameNotFoundException(Messages.User.NOT_EXISTS + tokenRequest.getUserId()));
+        logger.info("Found user: {}", user.getId());
+
+        var token = jwtTokenService.generateToken(user);
+        logger.info("token method successfully worked");
+        return "Bearer "+ token;
+    }
 }

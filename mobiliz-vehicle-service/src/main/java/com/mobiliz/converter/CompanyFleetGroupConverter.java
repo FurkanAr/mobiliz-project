@@ -3,7 +3,7 @@ package com.mobiliz.converter;
 import com.mobiliz.model.CompanyFleetGroup;
 import com.mobiliz.request.companyFleetGroup.CompanyFleetGroupRequest;
 import com.mobiliz.request.companyFleetGroup.CompanyFleetUpdateRequest;
-import com.mobiliz.response.companyFleetGroup.CompanyFleetGroupResponse;
+import com.mobiliz.response.CompanyFleetGroupResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -28,6 +28,7 @@ public class CompanyFleetGroupConverter {
         response.setId(companyFleetGroup.getId());
         response.setName(companyFleetGroup.getName());
         response.setCompanyId(companyFleetGroup.getCompany().getId());
+        response.setCompanyName(companyFleetGroup.getCompany().getName());
         return response;
     }
 

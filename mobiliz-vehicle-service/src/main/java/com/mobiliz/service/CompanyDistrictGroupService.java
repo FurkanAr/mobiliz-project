@@ -3,9 +3,7 @@ package com.mobiliz.service;
 import com.mobiliz.constant.Constants;
 import com.mobiliz.converter.CompanyDistrictGroupConverter;
 import com.mobiliz.exception.companyDistrictGroup.CompanyDistrictGroupNotFoundException;
-import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupIdAndAdminIdNotMatchedException;
 import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupNameInUseException;
-import com.mobiliz.exception.companyFleetGroup.CompanyIdAndAdminIdNotMatchedException;
 import com.mobiliz.exception.messages.Messages;
 import com.mobiliz.model.Company;
 import com.mobiliz.model.CompanyDistrictGroup;
@@ -19,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.mobiliz.utils.Company.checkAdminIdAndCompanyAdminIdMatch;
-import static com.mobiliz.utils.Company.checkCompanyFleetGroupAndAdminMatch;
+import static com.mobiliz.utils.CompanyMatch.*;
 
 @Service
 public class CompanyDistrictGroupService {
@@ -67,37 +64,42 @@ public class CompanyDistrictGroupService {
     }
 
 
-
     @Transactional
     public CompanyDistrictGroupResponse updateCompanyDistrictGroup(Long adminId, Long companyFleetGroupId,
                                                                    Long companyDistrictGroupId,
                                                                    CompanyDistrictGroupUpdateRequest companyDistrictGroupUpdateRequest) {
-
+        Company companyFoundByAdminId = companyService.findCompanyByAdminId(adminId);
+        CompanyFleetGroup companyFleetGroupFoundById = companyFleetGroupService
+                .getCompanyFleetGroupById(companyFleetGroupId);
         CompanyDistrictGroup companyDistrictGroupFoundById = getCompanyDistrictGroupById(companyDistrictGroupId);
 
-        Company companyFoundByAdminId = companyService.findCompanyByAdminId(adminId);
-
-        checkAdminMatch(adminId, companyDistrictGroupFoundById.getCompany().getId());
-
-        checkAdminMatch(adminId, companyFleetGroupService
-                .getCompanyFleetGroupById(companyFleetGroupId).getCompany().getId());
+        checkCompanyDistrictGroupAndAdminMatch(companyDistrictGroupFoundById, companyFoundByAdminId);
+        checkCompanyFleetGroupAndDistrictGroupMatch(companyDistrictGroupFoundById, companyFleetGroupFoundById);
+        checkCompanyFleetGroupAndAdminMatch(companyFleetGroupFoundById, companyFoundByAdminId);
 
         checkNameAvailable(companyFoundByAdminId, companyDistrictGroupUpdateRequest.getName());
 
         CompanyDistrictGroup companyDistrictGroup = companyDistrictGroupConverter
                 .update(companyDistrictGroupFoundById, companyDistrictGroupUpdateRequest);
 
-        return companyDistrictGroupConverter.convert(companyDistrictGroup);
+        return companyDistrictGroupConverter.convert(companyDistrictGroupRepository.save(companyDistrictGroup));
     }
 
     @Transactional
     public String deleteCompanyFleetGroup(Long adminId, Long companyFleetGroupId, Long companyDistrictGroupId) {
+        Company companyFoundByAdminId = companyService.findCompanyByAdminId(adminId);
+        System.out.println("companyFoundByAdminId: " + companyFoundByAdminId);
+        CompanyFleetGroup companyFleetGroupFoundById = companyFleetGroupService
+                .getCompanyFleetGroupById(companyFleetGroupId);
+        System.out.println("companyFleetGroupFoundById: " + companyFleetGroupFoundById);
         CompanyDistrictGroup companyDistrictGroupFoundById = getCompanyDistrictGroupById(companyDistrictGroupId);
 
-        checkAdminMatch(adminId, companyDistrictGroupFoundById.getCompany().getId());
+        System.out.println("companyDistrictGroupFoundById: " + companyDistrictGroupFoundById);
 
-        checkAdminMatch(adminId, companyFleetGroupService
-                .getCompanyFleetGroupById(companyFleetGroupId).getCompany().getId());
+        checkCompanyDistrictGroupAndAdminMatch(companyDistrictGroupFoundById, companyFoundByAdminId);
+        checkCompanyFleetGroupAndDistrictGroupMatch(companyDistrictGroupFoundById, companyFleetGroupFoundById);
+        checkCompanyFleetGroupAndAdminMatch(companyFleetGroupFoundById, companyFoundByAdminId);
+
 
         companyDistrictGroupRepository.delete(companyDistrictGroupFoundById);
 
@@ -120,17 +122,6 @@ public class CompanyDistrictGroupService {
                     + name);
         }
     }
-
-    private void checkAdminMatch(Long adminId, Long companyId) {
-        Company companyFoundByAdminId = companyService.findCompanyByAdminId(adminId);
-        Company companyFoundByCompanyId = companyService.getCompanyById(companyId);
-
-        if (!companyFoundByCompanyId.getAdminId().equals(companyFoundByAdminId.getAdminId())) {
-            throw new CompanyIdAndAdminIdNotMatchedException(Messages.Company.ADMIN_NOT_MATCHED + companyFoundByAdminId);
-        }
-    }
-
-
 
 
 }

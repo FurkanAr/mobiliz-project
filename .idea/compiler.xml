@@ -8,13 +8,19 @@
         <outputRelativeToContentRoot value="true" />
         <module name="mobiliz-vehicle-service" />
         <module name="mobiliz-auth-server" />
+        <module name="mobiliz-fleet-service" />
+        <module name="mobiliz-company-service" />
         <module name="mobiliz-eureka-server" />
         <module name="mobiliz-gateway-server" />
+        <module name="mobiliz-district-group-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="mobiliz-auth-server" target="11" />
+      <module name="mobiliz-company-service" target="11" />
+      <module name="mobiliz-district-group-service" target="11" />
       <module name="mobiliz-eureka-server" target="11" />
+      <module name="mobiliz-fleet-service" target="11" />
       <module name="mobiliz-gateway-server" target="11" />
       <module name="mobiliz-vehicle-service" target="11" />
     </bytecodeTargetLevel>
@@ -22,7 +28,10 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="mobiliz-auth-server" options="-parameters" />
+      <module name="mobiliz-company-service" options="-parameters" />
+      <module name="mobiliz-district-group-service" options="-parameters" />
       <module name="mobiliz-eureka-server" options="-parameters" />
+      <module name="mobiliz-fleet-service" options="-parameters" />
       <module name="mobiliz-gateway-server" options="-parameters" />
       <module name="mobiliz-vehicle-service" options="-parameters" />
     </option>
