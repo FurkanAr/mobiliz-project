@@ -1,10 +1,7 @@
 package com.mobiliz.controller.advice;
 
 import com.mobiliz.exception.Permission.UserHasNotPermissionException;
-import com.mobiliz.exception.companyGroup.CompanyGroupNameInUseException;
-import com.mobiliz.exception.companyGroup.CompanyGroupAndCompanyDistrictGroupNotMatchException;
-import com.mobiliz.exception.companyGroup.CompanyGroupIdAndAdminIdNotMatchedException;
-import com.mobiliz.exception.companyGroup.CompanyGroupNotExistException;
+import com.mobiliz.exception.companyGroup.*;
 import com.mobiliz.exception.response.ExceptionResponse;
 import com.mobiliz.exception.response.ExceptionValidatorResponse;
 import org.springframework.http.HttpStatus;
@@ -69,6 +66,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CompanyGroupNameInUseException.class)
     public ResponseEntity<ExceptionResponse> handle(CompanyGroupNameInUseException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .ok(new ExceptionResponse(exception.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getServletPath()));
+    }
+    @ExceptionHandler(CompanyGroupVehiclesInUseException.class)
+    public ResponseEntity<ExceptionResponse> handle(CompanyGroupVehiclesInUseException exception, HttpServletRequest request) {
         return ResponseEntity
                 .ok(new ExceptionResponse(exception.getMessage(),
                         HttpStatus.BAD_REQUEST.value(),

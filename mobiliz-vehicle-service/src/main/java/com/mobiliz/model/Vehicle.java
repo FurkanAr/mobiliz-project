@@ -50,6 +50,8 @@ public class Vehicle {
     private String firstName;
     @Column(name = "sur_name")
     private String surName;
+    @OneToOne(mappedBy = "vehicle", cascade = CascadeType.ALL)
+    private VehicleRecord vehicleRecord;
 
     public Vehicle() {
     }
@@ -212,6 +214,14 @@ public class Vehicle {
 
     public void setCompanyGroupName(String companyGroupName) {
         this.companyGroupName = companyGroupName;
+    }
+
+    public VehicleRecord getVehicleRecord() {
+        return vehicleRecord;
+    }
+
+    public void setVehicleRecord(VehicleRecord vehicleRecord) {
+        this.vehicleRecord = vehicleRecord;
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 public interface CompanyGroupRepository extends JpaRepository<CompanyGroup, Long> {
-    List<CompanyGroup> findAllByCompanyDistrictGroupId(Long id);
+    Optional<List<CompanyGroup>> findAllByCompanyDistrictGroupId(Long id);
 
     Optional<List<CompanyGroup>> findAllByCompanyId(Long id);
 
@@ -30,4 +30,6 @@ public interface CompanyGroupRepository extends JpaRepository<CompanyGroup, Long
             @Param("companyId") Long companyId,
             @Param("fleetId") Long fleetId,
             @Param("districtGroupId") Long districtGroupId);
+
+    Optional<CompanyGroup> findByUserId(Long userId);
 }

@@ -1,5 +1,7 @@
 package com.mobiliz.controller;
 
+import com.mobiliz.client.request.UserCompanyDistrictGroupSaveRequest;
+import com.mobiliz.client.response.VehicleResponseStatus;
 import com.mobiliz.request.CompanyDistrictGroupRequest;
 import com.mobiliz.request.CompanyDistrictGroupUpdateRequest;
 import com.mobiliz.response.CompanyDistrictGroupResponse;
@@ -78,5 +80,14 @@ public class CompanyDistrictGroupController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/{districtGroupId}")
+    public ResponseEntity<VehicleResponseStatus> saveCompanyDistrictGroupUser(@RequestHeader("Authorization") String header,
+                                                                              @PathVariable Long districtGroupId,
+                                                                              @RequestBody UserCompanyDistrictGroupSaveRequest request){
+        VehicleResponseStatus status = companyDistrictGroupService
+                .saveCompanyDistrictGroupUser(header, districtGroupId, request);
+        return new ResponseEntity<>(status, HttpStatus.CREATED);
+
+    }
 
 }

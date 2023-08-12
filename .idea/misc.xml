@@ -11,6 +11,7 @@
         <option value="$PROJECT_DIR$/mobiliz-fleet-service/pom.xml" />
         <option value="$PROJECT_DIR$/mobiliz-district-group-service/pom.xml" />
         <option value="$PROJECT_DIR$/mobiliz-company-group-service/pom.xml" />
+        <option value="$PROJECT_DIR$/mobiliz-user-vehicle-registration-service/pom.xml" />
       </list>
     </option>
   </component>

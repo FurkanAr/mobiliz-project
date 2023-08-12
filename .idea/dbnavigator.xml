@@ -25,8 +25,11 @@
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
     <open-files>
+      <object connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" object-ref="schemas/public/tables/company" />
       <object connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" object-ref="schemas/public/tables/vehicle" />
+      <object connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" object-ref="schemas/public/tables/company_district_group" />
       <object connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" object-ref="schemas/public/tables/company_group" />
+      <object connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" object-ref="schemas/public/tables/company_fleet_group" />
     </open-files>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
@@ -42,6 +45,7 @@
     <filter-actions connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" dataset="public.company_group" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" dataset="public.vehicle" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" dataset="public.company" active-filter-id="EMPTY_FILTER" />
+    <filter-actions connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" dataset="public.vehicle_record" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" dataset="public.company_district_group" active-filter-id="EMPTY_FILTER" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">

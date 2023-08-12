@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,7 +38,9 @@ public class SecurityConfig {
                 .and()
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
-                .antMatchers("/api/districtgroups/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/districtgroups/**").hasAuthority("STANDARD")
+                .antMatchers("/api/districtgroups").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/districtgroups/**").hasAuthority("ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()

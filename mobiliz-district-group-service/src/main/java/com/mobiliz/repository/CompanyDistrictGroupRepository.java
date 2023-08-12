@@ -31,6 +31,5 @@ public interface CompanyDistrictGroupRepository extends JpaRepository<CompanyDis
             @Param("id") Long id, @Param("companyId") Long companyId,
             @Param("fleetId") Long fleetId);
 
-
-
+    Optional<CompanyDistrictGroup> findByUserId(Long userId);
 }

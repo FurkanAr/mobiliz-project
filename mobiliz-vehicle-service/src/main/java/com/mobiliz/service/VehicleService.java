@@ -24,37 +24,20 @@ import java.util.Optional;
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
-    private final JwtTokenService jwtTokenService;
     private final VehicleConverter vehicleConverter;
     private final CompanyGroupClient companyGroupClient;
     private final CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient;
+    private final JwtTokenService jwtTokenService;
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    public VehicleService(VehicleRepository vehicleRepository, JwtTokenService jwtTokenService, VehicleConverter vehicleConverter, CompanyGroupClient companyGroupClient, CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient) {
+    public VehicleService(VehicleRepository vehicleRepository, VehicleConverter vehicleConverter, CompanyGroupClient companyGroupClient, CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient, JwtTokenService jwtTokenService) {
         this.vehicleRepository = vehicleRepository;
-        this.jwtTokenService = jwtTokenService;
         this.vehicleConverter = vehicleConverter;
         this.companyGroupClient = companyGroupClient;
         this.companyDistrictGroupServiceClient = companyDistrictGroupServiceClient;
+        this.jwtTokenService = jwtTokenService;
     }
 
-    private static void checkCompanyGroupResponse(Long companyId, CompanyGroupResponse companyGroupResponse) {
-        if (!companyId.equals(companyGroupResponse.getCompanyId())) {
-            throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
-        }
-    }
-
-    private static void checkCompanyDistrictGroupResponse(Long companyId, Vehicle vehicle) {
-        if (!companyId.equals(vehicle.getCompanyId())) {
-            throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
-        }
-    }
-
-    private static void checkCompanyDistrictGroupResponse(Long companyId, CompanyDistrictGroupResponse companyDistrictGroupResponse) {
-        if (!companyId.equals(companyDistrictGroupResponse.getCompanyId())) {
-            throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
-        }
-    }
 
     public VehicleResponse createVehicle(String header, Long fleetId,
                                          Long districtGroupId, Optional<Long> companyGroupId,
@@ -127,14 +110,54 @@ public class VehicleService {
         return vehicleConverter.convert(vehicles);
     }
 
-    private Long findCompanyIdByHeaderToken(String header) {
+
+
+    private static void checkCompanyGroupResponse(Long companyId, CompanyGroupResponse companyGroupResponse) {
+        if (!companyId.equals(companyGroupResponse.getCompanyId())) {
+            throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
+        }
+    }
+
+    private static void checkCompanyDistrictGroupResponse(Long companyId, Vehicle vehicle) {
+        if (!companyId.equals(vehicle.getCompanyId())) {
+            throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
+        }
+    }
+
+    private static void checkCompanyDistrictGroupResponse(Long companyId, CompanyDistrictGroupResponse companyDistrictGroupResponse) {
+        if (!companyId.equals(companyDistrictGroupResponse.getCompanyId())) {
+            throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
+        }
+    }
+
+    public  Long findCompanyIdByHeaderToken(String header) {
         String token = header.substring(7);
         return Long.valueOf(jwtTokenService.getClaims(token).get("companyId").toString());
     }
 
-    private String findCompanyNameByHeaderToken(String header) {
+    public Long findUserIdByHeaderToken(String header) {
+        String token = header.substring(7);
+        return Long.valueOf(jwtTokenService.getClaims(token).get("userId").toString());
+    }
+
+    public String findUserNameByHeaderToken(String header) {
+        String token = header.substring(7);
+        return jwtTokenService.getClaims(token).get("name").toString();
+    }
+
+    public String findUserSurNameByHeaderToken(String header) {
+        String token = header.substring(7);
+        return jwtTokenService.getClaims(token).get("surname").toString();
+    }
+
+    public String findCompanyNameByHeaderToken(String header) {
         String token = header.substring(7);
         return jwtTokenService.getClaims(token).get("companyName").toString();
+    }
+
+    public String findUserRoleByHeaderToken(String header) {
+        String token = header.substring(7);
+        return jwtTokenService.getClaims(token).get("role").toString();
     }
 
 

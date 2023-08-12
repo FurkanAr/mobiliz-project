@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="mobiliz-company-group-service" />
+        <module name="mobiliz-user-vehicle-registration-service" />
         <module name="mobiliz-vehicle-service" />
         <module name="mobiliz-auth-server" />
         <module name="mobiliz-fleet-service" />
@@ -24,6 +25,8 @@
       <module name="mobiliz-eureka-server" target="11" />
       <module name="mobiliz-fleet-service" target="11" />
       <module name="mobiliz-gateway-server" target="11" />
+      <module name="mobiliz-user-vehicle-registration-service" target="11" />
+      <module name="mobiliz-vehicle-authorization-service" target="11" />
       <module name="mobiliz-vehicle-service" target="11" />
     </bytecodeTargetLevel>
   </component>
@@ -36,6 +39,8 @@
       <module name="mobiliz-eureka-server" options="-parameters" />
       <module name="mobiliz-fleet-service" options="-parameters" />
       <module name="mobiliz-gateway-server" options="-parameters" />
+      <module name="mobiliz-user-vehicle-registration-service" options="-parameters" />
+      <module name="mobiliz-vehicle-authorization-service" options="-parameters" />
       <module name="mobiliz-vehicle-service" options="-parameters" />
     </option>
   </component>

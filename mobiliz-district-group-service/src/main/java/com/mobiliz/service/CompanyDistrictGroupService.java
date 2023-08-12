@@ -2,8 +2,10 @@ package com.mobiliz.service;
 
 import com.mobiliz.client.CompanyFleetServiceClient;
 import com.mobiliz.client.CompanyServiceClient;
+import com.mobiliz.client.request.UserCompanyDistrictGroupSaveRequest;
 import com.mobiliz.client.response.CompanyFleetGroupResponse;
 import com.mobiliz.client.response.CompanyResponse;
+import com.mobiliz.client.response.VehicleResponseStatus;
 import com.mobiliz.constant.Constants;
 import com.mobiliz.converter.CompanyDistrictGroupConverter;
 import com.mobiliz.exception.CompanyFleetGroupNotFoundException;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -175,4 +178,22 @@ public class CompanyDistrictGroupService {
     }
 
 
+    public VehicleResponseStatus saveCompanyDistrictGroupUser(String header, Long districtGroupId,
+                                                              UserCompanyDistrictGroupSaveRequest request) {
+
+        CompanyDistrictGroup companyDistrictGroup = getCompanyDistrictGroupById(districtGroupId);
+
+        Optional<CompanyDistrictGroup> companyDistrictGroupFoundByUserId = companyDistrictGroupRepository
+                .findByUserId(request.getUserId());
+
+        if (companyDistrictGroupFoundByUserId.isPresent()){
+            return VehicleResponseStatus.REJECTED;
+        }
+
+        companyDistrictGroup.setUserId(request.getUserId());
+        companyDistrictGroup.setFirstName(request.getUserFirstName());
+        companyDistrictGroup.setSurName(request.getUserSurName());
+        companyDistrictGroupRepository.save(companyDistrictGroup);
+        return VehicleResponseStatus.ADDED;
+    }
 }

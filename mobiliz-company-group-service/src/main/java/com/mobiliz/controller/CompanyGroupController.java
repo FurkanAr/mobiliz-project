@@ -1,5 +1,7 @@
 package com.mobiliz.controller;
 
+import com.mobiliz.client.request.UserCompanyGroupSaveRequest;
+import com.mobiliz.client.response.VehicleResponseStatus;
 import com.mobiliz.request.CompanyGroupRequest;
 import com.mobiliz.request.CompanyGroupUpdateRequest;
 import com.mobiliz.response.CompanyGroupResponse;
@@ -41,7 +43,7 @@ public class CompanyGroupController {
             @PathVariable Long companyGroupId) {
 
         CompanyGroupResponse companyGroupResponse = companyGroupService
-                .getCompanyGroupByDistrictGroupIAndFleetIdAndCompanyGroupId(header, fleetId, districtGroupId,companyGroupId);
+                .getCompanyGroupByDistrictGroupIAndFleetIdAndCompanyGroupId(header, fleetId, districtGroupId, companyGroupId);
         return ResponseEntity.ok(companyGroupResponse);
     }
 
@@ -81,6 +83,26 @@ public class CompanyGroupController {
                 .deleteCompany(header, companyFleetGroupId, companyDistrictGroupId, companyGroupId);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{companyGroupId}")
+    public ResponseEntity<VehicleResponseStatus> saveCompanyGroupUser(@RequestHeader("Authorization") String header,
+                                                                      @PathVariable Long companyGroupId,
+                                                                      @RequestBody UserCompanyGroupSaveRequest userCompanyGroupSaveRequest) {
+        VehicleResponseStatus status = companyGroupService
+                .saveCompanyGroupUser(header, companyGroupId, userCompanyGroupSaveRequest);
+        return new ResponseEntity<>(status, HttpStatus.CREATED);
+
+    }
+
+    @GetMapping("/companydistrictgroups/{districtGroupId}")
+    public ResponseEntity<List<CompanyGroupResponse>> getCompanyGroupsByDistrictGroupId(
+            @RequestHeader("Authorization") String header,
+            @PathVariable Long districtGroupId) {
+
+        List<CompanyGroupResponse> companyGroupResponses = companyGroupService
+                .getCompanyGroupsByDistrictGroupId(header, districtGroupId);
+        return ResponseEntity.ok(companyGroupResponses);
     }
 
 }

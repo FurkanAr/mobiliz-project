@@ -3,6 +3,7 @@ package com.mobiliz.controller.advice;
 import com.mobiliz.exception.Permission.UserHasNotPermissionException;
 import com.mobiliz.exception.response.ExceptionResponse;
 import com.mobiliz.exception.response.ExceptionValidatorResponse;
+import com.mobiliz.exception.vehicle.VehicleNotAvailableException;
 import com.mobiliz.exception.vehicle.VehicleNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,12 @@ public class GlobalExceptionHandler {
     }
 
 
-
+    @ExceptionHandler(VehicleNotAvailableException.class)
+    public ResponseEntity<ExceptionResponse> handle(VehicleNotAvailableException exception, HttpServletRequest request) {
+        return ResponseEntity
+                .ok(new ExceptionResponse(exception.getMessage(),
+                        HttpStatus.BAD_REQUEST.value(),
+                        request.getServletPath()));
+    }
 
 }
