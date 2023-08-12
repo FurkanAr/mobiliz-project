@@ -25,42 +25,34 @@ public class CompanyController {
     }
 
     @GetMapping
-    public ResponseEntity<CompanyResponse> getCompanyByAdminId(@RequestParam Long adminId) {
+    public ResponseEntity<CompanyResponse> getCompany(@RequestHeader("Authorization") String header) {
 
-        CompanyResponse companyResponse = companyService.getCompanyByAdminId(adminId);
-
-        return ResponseEntity.ok(companyResponse);
-    }
-
-    @GetMapping("/{companyId}")
-    public ResponseEntity<CompanyResponse> getCompanyByIdAndAdminId(@RequestParam Long adminId, @PathVariable Long companyId) {
-
-        CompanyResponse companyResponse = companyService.getCompanyById(adminId,companyId);
+        CompanyResponse companyResponse = companyService.getCompanyById(header);
 
         return ResponseEntity.ok(companyResponse);
     }
 
     @PostMapping
-    public ResponseEntity<CompanyResponse> createCompany(@RequestParam Long adminId,
-                                                                @RequestBody @Valid CompanyRequest companyRequest) {
+    public ResponseEntity<CompanyResponse> createCompany(@RequestHeader("Authorization") String header,
+                                                         @RequestBody @Valid CompanyRequest companyRequest) {
 
-        CompanyResponse companyResponse = companyService.createCompany(adminId, companyRequest);
+        CompanyResponse companyResponse = companyService.createCompany(header, companyRequest);
 
         return new ResponseEntity<>(companyResponse, HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<CompanyResponse> updateCompany(@RequestParam Long adminId,
+    public ResponseEntity<CompanyResponse> updateCompany(@RequestHeader("Authorization") String header,
                                                          @RequestBody @Valid CompanyUpdateRequest companyRequest) {
 
-        CompanyResponse companyResponse = companyService.updateCompany(adminId, companyRequest);
+        CompanyResponse companyResponse = companyService.updateCompany(header, companyRequest);
 
         return ResponseEntity.ok(companyResponse);
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteCompanyByAdminId(@RequestParam Long adminId) {
-        String response = companyService.deleteCompanyByAdminId(adminId);
+    public ResponseEntity<String> deleteCompanyByAdminId(@RequestHeader("Authorization") String header) {
+        String response = companyService.deleteCompanyByAdminId(header);
         return ResponseEntity.ok(response);
     }
 

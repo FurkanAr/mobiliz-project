@@ -1,126 +1,91 @@
 package com.mobiliz.startup;
 
+import com.mobiliz.client.AuthServiceClient;
+import com.mobiliz.client.request.TokenRequest;
 import com.mobiliz.request.VehicleRequest;
-import com.mobiliz.request.company.CompanyRequest;
-import com.mobiliz.request.companyDistrictGroup.CompanyDistrictGroupRequest;
-import com.mobiliz.request.companyFleetGroup.CompanyFleetGroupRequest;
-import com.mobiliz.request.companyGroup.CompanyGroupRequest;
 import com.mobiliz.service.*;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class DataLoad {
+    private final AuthServiceClient authServiceClient;
 
     private final VehicleService vehicleService;
-    private final CompanyService companyService;
-    private final CompanyFleetGroupService companyFleetGroupService;
-    private final CompanyDistrictGroupService companyGroupDistrictService;
-    private final CompanyGroupService companyGroupService;
 
 
-    public DataLoad(VehicleService vehicleService, CompanyService companyService,
-                    CompanyFleetGroupService companyFleetGroupService, CompanyDistrictGroupService companyGroupDistrictService, CompanyGroupService companyGroupService) {
+    public DataLoad(AuthServiceClient authServiceClient, VehicleService vehicleService) {
+        this.authServiceClient = authServiceClient;
         this.vehicleService = vehicleService;
-        this.companyService = companyService;
-        this.companyFleetGroupService = companyFleetGroupService;
-        this.companyGroupDistrictService = companyGroupDistrictService;
-        this.companyGroupService = companyGroupService;
+
+    }
+
+    public String setHeader(Long adminId) {
+        TokenRequest tokenRequest = new TokenRequest(adminId);
+        return authServiceClient.token(tokenRequest);
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
 
-        CompanyRequest mobiliz = new CompanyRequest("Mobiliz", 2L, "Ali", "Aktar");
-        CompanyRequest navigator = new CompanyRequest("Navigator", 3L, "Zeynep", "Sever");
-        CompanyRequest tracker = new CompanyRequest("Tracker", 4L, "Can", "Tok");
-
-        List<CompanyRequest> companyRequests = List.of(mobiliz, navigator, tracker);
-        companyRequests.forEach(company -> companyService.createCompany(company.getAdminId(), company));
-
-        CompanyFleetGroupRequest istanbulFiloMobiliz = new CompanyFleetGroupRequest("Istanbul Filo", 1L);
-        CompanyFleetGroupRequest ankaraFiloMobiliz = new CompanyFleetGroupRequest("Ankara Filo", 1L);
-        CompanyFleetGroupRequest bursaFiloMobiliz = new CompanyFleetGroupRequest("Bursa Filo", 1L);
-
-        CompanyFleetGroupRequest istanbulFiloNavigator = new CompanyFleetGroupRequest("Istanbul Filo", 2L);
-        CompanyFleetGroupRequest ankaraFiloNavigator = new CompanyFleetGroupRequest("Ankara Filo", 2L);
-
-        List<CompanyFleetGroupRequest> companyFleetGroupRequests = List.of(istanbulFiloMobiliz, ankaraFiloMobiliz, bursaFiloMobiliz);
-        companyFleetGroupRequests.forEach(company -> companyFleetGroupService.createCompanyFleetGroup(2L, company));
-
-        List<CompanyFleetGroupRequest> companyFleetGroupRequestsNavigator = List.of(istanbulFiloNavigator, ankaraFiloNavigator);
-        companyFleetGroupRequestsNavigator.forEach(company -> companyFleetGroupService.createCompanyFleetGroup(3L, company));
-
-
-        CompanyDistrictGroupRequest avrupaGrubuMobiliz = new CompanyDistrictGroupRequest("Avrupa Grubu", 1L, 1L);
-        CompanyDistrictGroupRequest asyaGrubuMobiliz = new CompanyDistrictGroupRequest("Asya Grubu", 1L, 1L);
-        CompanyDistrictGroupRequest kuzeyAnkaraGrubuMobiliz = new CompanyDistrictGroupRequest("Kuzey Ankara Grubu", 2L, 1L);
-
-        CompanyDistrictGroupRequest avrupaGrubuNavigator = new CompanyDistrictGroupRequest("Avrupa Grubu", 4L, 2L);
-        CompanyDistrictGroupRequest kuzeyAnkaraGrubuNavigator = new CompanyDistrictGroupRequest("Kuzey Ankara Grubu", 5L, 2L);
-
-
-        List<CompanyDistrictGroupRequest> companyDistrictGroupRequests = List.of(avrupaGrubuMobiliz, asyaGrubuMobiliz, kuzeyAnkaraGrubuMobiliz);
-        companyDistrictGroupRequests.forEach(company -> companyGroupDistrictService.createCompanyDistrictGroup(2L, company));
-
-        List<CompanyDistrictGroupRequest> companyDistrictGroupRequestsNavigator = List.of(avrupaGrubuNavigator, kuzeyAnkaraGrubuNavigator);
-        companyDistrictGroupRequestsNavigator.forEach(company -> companyGroupDistrictService.createCompanyDistrictGroup(3L, company));
-
-
-        CompanyGroupRequest avrupaKuryeMobiliz = new CompanyGroupRequest("Avrupa Kurye", 1L, 1L, 1L);
-        CompanyGroupRequest asyaKuryeMobiliz = new CompanyGroupRequest("Asya Kurye", 2L, 1L, 1L);
-        CompanyGroupRequest avrupaKuryeNavigator = new CompanyGroupRequest("Avrupa Kurye", 4L, 2L, 4L);
-
-        List<CompanyGroupRequest> companyGroupRequests = List.of(avrupaKuryeMobiliz, asyaKuryeMobiliz);
-        companyGroupRequests.forEach(company -> companyGroupService.createCompanyGroup( 2L,company));
-
-        List<CompanyGroupRequest> companyGroupRequestsNavigator = List.of(avrupaKuryeNavigator);
-        companyGroupRequestsNavigator.forEach(company -> companyGroupService.createCompanyGroup(3L ,company));
-
-        VehicleRequest bmw3 = new VehicleRequest("34 KVX 943", "BMW", "BMW 3", "2021", 1L, 1L, 1L);
-        VehicleRequest bmw5 = new VehicleRequest("34 GQC 951", "BMW", "BMW 5", "2022", 1L, 1L, 1L);
-        bmw3.setCompanyGroupId(1L);
+        VehicleRequest bmw3 = new VehicleRequest("34 KVX 943", "BMW", "BMW 3", "2021");
         bmw3.setLabel("You have to buy!!");
         bmw3.setVehicleIdentificationNumber("TET0D15646");
-        bmw5.setCompanyGroupId(1L);
+
+        vehicleService.createVehicle(setHeader(2L), 1L, 1L, Optional.of(1L), bmw3);
+
+
+        VehicleRequest bmw5 = new VehicleRequest("34 GQC 951", "BMW", "BMW 5", "2022");
         bmw5.setLabel("You have to buy!!");
         bmw5.setVehicleIdentificationNumber("CCZD15646");
+        vehicleService.createVehicle(setHeader(2L), 1L, 1L, Optional.of(1L), bmw5);
 
-        VehicleRequest mercedesC = new VehicleRequest("34 TXV 258", "Mercedes", "Mercedes C", "2023", 1L, 1L, 1L);
+
+        VehicleRequest mercedesC = new VehicleRequest("34 TXV 258", "Mercedes", "Mercedes C", "2023");
         mercedesC.setLabel("You have to buy!!");
         mercedesC.setVehicleIdentificationNumber("A0D15646");
+        vehicleService.createVehicle(setHeader(2L), 1L, 1L, Optional.empty(), mercedesC);
 
-        VehicleRequest mercedesCLS = new VehicleRequest("34 RWA 946", "Mercedes", "Mercedes CLS", "2022", 1L, 1L, 1L);
-        VehicleRequest mercedesGLA = new VehicleRequest("34 ASD 573", "Mercedes", "Mercedes GLA", "2021", 1L, 1L, 1L);
+        VehicleRequest mercedesCLS = new VehicleRequest("34 RWA 946", "Mercedes", "Mercedes CLS", "2022");
 
-        VehicleRequest toyotaCorolla = new VehicleRequest("34 LVO 548", "Toyota", "Toyota Corolla", "2019", 2L, 1L, 1L);
+        vehicleService.createVehicle(setHeader(2L), 1L, 1L, Optional.empty(), mercedesCLS);
+
+
+        VehicleRequest mercedesGLA = new VehicleRequest("34 ASD 573", "Mercedes", "Mercedes GLA", "2021");
+        vehicleService.createVehicle(setHeader(2L), 1L, 1L, Optional.empty(), mercedesGLA);
+
+        VehicleRequest toyotaCorolla = new VehicleRequest("34 LVO 548", "Toyota", "Toyota Corolla", "2019");
         toyotaCorolla.setLabel("You have to buy!!");
         toyotaCorolla.setVehicleIdentificationNumber("CS4515646");
+        vehicleService.createVehicle(setHeader(2L), 1L, 2L, Optional.empty(), toyotaCorolla);
 
-        VehicleRequest hondaCivic = new VehicleRequest("06 LVO 548", "Honda", "Honda Civic", "2019", 3L, 1L, 2L);
+        VehicleRequest hondaCivic = new VehicleRequest("06 LVO 548", "Honda", "Honda Civic", "2019");
+        vehicleService.createVehicle(setHeader(2L), 2L, 3L, Optional.empty(), hondaCivic);
 
-        VehicleRequest mazda3 = new VehicleRequest("06 KRA 282", "Mazda", "Mazda 3", "2014", 3L, 1L, 2L);
+
+        VehicleRequest mazda3 = new VehicleRequest("06 KRA 282", "Mazda", "Mazda 3", "2014");
         mazda3.setLabel("You have to buy!!");
         mazda3.setVehicleIdentificationNumber("DF895A1");
+        vehicleService.createVehicle(setHeader(2L), 2L, 3L, Optional.empty(), mazda3);
 
-        List<VehicleRequest> vehicleRequests = List.of(bmw3, bmw5, mercedesC, mercedesCLS, mercedesGLA, toyotaCorolla, hondaCivic, mazda3);
-        vehicleRequests.forEach(vehicle -> vehicleService.createVehicle(2L,vehicle));
 
-        VehicleRequest bmw4 = new VehicleRequest("34 KVX 943", "BMW", "BMW 4", "2021", 4L, 2L, 4L);
-        VehicleRequest bmw6 = new VehicleRequest("34 GQC 951", "BMW", "BMW 6", "2022", 4L, 2L, 5L);
-        bmw3.setCompanyGroupId(3L);
+        VehicleRequest bmw4 = new VehicleRequest("34 KVX 943", "BMW", "BMW 4", "2021");
         bmw3.setLabel("You have to buy!!");
         bmw3.setVehicleIdentificationNumber("TET0D15646");
-        bmw5.setCompanyGroupId(3L);
-        bmw5.setLabel("You have to buy!!");
-        bmw5.setVehicleIdentificationNumber("CCZD15646");
+
+        vehicleService.createVehicle(setHeader(3L), 4L, 4L, Optional.of(3L), bmw4);
+
+        VehicleRequest bmw6 = new VehicleRequest("34 GQC 951", "BMW", "BMW 6", "2022");
+
+        bmw6.setLabel("You have to buy!!");
+        bmw6.setVehicleIdentificationNumber("CCZD15646");
+        vehicleService.createVehicle(setHeader(3L), 4L, 4L, Optional.of(3L), bmw6);
 
 
-        List<VehicleRequest> vehicleRequestsMavigator = List.of(bmw4, bmw6);
-        vehicleRequestsMavigator.forEach(vehicle -> vehicleService.createVehicle(3L,vehicle));
 
     }
 

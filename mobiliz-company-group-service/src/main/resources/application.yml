@@ -1,0 +1,30 @@
+
+server:
+  port: 9095
+
+spring:
+  application:
+    name: mobiliz-company-group-service
+  main:
+    allow-circular-references: true
+  security:
+    user:
+      password: none
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: create-drop
+    show-sql: true
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: mypassword
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+

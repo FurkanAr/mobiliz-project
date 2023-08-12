@@ -34,19 +34,19 @@ public class DataLoad {
 
 
 
-        CompanyFleetGroupRequest istanbulFiloMobiliz = new CompanyFleetGroupRequest("Istanbul Filo", 1L);
-        CompanyFleetGroupRequest ankaraFiloMobiliz = new CompanyFleetGroupRequest("Ankara Filo", 1L);
-        CompanyFleetGroupRequest bursaFiloMobiliz = new CompanyFleetGroupRequest("Bursa Filo", 1L);
+        CompanyFleetGroupRequest istanbulFiloMobiliz = new CompanyFleetGroupRequest("Istanbul Filo");
+        CompanyFleetGroupRequest ankaraFiloMobiliz = new CompanyFleetGroupRequest("Ankara Filo");
+        CompanyFleetGroupRequest bursaFiloMobiliz = new CompanyFleetGroupRequest("Bursa Filo");
 
-        CompanyFleetGroupRequest istanbulFiloNavigator = new CompanyFleetGroupRequest("Istanbul Filo", 2L);
-        CompanyFleetGroupRequest ankaraFiloNavigator = new CompanyFleetGroupRequest("Ankara Filo", 2L);
+        CompanyFleetGroupRequest istanbulFiloNavigator = new CompanyFleetGroupRequest("Istanbul Filo");
+        CompanyFleetGroupRequest ankaraFiloNavigator = new CompanyFleetGroupRequest("Ankara Filo");
 
         List<CompanyFleetGroupRequest> companyFleetGroupRequestsMobiliz = List.of(istanbulFiloMobiliz, ankaraFiloMobiliz, bursaFiloMobiliz);
 
-        companyFleetGroupRequestsMobiliz.forEach(company -> companyFleetGroupService.createCompanyFleetGroup(setHeader(2L), 2L, company));
+        companyFleetGroupRequestsMobiliz.forEach(company -> companyFleetGroupService.createCompanyFleetGroup(setHeader(2L),  company));
 
         List<CompanyFleetGroupRequest> companyFleetGroupRequestsNavigator = List.of(istanbulFiloNavigator, ankaraFiloNavigator);
-        companyFleetGroupRequestsNavigator.forEach(company -> companyFleetGroupService.createCompanyFleetGroup(setHeader(3L),3L, company));
+        companyFleetGroupRequestsNavigator.forEach(company -> companyFleetGroupService.createCompanyFleetGroup(setHeader(3L), company));
 
 
 

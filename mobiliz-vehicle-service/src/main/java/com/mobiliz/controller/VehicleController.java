@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vehicles")
@@ -25,23 +26,27 @@ public class VehicleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VehicleResponse>> getVehicles(@RequestParam Long adminId) {
-        List<VehicleResponse> vehicleResponses = vehicleService.getCompanyVehicles(adminId);
+    public ResponseEntity<List<VehicleResponse>> getVehicles(@RequestHeader("Authorization") String header) {
+        List<VehicleResponse> vehicleResponses = vehicleService.getCompanyVehicles(header);
         return ResponseEntity.ok(vehicleResponses);
     }
 
     @GetMapping("/{vehicleId}")
-    public ResponseEntity<VehicleResponse> getVehicle(@RequestParam Long adminId , @PathVariable Long vehicleId){
-        VehicleResponse vehicleResponse = vehicleService.getByVehicleId(adminId, vehicleId);
+    public ResponseEntity<VehicleResponse> getVehicle(@RequestHeader("Authorization") String header, @PathVariable Long vehicleId) {
+        VehicleResponse vehicleResponse = vehicleService.getByVehicleId(header, vehicleId);
         return ResponseEntity.ok(vehicleResponse);
     }
 
     @PostMapping
-    public ResponseEntity<VehicleResponse> createNewVehicle(@RequestParam Long adminId, @RequestBody @Valid VehicleRequest vehicleRequest) {
-        VehicleResponse vehicleResponse = vehicleService.createVehicle(adminId, vehicleRequest);
+    public ResponseEntity<VehicleResponse> createNewVehicle(@RequestHeader("Authorization") String header,
+                                                            @RequestParam Long fleetId,
+                                                            @RequestParam Long districtGroupId,
+                                                            @RequestParam Optional<Long> companyGroupId,
+                                                            @RequestBody @Valid VehicleRequest vehicleRequest) {
+        VehicleResponse vehicleResponse = vehicleService.createVehicle(header, fleetId,
+                districtGroupId, companyGroupId, vehicleRequest);
         return new ResponseEntity<>(vehicleResponse, HttpStatus.CREATED);
     }
-
 
 
 }

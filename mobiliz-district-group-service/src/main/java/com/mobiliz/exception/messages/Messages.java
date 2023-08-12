@@ -11,6 +11,8 @@ public class Messages {
 
         public static final String ADMIN_NOT_FOUND = "Admin cant found with given id: ";
         public static final String COMPANY_FLEET_GROUP_ID_AND_ADMIN_ID_NOT_MATCHED = "Company fleet group id didn't matched given admin id: ";
+        public static final String USER_HAS_NO_PERMIT = "You cant access";
+        public static final String FLEET_GROUP_NOT_EXIST = "Company Fleet Group cant found with id: ";
     }
 
 

@@ -12,6 +12,5 @@ public interface CompanyFleetServiceClient {
 
     @GetMapping(value = "/fleets/{fleetId}")
     public CompanyFleetGroupResponse getCompanyFleetById(@RequestHeader("Authorization") String header,
-                                                         @RequestParam Long adminId,
                                                          @PathVariable Long fleetId);
 }

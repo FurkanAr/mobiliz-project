@@ -3,6 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/mobiliz-auth-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mobiliz-auth-server/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mobiliz-company-group-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mobiliz-company-group-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mobiliz-company-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mobiliz-company-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mobiliz-district-group-service/src/main/java" charset="UTF-8" />

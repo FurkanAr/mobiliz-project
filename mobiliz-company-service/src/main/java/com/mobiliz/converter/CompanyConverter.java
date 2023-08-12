@@ -19,9 +19,6 @@ public class CompanyConverter {
     public Company convert(CompanyRequest companyRequest){
         Company company = new Company();
         company.setName(companyRequest.getName());
-        company.setAdminId(companyRequest.getAdminId());
-        company.setAdminName(companyRequest.getAdminName());
-        company.setAdminSurname(companyRequest.getAdminSurname());
         return company;
     }
 

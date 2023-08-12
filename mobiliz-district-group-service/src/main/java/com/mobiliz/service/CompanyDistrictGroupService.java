@@ -6,13 +6,16 @@ import com.mobiliz.client.response.CompanyFleetGroupResponse;
 import com.mobiliz.client.response.CompanyResponse;
 import com.mobiliz.constant.Constants;
 import com.mobiliz.converter.CompanyDistrictGroupConverter;
+import com.mobiliz.exception.CompanyFleetGroupNotFoundException;
 import com.mobiliz.exception.companyDistrictGroup.*;
 import com.mobiliz.exception.messages.Messages;
+import com.mobiliz.exception.permission.UserHasNotPermissionException;
 import com.mobiliz.model.CompanyDistrictGroup;
 import com.mobiliz.repository.CompanyDistrictGroupRepository;
 import com.mobiliz.request.CompanyDistrictGroupRequest;
 import com.mobiliz.request.CompanyDistrictGroupUpdateRequest;
 import com.mobiliz.response.CompanyDistrictGroupResponse;
+import com.mobiliz.security.JwtTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,55 +27,73 @@ public class CompanyDistrictGroupService {
 
     private final CompanyDistrictGroupRepository companyDistrictGroupRepository;
     private final CompanyFleetServiceClient companyFleetServiceClient;
-    private final CompanyServiceClient companyServiceClient;
     private final CompanyDistrictGroupConverter companyDistrictGroupConverter;
+    private final JwtTokenService jwtTokenService;
 
-    public CompanyDistrictGroupService(CompanyDistrictGroupRepository companyDistrictGroupRepository, CompanyFleetServiceClient companyFleetServiceClient, CompanyServiceClient companyServiceClient, CompanyDistrictGroupConverter companyDistrictGroupConverter) {
+    public CompanyDistrictGroupService(CompanyDistrictGroupRepository companyDistrictGroupRepository, CompanyFleetServiceClient companyFleetServiceClient, CompanyDistrictGroupConverter companyDistrictGroupConverter, JwtTokenService jwtTokenService) {
         this.companyDistrictGroupRepository = companyDistrictGroupRepository;
         this.companyFleetServiceClient = companyFleetServiceClient;
-        this.companyServiceClient = companyServiceClient;
         this.companyDistrictGroupConverter = companyDistrictGroupConverter;
+        this.jwtTokenService = jwtTokenService;
     }
 
-    public List<CompanyDistrictGroupResponse> getCompanyDistrictGroups(String header, Long adminId, Long fleetId) {
-        CompanyResponse companyResponse = companyServiceClient.getCompanyByAdminId(header, adminId);
+    public List<CompanyDistrictGroupResponse> getCompanyDistrictGroupsByFleetId(String header, Long fleetId) {
+        Long companyId = findCompanyIdByHeaderToken(header);
 
-        checkCompanyResponse(adminId, companyResponse);
+        CompanyFleetGroupResponse companyFleetGroupResponse  =companyFleetServiceClient
+                .getCompanyFleetById(header, fleetId);
 
-        CompanyFleetGroupResponse companyFleetGroupResponse = companyFleetServiceClient.getCompanyFleetById(header, adminId, fleetId);
-
-        checkFleetGroupResponse(adminId, companyResponse, companyFleetGroupResponse);
+        checkFleetGroupResponse(companyId, companyFleetGroupResponse);
 
         List<CompanyDistrictGroup> companyDistrictGroups = companyDistrictGroupRepository
-                .findAllByCompanyIdAndCompanyFleetId(companyFleetGroupResponse.getCompanyId(), fleetId)
+                .findAllByCompanyIdAndCompanyFleetId(companyId, fleetId)
                 .orElseThrow(() ->
-                        new CompanyFleetGroupIdAndCompanyIdNotMatchedException(
-                                Messages.CompanyDistrictGroup.COMPANY_FLEET_GROUP_ID_AND_COMPANY_ID_NOT_MATCHED + fleetId));
+                        new CompanyDistrictGroupNotFoundException(
+                                Messages.CompanyDistrictGroup.NOT_EXISTS + companyId));
 
         return companyDistrictGroupConverter.convert(companyDistrictGroups);
     }
 
+    public CompanyDistrictGroupResponse getCompanyDistrictGroupsByFleetIdAndDistrictId(
+            String header, Long fleetId, Long districtGroupId) {
+
+        Long companyId = findCompanyIdByHeaderToken(header);
+
+
+        CompanyFleetGroupResponse companyFleetGroupResponse  =companyFleetServiceClient
+                .getCompanyFleetById(header, fleetId);
+
+        checkFleetGroupResponse(companyId, companyFleetGroupResponse);
+
+        CompanyDistrictGroup companyDistrictGroup = companyDistrictGroupRepository
+                .findByIdAndCompanyIdAndCompanyFleetId(districtGroupId, companyId, fleetId)
+                .orElseThrow(() ->
+                        new CompanyDistrictGroupNotFoundException(
+                                Messages.CompanyDistrictGroup.NOT_EXISTS + companyId));
+
+        return companyDistrictGroupConverter.convert(companyDistrictGroup);
+
+    }
 
 
     @Transactional
-    public CompanyDistrictGroupResponse createCompanyDistrictGroup(String header, Long adminId,
-                                                                   Long fleetId,
+    public CompanyDistrictGroupResponse createCompanyDistrictGroup(String header, Long fleetId,
                                                                    CompanyDistrictGroupRequest companyDistrictGroupRequest) {
-        CompanyResponse companyResponse = companyServiceClient.getCompanyByAdminId(header, adminId);
+        Long companyId = findCompanyIdByHeaderToken(header);
+        String companyName = findCompanyNameByHeaderToken(header);
 
-        checkCompanyResponse(adminId, companyResponse);
+        CompanyFleetGroupResponse companyFleetGroupResponse  =companyFleetServiceClient
+                .getCompanyFleetById(header, fleetId);
 
-        CompanyFleetGroupResponse companyFleetGroupResponse = companyFleetServiceClient
-                .getCompanyFleetById(header, adminId, fleetId);
+        checkFleetGroupResponse(companyId, companyFleetGroupResponse);
 
-        checkFleetGroupResponse(adminId, companyResponse, companyFleetGroupResponse);
+        checkNameAvailable(companyId ,companyDistrictGroupRequest.getName());
 
-        checkNameAvailable(companyFleetGroupResponse.getCompanyId(), companyDistrictGroupRequest.getName());
+        CompanyDistrictGroup companyDistrictGroup = companyDistrictGroupConverter
+                .convert(companyDistrictGroupRequest);
 
-        CompanyDistrictGroup companyDistrictGroup = companyDistrictGroupConverter.convert(companyDistrictGroupRequest);
-
-        companyDistrictGroup.setCompanyId(companyFleetGroupResponse.getCompanyId());
-        companyDistrictGroup.setCompanyName(companyFleetGroupResponse.getCompanyName());
+        companyDistrictGroup.setCompanyId(companyId);
+        companyDistrictGroup.setCompanyName(companyName);
         companyDistrictGroup.setCompanyFleetId(companyFleetGroupResponse.getId());
         companyDistrictGroup.setCompanyFleetName(companyFleetGroupResponse.getName());
 
@@ -81,54 +102,38 @@ public class CompanyDistrictGroupService {
 
 
     @Transactional
-    public CompanyDistrictGroupResponse updateCompanyDistrictGroup(String header, Long adminId,
+    public CompanyDistrictGroupResponse updateCompanyDistrictGroup(String header,
                                                                    Long companyFleetGroupId,
                                                                    Long companyDistrictGroupId,
                                                                    CompanyDistrictGroupUpdateRequest companyDistrictGroupUpdateRequest) {
-        CompanyResponse companyResponse = companyServiceClient.getCompanyByAdminId(header, adminId);
-        checkCompanyResponse(adminId, companyResponse);
+        Long companyId = findCompanyIdByHeaderToken(header);
 
+        CompanyDistrictGroup companyDistrictGroup = companyDistrictGroupRepository
+                .findByIdAndCompanyIdAndCompanyFleetId(companyDistrictGroupId, companyId, companyFleetGroupId)
+                .orElseThrow(() ->
+                        new CompanyDistrictGroupNotFoundException(
+                                Messages.CompanyDistrictGroup.NOT_EXISTS + companyId));
 
-        CompanyFleetGroupResponse companyFleetGroupResponse = companyFleetServiceClient
-                .getCompanyFleetById(header, adminId, companyFleetGroupId);
+        checkNameAvailable(companyId, companyDistrictGroupUpdateRequest.getName());
 
-        checkFleetGroupResponse(adminId, companyResponse, companyFleetGroupResponse);
-
-        CompanyDistrictGroup companyDistrictGroupFoundById = getCompanyDistrictGroupById(companyDistrictGroupId);
-
-        if (!companyFleetGroupResponse.getCompanyId().equals(companyDistrictGroupFoundById.getCompanyId())) {
-            throw new CompanyDistrictGroupIdAndAdminIdNotMatchedException(
-                    Messages.CompanyDistrictGroup.COMPANY_DISTRICT_GROUP_ID_AND_ADMIN_ID_NOT_MATCHED + adminId);
-        }
-        checkNameAvailable(companyFleetGroupResponse.getCompanyId(), companyDistrictGroupUpdateRequest.getName());
-
-        CompanyDistrictGroup companyDistrictGroup = companyDistrictGroupConverter
-                .update(companyDistrictGroupFoundById, companyDistrictGroupUpdateRequest);
+        companyDistrictGroup = companyDistrictGroupConverter
+                .update(companyDistrictGroup, companyDistrictGroupUpdateRequest);
 
         return companyDistrictGroupConverter.convert(companyDistrictGroupRepository.save(companyDistrictGroup));
     }
 
     @Transactional
-    public String deleteCompanyFleetGroup(String header, Long adminId,
-                                          Long companyFleetGroupId, Long companyDistrictGroupId) {
+    public String deleteCompanyFleetGroup(String header, Long companyFleetGroupId, Long companyDistrictGroupId) {
 
-        CompanyResponse companyResponse = companyServiceClient.getCompanyByAdminId(header, adminId);
+        Long companyId = findCompanyIdByHeaderToken(header);
 
-        checkCompanyResponse(adminId, companyResponse);
+        CompanyDistrictGroup companyDistrictGroup = companyDistrictGroupRepository
+                .findByIdAndCompanyIdAndCompanyFleetId(companyDistrictGroupId, companyId, companyFleetGroupId)
+                .orElseThrow(() ->
+                        new CompanyDistrictGroupNotFoundException(
+                                Messages.CompanyDistrictGroup.NOT_EXISTS + companyId));
 
-        CompanyFleetGroupResponse companyFleetGroupResponse = companyFleetServiceClient
-                .getCompanyFleetById(header, adminId, companyFleetGroupId);
-
-        checkFleetGroupResponse(adminId, companyResponse, companyFleetGroupResponse);
-
-        CompanyDistrictGroup companyDistrictGroupFoundById = getCompanyDistrictGroupById(companyDistrictGroupId);
-
-        if (!companyFleetGroupResponse.getCompanyId().equals(companyDistrictGroupFoundById.getCompanyId())) {
-            throw new CompanyDistrictGroupIdAndAdminIdNotMatchedException(
-                    Messages.CompanyDistrictGroup.COMPANY_DISTRICT_GROUP_ID_AND_ADMIN_ID_NOT_MATCHED + adminId);
-        }
-
-        companyDistrictGroupRepository.delete(companyDistrictGroupFoundById);
+        companyDistrictGroupRepository.delete(companyDistrictGroup);
 
         return Constants.COMPANY_DISTRICT_GROUP_DELETED;
     }
@@ -147,10 +152,9 @@ public class CompanyDistrictGroupService {
 
     }
 
-    private static void checkFleetGroupResponse(Long adminId, CompanyResponse companyResponse, CompanyFleetGroupResponse companyFleetGroupResponse) {
-        if (!companyResponse.getId().equals(companyFleetGroupResponse.getCompanyId())) {
-            throw new CompanyFleetGroupIdAndAdminIdNotMatchedException(
-                    Messages.CompanyDistrictGroup.COMPANY_FLEET_GROUP_ID_AND_ADMIN_ID_NOT_MATCHED + adminId);
+    private static void checkFleetGroupResponse(Long companyId, CompanyFleetGroupResponse companyFleetGroupResponse) {
+        if (!companyId.equals(companyFleetGroupResponse.getCompanyId())) {
+            throw new UserHasNotPermissionException(Messages.CompanyDistrictGroup.USER_HAS_NO_PERMIT);
         }
     }
 
@@ -158,6 +162,16 @@ public class CompanyDistrictGroupService {
         if (companyResponse.getId() == null) {
             throw new AdminNotFoundException(Messages.CompanyDistrictGroup.ADMIN_NOT_FOUND + adminId);
         }
+    }
+
+    private Long findCompanyIdByHeaderToken(String header){
+        String token = header.substring(7);
+        return Long.valueOf(jwtTokenService.getClaims(token).get("companyId").toString());
+    }
+
+    private String findCompanyNameByHeaderToken(String header){
+        String token = header.substring(7);
+        return jwtTokenService.getClaims(token).get("companyName").toString();
     }
 
 

@@ -1,6 +1,5 @@
 package com.mobiliz.repository;
 
-import com.mobiliz.model.CompanyGroup;
 import com.mobiliz.model.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,7 +18,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     Optional<List<Vehicle>> findAllByCompanyId(Long id);
 
     @Query(value = "SElECT * FROM Vehicle WHERE id = :id AND company_id = :companyId", nativeQuery = true)
-    Vehicle findByIdAndCompanyId(@Param("id") Long id,
+    Optional<Vehicle> findByIdAndCompanyId(@Param("id") Long id,
                                                   @Param("companyId") Long companyId);
 
 }

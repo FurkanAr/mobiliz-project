@@ -28,30 +28,22 @@ public class Vehicle {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private VehicleStatus status;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-    })
-    @JoinColumn(name = "company_group_id")
-    private CompanyGroup companyGroup;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-    })
-    @JoinColumn(name = "company_district_group_id")
-    private CompanyDistrictGroup companyDistrictGroup;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-    })
-    @JoinColumn(name = "company_fleet_group_id")
-    private CompanyFleetGroup companyFleetGroup;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.REFRESH,
-    })
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @Column(name = "company_id")
+    private Long companyId;
+    @Column(name = "company_name")
+    private String companyName;
+    @Column(name = "company_fleet_id")
+    private Long companyFleetId;
+    @Column(name = "company_fleet_name")
+    private String companyFleetName;
+    @Column(name = "company_district_group_id")
+    private Long companyDistrictGroupId;
+    @Column(name = "company_district_group_name")
+    private String companyDistrictGroupName;
+    @Column(name = "company_group_id")
+    private Long companyGroupId;
+    @Column(name = "company_group_name")
+    private String companyGroupName;
     @Column(name = "user_id")
     private Long userId;
     @Column(name = "first_name")
@@ -158,36 +150,68 @@ public class Vehicle {
         this.status = status;
     }
 
-    public CompanyGroup getCompanyGroup() {
-        return companyGroup;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setCompanyGroup(CompanyGroup companyGroup) {
-        this.companyGroup = companyGroup;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 
-    public CompanyDistrictGroup getCompanyDistrictGroup() {
-        return companyDistrictGroup;
+    public String getCompanyName() {
+        return companyName;
     }
 
-    public void setCompanyDistrictGroup(CompanyDistrictGroup companyDistrictGroup) {
-        this.companyDistrictGroup = companyDistrictGroup;
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
     }
 
-    public Company getCompany() {
-        return company;
+    public Long getCompanyFleetId() {
+        return companyFleetId;
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
+    public void setCompanyFleetId(Long companyFleetId) {
+        this.companyFleetId = companyFleetId;
     }
 
-    public CompanyFleetGroup getCompanyFleetGroup() {
-        return companyFleetGroup;
+    public String getCompanyFleetName() {
+        return companyFleetName;
     }
 
-    public void setCompanyFleetGroup(CompanyFleetGroup companyFleetGroup) {
-        this.companyFleetGroup = companyFleetGroup;
+    public void setCompanyFleetName(String companyFleetName) {
+        this.companyFleetName = companyFleetName;
+    }
+
+    public Long getCompanyDistrictGroupId() {
+        return companyDistrictGroupId;
+    }
+
+    public void setCompanyDistrictGroupId(Long companyDistrictGroupId) {
+        this.companyDistrictGroupId = companyDistrictGroupId;
+    }
+
+    public String getCompanyDistrictGroupName() {
+        return companyDistrictGroupName;
+    }
+
+    public void setCompanyDistrictGroupName(String companyDistrictGroupName) {
+        this.companyDistrictGroupName = companyDistrictGroupName;
+    }
+
+    public Long getCompanyGroupId() {
+        return companyGroupId;
+    }
+
+    public void setCompanyGroupId(Long companyGroupId) {
+        this.companyGroupId = companyGroupId;
+    }
+
+    public String getCompanyGroupName() {
+        return companyGroupName;
+    }
+
+    public void setCompanyGroupName(String companyGroupName) {
+        this.companyGroupName = companyGroupName;
     }
 
     @Override

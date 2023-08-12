@@ -29,9 +29,12 @@ public class GatewayConfig {
                 .route("company-districtgroup-service", r -> r.path("/api/districtgroups/**")
                         .filters(f -> f.filter(filter))
                         .uri("http://localhost:9094"))
-                .route("vehicle-service", r -> r.path("/api/vehicles/**")
+                .route("company-group-service", r -> r.path("/api/companygroups/**")
                         .filters(f -> f.filter(filter))
                         .uri("http://localhost:9095"))
+                .route("vehicle-service", r -> r.path("/api/vehicles/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("http://localhost:9096"))
                 .build();
     }
 }

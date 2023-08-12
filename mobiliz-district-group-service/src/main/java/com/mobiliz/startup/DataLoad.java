@@ -32,19 +32,21 @@ public class DataLoad {
     public void init() {
 
 
-        CompanyDistrictGroupRequest avrupaGrubuMobiliz = new CompanyDistrictGroupRequest("Avrupa Grubu", 1L, 1L);
-        CompanyDistrictGroupRequest asyaGrubuMobiliz = new CompanyDistrictGroupRequest("Asya Grubu", 1L, 1L);
-        CompanyDistrictGroupRequest kuzeyAnkaraGrubuMobiliz = new CompanyDistrictGroupRequest("Kuzey Ankara Grubu", 2L, 1L);
+        CompanyDistrictGroupRequest avrupaGrubuMobiliz = new CompanyDistrictGroupRequest("Avrupa Grubu");
+        CompanyDistrictGroupRequest asyaGrubuMobiliz = new CompanyDistrictGroupRequest("Asya Grubu");
+        CompanyDistrictGroupRequest kuzeyAnkaraGrubuMobiliz = new CompanyDistrictGroupRequest("Kuzey Ankara Grubu");
 
-        CompanyDistrictGroupRequest avrupaGrubuNavigator = new CompanyDistrictGroupRequest("Avrupa Grubu", 4L, 2L);
-        CompanyDistrictGroupRequest kuzeyAnkaraGrubuNavigator = new CompanyDistrictGroupRequest("Kuzey Ankara Grubu", 5L, 2L);
+        CompanyDistrictGroupRequest avrupaGrubuNavigator = new CompanyDistrictGroupRequest("Avrupa Grubu");
+        CompanyDistrictGroupRequest kuzeyAnkaraGrubuNavigator = new CompanyDistrictGroupRequest("Kuzey Ankara Grubu");
+
+        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(2L), 1L, avrupaGrubuMobiliz);
+        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(2L), 1L, asyaGrubuMobiliz);
+        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(2L), 2L, kuzeyAnkaraGrubuMobiliz);
+
+        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(3L), 4L, avrupaGrubuNavigator);
+        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(3L), 5L, kuzeyAnkaraGrubuNavigator);
 
 
-        List<CompanyDistrictGroupRequest> companyDistrictGroupRequests = List.of(avrupaGrubuMobiliz, asyaGrubuMobiliz, kuzeyAnkaraGrubuMobiliz);
-        companyDistrictGroupRequests.forEach(company -> companyGroupDistrictService.createCompanyDistrictGroup(setHeader(2L), 2L, company.getCompanyFleetGroupId(), company));
-
-        List<CompanyDistrictGroupRequest> companyDistrictGroupRequestsNavigator = List.of(avrupaGrubuNavigator, kuzeyAnkaraGrubuNavigator);
-        companyDistrictGroupRequestsNavigator.forEach(company -> companyGroupDistrictService.createCompanyDistrictGroup(setHeader(3L), 3L, company.getCompanyFleetGroupId(), company));
 
 
     }

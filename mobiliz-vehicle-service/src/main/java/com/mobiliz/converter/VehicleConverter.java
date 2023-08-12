@@ -1,5 +1,6 @@
 package com.mobiliz.converter;
 
+import com.mobiliz.constant.Constants;
 import com.mobiliz.model.Vehicle;
 import com.mobiliz.model.enums.VehicleStatus;
 import com.mobiliz.request.VehicleRequest;
@@ -14,7 +15,6 @@ import java.util.List;
 @Component
 public class VehicleConverter {
 
-    private static final String NO_INFO = "No information";
     Logger logger = LoggerFactory.getLogger(getClass());
 
     public VehicleResponse convert(Vehicle vehicle) {
@@ -24,6 +24,16 @@ public class VehicleConverter {
         vehicleResponse.setBrand(vehicle.getBrand());
         vehicleResponse.setModel(vehicle.getModel());
         vehicleResponse.setModelYear(vehicle.getModelYear());
+        vehicleResponse.setLabel(vehicle.getLabel());
+        vehicleResponse.setVehicleIdentificationNumber(vehicle.getVehicleIdentificationNumber());
+        vehicleResponse.setCompanyId(vehicle.getCompanyId());
+        vehicleResponse.setCompanyName(vehicle.getCompanyName());
+        vehicleResponse.setCompanyFleetGroupId(vehicle.getCompanyFleetId());
+        vehicleResponse.setCompanyFleetGroupName(vehicle.getCompanyFleetName());
+        vehicleResponse.setCompanyDistrictGroupId(vehicle.getCompanyDistrictGroupId());
+        vehicleResponse.setCompanyDistrictGroupName(vehicle.getCompanyDistrictGroupName());
+        vehicleResponse.setCompanyGroupId(vehicle.getCompanyGroupId());
+        vehicleResponse.setCompanyGroupName(vehicle.getCompanyGroupName());
         return vehicleResponse;
     }
 
@@ -34,14 +44,14 @@ public class VehicleConverter {
         if (vehicleRequest.getVehicleIdentificationNumber() != null) {
             vehicle.setVehicleIdentificationNumber(vehicleRequest.getVehicleIdentificationNumber());
         }else{
-            vehicle.setVehicleIdentificationNumber(NO_INFO);
+            vehicle.setVehicleIdentificationNumber(Constants.NO_INFO);
         }
 
         if (vehicleRequest.getLabel() != null) {
             vehicle.setLabel(vehicleRequest.getLabel());
         }
         else{
-            vehicle.setLabel(NO_INFO);
+            vehicle.setLabel(Constants.NO_INFO);
         }
 
         vehicle.setBrand(vehicleRequest.getBrand());

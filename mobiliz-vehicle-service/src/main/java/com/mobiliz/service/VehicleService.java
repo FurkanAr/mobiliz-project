@@ -1,69 +1,106 @@
 package com.mobiliz.service;
 
+import com.mobiliz.client.CompanyDistrictGroupServiceClient;
+import com.mobiliz.client.CompanyGroupClient;
+import com.mobiliz.client.response.CompanyDistrictGroupResponse;
+import com.mobiliz.client.response.CompanyGroupResponse;
 import com.mobiliz.converter.VehicleConverter;
-import com.mobiliz.exception.companyFleetGroup.CompanyIdAndAdminIdNotMatchedException;
+import com.mobiliz.exception.Permission.UserHasNotPermissionException;
 import com.mobiliz.exception.messages.Messages;
 import com.mobiliz.exception.vehicle.VehicleNotFoundException;
-import com.mobiliz.model.*;
+import com.mobiliz.model.Vehicle;
 import com.mobiliz.repository.VehicleRepository;
 import com.mobiliz.request.VehicleRequest;
 import com.mobiliz.response.VehicleResponse;
+import com.mobiliz.security.JwtTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
-    private final CompanyGroupService companyGroupService;
-    private final CompanyDistrictGroupService companyGroupDistrictService;
+    private final JwtTokenService jwtTokenService;
     private final VehicleConverter vehicleConverter;
-    private final CompanyService companyService;
-    private final CompanyFleetGroupService companyFleetGroupService;
-
+    private final CompanyGroupClient companyGroupClient;
+    private final CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient;
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    public VehicleService(VehicleRepository vehicleRepository, CompanyGroupService companyGroupService, CompanyDistrictGroupService companyGroupDistrictService, VehicleConverter vehicleConverter, CompanyService companyService, CompanyFleetGroupService companyFleetGroupService) {
+    public VehicleService(VehicleRepository vehicleRepository, JwtTokenService jwtTokenService, VehicleConverter vehicleConverter, CompanyGroupClient companyGroupClient, CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient) {
         this.vehicleRepository = vehicleRepository;
-        this.companyGroupService = companyGroupService;
-        this.companyGroupDistrictService = companyGroupDistrictService;
+        this.jwtTokenService = jwtTokenService;
         this.vehicleConverter = vehicleConverter;
-        this.companyService = companyService;
-        this.companyFleetGroupService = companyFleetGroupService;
+        this.companyGroupClient = companyGroupClient;
+        this.companyDistrictGroupServiceClient = companyDistrictGroupServiceClient;
     }
 
-    public VehicleResponse createVehicle(Long adminId, VehicleRequest vehicleRequest) {
-        logger.info("createVehicle method started");
-        Company company = companyService.getCompanyById(vehicleRequest.getCompanyId());
-
-        CompanyFleetGroup companyFleetGroup = companyFleetGroupService
-                .getCompanyFleetGroupById(vehicleRequest.getCompanyFleetGroupId());
-
-        CompanyDistrictGroup companyDistrictGroup = companyGroupDistrictService
-                .getCompanyDistrictGroupById(vehicleRequest.getCompanyDistrictGroupId());
-
-
-        checkAdminMatch(adminId, vehicleRequest.getCompanyId());
-        checkAdminMatch(adminId, companyFleetGroup.getCompany().getId());
-        checkAdminMatch(adminId, companyDistrictGroup.getCompany().getId());
-
-
-        if (vehicleRequest.getCompanyGroupId() != null) {
-            CompanyGroup companyGroup = companyGroupService.getCompanyGroupById(vehicleRequest.getCompanyGroupId());
-            checkAdminMatch(adminId, companyGroup.getCompany().getId());
+    private static void checkCompanyGroupResponse(Long companyId, CompanyGroupResponse companyGroupResponse) {
+        if (!companyId.equals(companyGroupResponse.getCompanyId())) {
+            throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
         }
+    }
+
+    private static void checkCompanyDistrictGroupResponse(Long companyId, Vehicle vehicle) {
+        if (!companyId.equals(vehicle.getCompanyId())) {
+            throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
+        }
+    }
+
+    private static void checkCompanyDistrictGroupResponse(Long companyId, CompanyDistrictGroupResponse companyDistrictGroupResponse) {
+        if (!companyId.equals(companyDistrictGroupResponse.getCompanyId())) {
+            throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
+        }
+    }
+
+    public VehicleResponse createVehicle(String header, Long fleetId,
+                                         Long districtGroupId, Optional<Long> companyGroupId,
+                                         VehicleRequest vehicleRequest) {
+        logger.info("createVehicle method started");
+
+        Long companyId = findCompanyIdByHeaderToken(header);
+        String companyName = findCompanyNameByHeaderToken(header);
 
         logger.info("VehicleRequest: {}", vehicleRequest);
 
         Vehicle vehicle = vehicleConverter.convert(vehicleRequest);
 
-        vehicle.setCompany(company);
-        vehicle.setCompanyFleetGroup(companyFleetGroup);
-        vehicle.setCompanyDistrictGroup(companyDistrictGroup);
-        vehicle.setCompanyGroup(companyGroup);
+        if (companyGroupId.isEmpty()) {
+            CompanyDistrictGroupResponse companyDistrictGroupResponse = companyDistrictGroupServiceClient
+                    .getCompanyDistrictGroupsByFleetIdAndDistrictId(header, fleetId, districtGroupId);
+            checkCompanyDistrictGroupResponse(companyId, companyDistrictGroupResponse);
+            vehicle.setCompanyId(companyId);
+            vehicle.setCompanyName(companyName);
+            vehicle.setCompanyFleetId(companyDistrictGroupResponse.getCompanyFleetGroupId());
+            vehicle.setCompanyFleetName(companyDistrictGroupResponse.getCompanyFleetGroupName());
+            vehicle.setCompanyDistrictGroupId(companyDistrictGroupResponse.getId());
+            vehicle.setCompanyDistrictGroupName(companyDistrictGroupResponse.getName());
+
+            vehicle = vehicleRepository.save(vehicle);
+            logger.info("vehicle created: {}", vehicle);
+
+            logger.info("createVehicle method successfully worked");
+            return vehicleConverter.convert(vehicle);
+
+        }
+
+        CompanyGroupResponse companyGroupResponse = companyGroupClient
+                .getCompanyGroupByDistrictGroupIAndFleetIdAndCompanyGroupId(
+                        header, fleetId, districtGroupId, companyGroupId.get());
+
+        checkCompanyGroupResponse(companyId, companyGroupResponse);
+
+        vehicle.setCompanyId(companyId);
+        vehicle.setCompanyName(companyName);
+        vehicle.setCompanyFleetId(companyGroupResponse.getCompanyFleetGroupId());
+        vehicle.setCompanyFleetName(companyGroupResponse.getCompanyFleetGroupName());
+        vehicle.setCompanyDistrictGroupId(companyGroupResponse.getId());
+        vehicle.setCompanyDistrictGroupName(companyGroupResponse.getName());
+        vehicle.setCompanyGroupId(companyGroupResponse.getId());
+        vehicle.setCompanyGroupName(companyGroupResponse.getName());
 
         vehicle = vehicleRepository.save(vehicle);
         logger.info("vehicle created: {}", vehicle);
@@ -72,35 +109,33 @@ public class VehicleService {
         return vehicleConverter.convert(vehicle);
     }
 
-    public VehicleResponse getByVehicleId(Long adminId, Long vehicleId) {
-        Company company = companyService.findCompanyByAdminId(adminId);
-        Vehicle vehicle = vehicleRepository.findByIdAndCompanyId(vehicleId, company.getId());
+    public VehicleResponse getByVehicleId(String header, Long vehicleId) {
+        Long companyId = findCompanyIdByHeaderToken(header);
+        Vehicle vehicle = vehicleRepository.findByIdAndCompanyId(vehicleId, companyId).orElseThrow(
+                () -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS));
+        checkCompanyDistrictGroupResponse(companyId, vehicle);
+
         return vehicleConverter.convert(vehicle);
     }
 
+    public List<VehicleResponse> getCompanyVehicles(String header) {
+        Long companyId = findCompanyIdByHeaderToken(header);
 
-    public List<VehicleResponse> getCompanyVehicles(Long adminId) {
-        Company company = companyService.findCompanyByAdminId(adminId);
-
-        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyId(company.getId()).orElseThrow(()
-                -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_ID + company.getId()));
+        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyId(companyId).orElseThrow(()
+                -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_ID + companyId));
 
         return vehicleConverter.convert(vehicles);
     }
 
-    public Vehicle getVehicleById(Long vehicleId){
-        return vehicleRepository.findById(vehicleId).orElseThrow(()
-                -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS + vehicleId));
+    private Long findCompanyIdByHeaderToken(String header) {
+        String token = header.substring(7);
+        return Long.valueOf(jwtTokenService.getClaims(token).get("companyId").toString());
     }
 
-    public List<Vehicle> getByCompanyGroupId(Long id) {
-        return vehicleRepository.findAllByCompanyGroupId(id);
+    private String findCompanyNameByHeaderToken(String header) {
+        String token = header.substring(7);
+        return jwtTokenService.getClaims(token).get("companyName").toString();
     }
-
-    public List<Vehicle> getCompanyDistrictGroupById(Long id) {
-        return vehicleRepository.findAllByCompanyDistrictGroupId(id);
-    }
-
 
 
 }

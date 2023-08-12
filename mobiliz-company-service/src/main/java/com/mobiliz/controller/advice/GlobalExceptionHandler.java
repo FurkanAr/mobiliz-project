@@ -53,20 +53,5 @@ public class GlobalExceptionHandler {
                         request.getServletPath()));
     }
 
-    @ExceptionHandler(AdminNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handle(AdminNotFoundException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
-
-    @ExceptionHandler(CompanyIdAndAdminIdNotMatchedException.class)
-    public ResponseEntity<ExceptionResponse> handle(CompanyIdAndAdminIdNotMatchedException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
 
 }

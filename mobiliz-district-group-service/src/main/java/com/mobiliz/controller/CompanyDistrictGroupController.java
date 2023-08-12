@@ -25,35 +25,44 @@ public class CompanyDistrictGroupController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CompanyDistrictGroupResponse>> getAllCompanyDistrictGroups(@RequestHeader("Authorization") String header,
-                                                                                          @RequestParam Long adminId,
-                                                                                          @RequestParam Long fleetId) {
+    public ResponseEntity<List<CompanyDistrictGroupResponse>> getCompanyDistrictGroupsByFleetId(
+            @RequestHeader("Authorization") String header, @RequestParam Long fleetId) {
 
         List<CompanyDistrictGroupResponse> companyDistrictGroups = companyDistrictGroupService
-                .getCompanyDistrictGroups(header, adminId, fleetId);
+                .getCompanyDistrictGroupsByFleetId(header, fleetId);
+
+        return ResponseEntity.ok(companyDistrictGroups);
+    }
+
+    @GetMapping("/{districtGroupId}")
+    public ResponseEntity<CompanyDistrictGroupResponse> getCompanyDistrictGroupsByFleetIdAndDistrictId(
+            @RequestHeader("Authorization") String header, @RequestParam Long fleetId, @PathVariable Long districtGroupId) {
+
+       CompanyDistrictGroupResponse companyDistrictGroups = companyDistrictGroupService
+                .getCompanyDistrictGroupsByFleetIdAndDistrictId(header, fleetId, districtGroupId);
 
         return ResponseEntity.ok(companyDistrictGroups);
     }
 
     @PostMapping
-    public ResponseEntity<CompanyDistrictGroupResponse> createCompanyDistrictGroup(@RequestHeader("Authorization") String header,
-                                                                                   @RequestParam Long adminId,
-                                                                                   @RequestParam Long fleetId,
-                                                                                   @RequestBody @Valid CompanyDistrictGroupRequest companyDistrictGroupRequest) {
+    public ResponseEntity<CompanyDistrictGroupResponse> createCompanyDistrictGroup(
+            @RequestHeader("Authorization") String header,
+            @RequestParam Long fleetId,
+            @RequestBody @Valid CompanyDistrictGroupRequest companyDistrictGroupRequest) {
+
         CompanyDistrictGroupResponse companyDistrictGroup = companyDistrictGroupService
-                .createCompanyDistrictGroup(header, adminId, fleetId, companyDistrictGroupRequest);
+                .createCompanyDistrictGroup(header, fleetId, companyDistrictGroupRequest);
 
         return new ResponseEntity<>(companyDistrictGroup, HttpStatus.CREATED);
     }
 
     @PutMapping
     public ResponseEntity<CompanyDistrictGroupResponse> updateCompanyDistrictGroup(@RequestHeader("Authorization") String header,
-                                                                                   @RequestParam Long adminId,
                                                                                    @RequestParam Long companyFleetGroupId,
                                                                                    @RequestParam Long companyDistrictGroupId,
                                                                                    @RequestBody @Valid CompanyDistrictGroupUpdateRequest companyDistrictGroupUpdateRequest) {
         CompanyDistrictGroupResponse companyDistrictGroup = companyDistrictGroupService
-                .updateCompanyDistrictGroup(header, adminId, companyFleetGroupId, companyDistrictGroupId,
+                .updateCompanyDistrictGroup(header, companyFleetGroupId, companyDistrictGroupId,
                         companyDistrictGroupUpdateRequest);
 
         return ResponseEntity.ok(companyDistrictGroup);
@@ -61,11 +70,10 @@ public class CompanyDistrictGroupController {
 
     @DeleteMapping
     public ResponseEntity<String> deleteCompanyDistrictGroup(@RequestHeader("Authorization") String header,
-                                                             @RequestParam Long adminId,
                                                              @RequestParam Long companyFleetGroupId,
                                                              @RequestParam Long companyDistrictGroupId) {
         String response = companyDistrictGroupService
-                .deleteCompanyFleetGroup(header, adminId, companyFleetGroupId, companyDistrictGroupId);
+                .deleteCompanyFleetGroup(header, companyFleetGroupId, companyDistrictGroupId);
 
         return ResponseEntity.ok(response);
     }
