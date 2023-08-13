@@ -11,9 +11,11 @@
         <module name="mobiliz-vehicle-service" />
         <module name="mobiliz-auth-server" />
         <module name="mobiliz-fleet-service" />
+        <module name="mobiliz-user-vehicle-tree-shape-service" />
         <module name="mobiliz-company-service" />
         <module name="mobiliz-eureka-server" />
         <module name="mobiliz-gateway-server" />
+        <module name="mobiliz-user-vehicle-list-shape-service" />
         <module name="mobiliz-district-group-service" />
       </profile>
     </annotationProcessing>
@@ -25,7 +27,9 @@
       <module name="mobiliz-eureka-server" target="11" />
       <module name="mobiliz-fleet-service" target="11" />
       <module name="mobiliz-gateway-server" target="11" />
+      <module name="mobiliz-user-vehicle-list-shape-service" target="11" />
       <module name="mobiliz-user-vehicle-registration-service" target="11" />
+      <module name="mobiliz-user-vehicle-tree-shape-service" target="11" />
       <module name="mobiliz-vehicle-authorization-service" target="11" />
       <module name="mobiliz-vehicle-service" target="11" />
     </bytecodeTargetLevel>
@@ -39,7 +43,9 @@
       <module name="mobiliz-eureka-server" options="-parameters" />
       <module name="mobiliz-fleet-service" options="-parameters" />
       <module name="mobiliz-gateway-server" options="-parameters" />
+      <module name="mobiliz-user-vehicle-list-shape-service" options="-parameters" />
       <module name="mobiliz-user-vehicle-registration-service" options="-parameters" />
+      <module name="mobiliz-user-vehicle-tree-shape-service" options="-parameters" />
       <module name="mobiliz-vehicle-authorization-service" options="-parameters" />
       <module name="mobiliz-vehicle-service" options="-parameters" />
     </option>

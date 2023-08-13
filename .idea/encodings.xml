@@ -15,8 +15,12 @@
     <file url="file://$PROJECT_DIR$/mobiliz-fleet-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mobiliz-gateway-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mobiliz-gateway-server/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mobiliz-user-vehicle-list-shape-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mobiliz-user-vehicle-list-shape-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mobiliz-user-vehicle-registration-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mobiliz-user-vehicle-registration-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mobiliz-user-vehicle-tree-shape-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mobiliz-user-vehicle-tree-shape-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mobiliz-vehicle-authorization-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mobiliz-vehicle-authorization-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mobiliz-vehicle-service/src/main/java" charset="UTF-8" />

@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/uservehicles")
-public class UserVehicleRegistration {
+public class UserVehicleRegistrationController {
 
     private final UserVehicleRegistrationService userVehicleRegistrationService;
 
-    public UserVehicleRegistration(UserVehicleRegistrationService userVehicleRegistrationService) {
+    public UserVehicleRegistrationController(UserVehicleRegistrationService userVehicleRegistrationService) {
         this.userVehicleRegistrationService = userVehicleRegistrationService;
     }
 

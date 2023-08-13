@@ -57,18 +57,12 @@ public class GlobalVehicleService {
     public String addVehicleToUserByVehicleId(String header, Long vehicleId) {
         logger.info("addVehicleToUser method started");
         Long userId = findUserIdByHeaderToken(header);
-        System.out.println("userId: " + userId);
         String userName = findUserNameByHeaderToken(header);
-        System.out.println("userName: " + userName);
         String userSurname = findUserSurNameByHeaderToken(header);
-        System.out.println("userSurname: " + userSurname);
         Long companyId = findCompanyIdByHeaderToken(header);
-        System.out.println("companyId: " + companyId);
         String role = findUserRoleByHeaderToken(header);
 
-        if (Constants.ADMIN.equals(role)) {
-            throw new UserHasNotPermissionException(Messages.Vehicle.ADMIN_CANNOT_IDENTIFY_VEHICLE + userId);
-        }
+        checkUserRole(role, userId);
 
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(
                 () -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS + vehicleId));
@@ -82,15 +76,7 @@ public class GlobalVehicleService {
             throw new VehicleNotAvailableException(Messages.Vehicle.VEHICLE_IN_USE_EXCEPTION + vehicleId);
         }
 
-        vehicle.setUserId(userId);
-        vehicle.setFirstName(userName);
-        vehicle.setSurName(userSurname);
-        vehicle.setStatus(VehicleStatus.IN_USE);
-        Vehicle savedVehicle = vehicleRepository.save(vehicle);
-        logger.info("vehicle : {}", savedVehicle);
-        VehicleRecord vehicleRecord = new VehicleRecord(userId, userName, userSurname);
-        vehicleRecord.setVehicle(savedVehicle);
-        vehicleRecordRepository.save(vehicleRecord);
+        saveVehicleAndVehicleRecord(vehicle, userId, userName, userSurname);
         logger.info("addVehicleToUser method finished");
         return Constants.VEHICLE_IDENTIFIED_TO_USER;
     }
@@ -98,46 +84,23 @@ public class GlobalVehicleService {
     public String addVehicleToUserByCompanyGroupId(String header, Long companyGroupId) {
         logger.info("addVehicleToUser method started");
         Long userId = findUserIdByHeaderToken(header);
-        System.out.println("userId: " + userId);
         String userName = findUserNameByHeaderToken(header);
-        System.out.println("userName: " + userName);
         String userSurname = findUserSurNameByHeaderToken(header);
-        System.out.println("userSurname: " + userSurname);
         Long companyId = findCompanyIdByHeaderToken(header);
-        System.out.println("companyId: " + companyId);
         String role = findUserRoleByHeaderToken(header);
 
-        if (Constants.ADMIN.equals(role)) {
-            throw new UserHasNotPermissionException(Messages.Vehicle.ADMIN_CANNOT_IDENTIFY_VEHICLE + userId);
-        }
+        checkUserRole(role, userId);
 
         List<Vehicle> vehicles = vehicleRepository.findAllByCompanyGroupId(companyGroupId).orElseThrow(
                 () -> new VehicleNotFoundException(Constants.VEHICLE_NOT_FOUND_BY_GIVEN_COMPANY_GROUP_ID + companyGroupId));
 
+        vehicles.forEach(vehicle -> System.out.println("---vehicle inside company group: " + vehicle));
 
-        vehicles.forEach(vehicle -> {
-            if (!vehicle.getCompanyId().equals(companyId)) {
-                throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
-            }
-        });
+        checkPermission(vehicles, companyId);
 
-        vehicles.forEach(vehicle -> {
-            if (!vehicle.getStatus().equals(VehicleStatus.AVAILABLE)) {
-                throw new VehicleNotAvailableException(Messages.Vehicle.VEHICLE_IN_USE_EXCEPTION + vehicle.getId());
-            }
-        });
+        checkVehicleStatus(vehicles);
 
-        vehicles.forEach(vehicle -> {
-            vehicle.setUserId(userId);
-            vehicle.setFirstName(userName);
-            vehicle.setSurName(userSurname);
-            vehicle.setStatus(VehicleStatus.IN_USE);
-            Vehicle savedVehicle = vehicleRepository.save(vehicle);
-            logger.info("vehicle : {}", savedVehicle);
-            VehicleRecord vehicleRecord = new VehicleRecord(userId, userName, userSurname);
-            vehicleRecord.setVehicle(savedVehicle);
-            vehicleRecordRepository.save(vehicleRecord);
-        });
+        saveVehiclesAndVehicleRecords(vehicles, userId, userName, userSurname);
 
         UserCompanyGroupSaveRequest request = new UserCompanyGroupSaveRequest(userId, userName, userSurname);
         VehicleResponseStatus responseStatus = companyGroupClient.saveCompanyGroupUser(header, companyGroupId, request);
@@ -151,53 +114,31 @@ public class GlobalVehicleService {
     public String addVehicleToUserByCompanyDistrictGroupId(String header, Long districtGroupId) {
         logger.info("addVehicleToUser method started");
         Long userId = findUserIdByHeaderToken(header);
-        System.out.println("userId: " + userId);
         String userName = findUserNameByHeaderToken(header);
-        System.out.println("userName: " + userName);
         String userSurname = findUserSurNameByHeaderToken(header);
-        System.out.println("userSurname: " + userSurname);
         Long companyId = findCompanyIdByHeaderToken(header);
-        System.out.println("companyId: " + companyId);
         String role = findUserRoleByHeaderToken(header);
 
-        if (Constants.ADMIN.equals(role)) {
-            throw new UserHasNotPermissionException(Messages.Vehicle.ADMIN_CANNOT_IDENTIFY_VEHICLE + userId);
-        }
+        checkUserRole(role, userId);
 
-        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyDistrictGroupId(districtGroupId).orElseThrow(
-                () -> new VehicleNotFoundException(Constants.VEHICLE_NOT_FOUND_BY_GIVEN_COMPANY_DISTRICT_GROUP_ID + districtGroupId));
+        List<Vehicle> vehicles = vehicleRepository
+                .findAllByCompanyDistrictGroupIdAndStatusAvailable(districtGroupId, VehicleStatus.AVAILABLE.name())
+                .orElseThrow(() ->
+                        new VehicleNotFoundException(Constants.VEHICLE_NOT_FOUND_BY_GIVEN_COMPANY_DISTRICT_GROUP_ID + districtGroupId));
 
+        vehicles.forEach(vehicle -> System.out.println("------vehicle inside company district group: " + vehicle));
 
-        vehicles.forEach(vehicle -> {
-            if (!vehicle.getCompanyId().equals(companyId)) {
-                throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
-            }
-        });
+        checkPermission(vehicles, companyId);
 
-        vehicles.forEach(vehicle -> {
-            if (!vehicle.getStatus().equals(VehicleStatus.AVAILABLE)) {
-                throw new VehicleNotAvailableException(Messages.Vehicle.VEHICLE_IN_USE_EXCEPTION + vehicle.getId());
-            }
-        });
+        checkVehicleStatus(vehicles);
 
-        vehicles.forEach(vehicle -> {
-            vehicle.setUserId(userId);
-            vehicle.setFirstName(userName);
-            vehicle.setSurName(userSurname);
-            vehicle.setStatus(VehicleStatus.IN_USE);
-            Vehicle savedVehicle = vehicleRepository.save(vehicle);
-            logger.info("vehicle : {}", savedVehicle);
-            VehicleRecord vehicleRecord = new VehicleRecord(userId, userName, userSurname);
-            vehicleRecord.setVehicle(savedVehicle);
-            vehicleRecordRepository.save(vehicleRecord);
-        });
+        saveVehiclesAndVehicleRecords(vehicles, userId, userName, userSurname);
 
         List<CompanyGroupResponse> companyGroupResponses = companyGroupClient
                 .getCompanyGroupsByDistrictGroupId(header, districtGroupId);
 
         companyGroupResponses.forEach(companyGroupResponse ->
                 addVehicleToUserByCompanyGroupId(header, companyGroupResponse.getId()));
-
         UserCompanyDistrictGroupSaveRequest districtGroupSaveRequest =
                 new UserCompanyDistrictGroupSaveRequest(userId, userName, userSurname);
 
@@ -210,6 +151,47 @@ public class GlobalVehicleService {
 
         logger.info("addVehicleToUser method finished");
         return Constants.VEHICLES_IDENTIFIED_TO_USER;
+    }
+
+    private void saveVehiclesAndVehicleRecords(List<Vehicle> vehicles, Long userId, String userName, String userSurname) {
+        vehicles.forEach(vehicle -> {
+            saveVehicleAndVehicleRecord(vehicle, userId, userName, userSurname);
+        });
+    }
+
+    private void saveVehicleAndVehicleRecord(Vehicle vehicle, Long userId, String userName, String userSurname) {
+        vehicle.setUserId(userId);
+        vehicle.setFirstName(userName);
+        vehicle.setSurName(userSurname);
+        vehicle.setStatus(VehicleStatus.IN_USE);
+        Vehicle savedVehicle = vehicleRepository.save(vehicle);
+        logger.info("vehicle : {}", savedVehicle);
+        VehicleRecord vehicleRecord = new VehicleRecord(userId, userName, userSurname);
+        vehicleRecord.setVehicle(savedVehicle);
+        vehicleRecordRepository.save(vehicleRecord);
+    }
+
+
+    private void checkUserRole(String role, Long userId) {
+        if (Constants.ADMIN.equals(role)) {
+            throw new UserHasNotPermissionException(Messages.Vehicle.ADMIN_CANNOT_IDENTIFY_VEHICLE + userId);
+        }
+    }
+
+    private void checkPermission(List<Vehicle> vehicles, Long companyId) {
+        vehicles.forEach(vehicle -> {
+            if (!vehicle.getCompanyId().equals(companyId)) {
+                throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
+            }
+        });
+    }
+
+    private void checkVehicleStatus(List<Vehicle> vehicles) {
+        vehicles.forEach(vehicle -> {
+            if (!vehicle.getStatus().equals(VehicleStatus.AVAILABLE)) {
+                throw new VehicleNotAvailableException(Messages.Vehicle.VEHICLE_IN_USE_EXCEPTION + vehicle.getId());
+            }
+        });
     }
 
     private Long findCompanyIdByHeaderToken(String header) {

@@ -10,7 +10,9 @@
       <module fileurl="file://$PROJECT_DIR$/mobiliz-eureka-server/mobiliz-eureka-server.iml" filepath="$PROJECT_DIR$/mobiliz-eureka-server/mobiliz-eureka-server.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobiliz-fleet-service/mobiliz-fleet-service.iml" filepath="$PROJECT_DIR$/mobiliz-fleet-service/mobiliz-fleet-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobiliz-gateway-server/mobiliz-gateway-server.iml" filepath="$PROJECT_DIR$/mobiliz-gateway-server/mobiliz-gateway-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobiliz-user-vehicle-list-shape-service/mobiliz-user-vehicle-list-shape-service.iml" filepath="$PROJECT_DIR$/mobiliz-user-vehicle-list-shape-service/mobiliz-user-vehicle-list-shape-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobiliz-user-vehicle-registration-service/mobiliz-user-vehicle-registration-service.iml" filepath="$PROJECT_DIR$/mobiliz-user-vehicle-registration-service/mobiliz-user-vehicle-registration-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobiliz-user-vehicle-tree-shape-service/mobiliz-user-vehicle-tree-shape-service.iml" filepath="$PROJECT_DIR$/mobiliz-user-vehicle-tree-shape-service/mobiliz-user-vehicle-tree-shape-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobiliz-vehicle-service/mobiliz-vehicle-service.iml" filepath="$PROJECT_DIR$/mobiliz-vehicle-service/mobiliz-vehicle-service.iml" />
     </modules>
   </component>
