@@ -5,6 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = "VehicleServiceClient", url = "http://localhost:9096/api")
 public interface VehicleServiceClient {
@@ -22,6 +23,7 @@ public interface VehicleServiceClient {
     @PostMapping("/global/vehicles/districtgroups/{districtGroupId}")
     public String addVehicleToUserByCompanyDistrictGroupId(
             @RequestHeader("Authorization") String header,
+            @RequestParam Long fleetId,
             @PathVariable Long districtGroupId);
 
 }

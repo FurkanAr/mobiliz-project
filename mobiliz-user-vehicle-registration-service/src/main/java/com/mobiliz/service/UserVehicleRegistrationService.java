@@ -21,7 +21,7 @@ public class UserVehicleRegistrationService {
         return vehicleServiceClient.addVehicleToUserByCompanyGroupId(header, companyGroupId);
     }
 
-    public String addCompanyDistrictGroupVehiclesToUser(String header, Long districtgroupId) {
-        return vehicleServiceClient.addVehicleToUserByCompanyDistrictGroupId(header, districtgroupId);
+    public String addCompanyDistrictGroupVehiclesToUser(String header, Long fleetId, Long districtgroupId) {
+        return vehicleServiceClient.addVehicleToUserByCompanyDistrictGroupId(header, fleetId, districtgroupId);
     }
 }

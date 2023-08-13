@@ -29,6 +29,7 @@ public interface CompanyGroupClient {
     @GetMapping(value = "/companygroups/companydistrictgroups/{districtGroupId}")
     public List<CompanyGroupResponse> getCompanyGroupsByDistrictGroupId(
             @RequestHeader("Authorization") String header,
+            @RequestParam Long fleetId,
             @PathVariable Long districtGroupId
     );
 

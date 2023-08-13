@@ -35,8 +35,9 @@ public class UserVehicleRegistrationController {
     @PostMapping("/districtgroups/{districtgroupId}")
     public ResponseEntity<String> addCompanyDistrictGroupVehiclesToUser(
             @RequestHeader("Authorization") String header,
+            @RequestParam Long fleetId,
             @PathVariable Long districtgroupId) {
-        String response = userVehicleRegistrationService.addCompanyDistrictGroupVehiclesToUser(header, districtgroupId);
+        String response = userVehicleRegistrationService.addCompanyDistrictGroupVehiclesToUser(header,fleetId, districtgroupId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

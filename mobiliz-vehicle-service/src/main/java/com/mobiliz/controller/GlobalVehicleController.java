@@ -1,7 +1,5 @@
 package com.mobiliz.controller;
 
-import com.mobiliz.client.response.VehicleResponseStatus;
-import com.mobiliz.model.enums.VehicleStatus;
 import com.mobiliz.response.VehicleResponse;
 import com.mobiliz.service.GlobalVehicleService;
 import org.springframework.http.HttpStatus;
@@ -31,7 +29,7 @@ public class GlobalVehicleController {
     public ResponseEntity<String> addVehicleToUserByVehicleId(
             @RequestHeader("Authorization") String header,
             @PathVariable Long vehicleId) {
-        String response= globalVehicleService.addVehicleToUserByVehicleId(header, vehicleId);
+        String response = globalVehicleService.addVehicleToUserByVehicleId(header, vehicleId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -39,15 +37,16 @@ public class GlobalVehicleController {
     public ResponseEntity<String> addVehicleToUserByCompanyGroupId(
             @RequestHeader("Authorization") String header,
             @PathVariable Long companyGroupId) {
-        String response= globalVehicleService.addVehicleToUserByCompanyGroupId(header, companyGroupId);
+        String response = globalVehicleService.addVehicleToUserByCompanyGroupId(header, companyGroupId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/districtgroups/{districtGroupId}")
     public ResponseEntity<String> addVehicleToUserByCompanyDistrictGroupId(
             @RequestHeader("Authorization") String header,
+            @RequestParam Long fleetId,
             @PathVariable Long districtGroupId) {
-        String response= globalVehicleService.addVehicleToUserByCompanyDistrictGroupId(header, districtGroupId);
+        String response = globalVehicleService.addVehicleToUserByCompanyDistrictGroupId(header, fleetId, districtGroupId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

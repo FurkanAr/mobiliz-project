@@ -10,7 +10,6 @@ import com.mobiliz.converter.CompanyGroupConverter;
 import com.mobiliz.exception.Permission.UserHasNotPermissionException;
 import com.mobiliz.exception.companyGroup.CompanyGroupNameInUseException;
 import com.mobiliz.exception.companyGroup.CompanyGroupNotExistException;
-import com.mobiliz.exception.companyGroup.CompanyGroupVehiclesInUseException;
 import com.mobiliz.exception.messages.Messages;
 import com.mobiliz.model.CompanyGroup;
 import com.mobiliz.repository.CompanyGroupRepository;
@@ -18,6 +17,8 @@ import com.mobiliz.request.CompanyGroupRequest;
 import com.mobiliz.request.CompanyGroupUpdateRequest;
 import com.mobiliz.response.CompanyGroupResponse;
 import com.mobiliz.security.JwtTokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class CompanyGroupService {
     private final JwtTokenService jwtTokenService;
     private final CompanyFleetServiceClient companyFleetServiceClient;
     private final CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient;
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     public CompanyGroupService(CompanyGroupRepository companyGroupRepository, CompanyGroupConverter companyGroupConverter, JwtTokenService jwtTokenService, CompanyFleetServiceClient companyFleetServiceClient, CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient) {
         this.companyGroupRepository = companyGroupRepository;
@@ -45,6 +47,13 @@ public class CompanyGroupService {
         if (!companyId.equals(companyDistrictGroupResponse.getCompanyId())) {
             throw new UserHasNotPermissionException(Messages.CompanyGroup.USER_HAS_NO_PERMIT);
         }
+    }
+
+    private static CompanyGroup saveCompanyGroupUser(UserCompanyGroupSaveRequest request, CompanyGroup companyGroup) {
+        companyGroup.setUserId(request.getUserId());
+        companyGroup.setFirstName(request.getUserFirstName());
+        companyGroup.setSurName(request.getUserSurName());
+        return companyGroup;
     }
 
     public List<CompanyGroupResponse> getCompanyGroupsByDistrictGroupIdAndFleetId(String header,
@@ -162,29 +171,73 @@ public class CompanyGroupService {
 
     public VehicleResponseStatus saveCompanyGroupUser(String header, Long companyGroupId,
                                                       UserCompanyGroupSaveRequest userCompanyGroupSaveRequest) {
+        System.out.println("saveCompanyGroupUser started");
 
-        CompanyGroup companyGroup = companyGroupRepository.findById(companyGroupId).orElseThrow(
-                () -> new CompanyGroupNotExistException(Messages.CompanyGroup.NOT_EXISTS + companyGroupId));
+        Long companyId = findCompanyIdByHeaderToken(header);
+        Long userId = findUserIdByHeaderToken(header);
+        System.out.println("companyId " + companyId);
+        System.out.println("userId " + userId);
 
-        Optional<CompanyGroup> companyGroupFoundByUserId = companyGroupRepository
-                .findByUserId(userCompanyGroupSaveRequest.getUserId());
+        List<CompanyGroup> companyGroupFoundByCompanyId = companyGroupRepository.findByCompanyId(companyId)
+                .orElseThrow(() -> new CompanyGroupNotExistException(Messages.CompanyGroup.NOT_EXISTS_BY_GIVEN_COMPANY_ID + companyId));
+        logger.info("companyGroupFoundByCompanyId : {}", companyGroupFoundByCompanyId);
 
-        if (companyGroupFoundByUserId.isPresent()) {
-           return VehicleResponseStatus.REJECTED;
+        CompanyGroup companyGroupFoundById = companyGroupRepository.findById(companyGroupId)
+                .orElseThrow(() -> new CompanyGroupNotExistException(Messages.CompanyGroup.NOT_EXISTS + companyGroupId));
+        logger.info("companyGroupFoundById : {}", companyGroupFoundById);
+
+        CompanyGroup companyGroupFoundByIdAndCompanyId = companyGroupRepository
+                .findByIdAndCompanyId(companyGroupId, companyId).orElseThrow(
+                        () -> new CompanyGroupNotExistException(Messages.CompanyGroup.NOT_EXISTS_BY_GIVEN_COMPANY_ID + companyId));
+        logger.info("companyGroupFoundByIdAndCompanyId : {}", companyGroupFoundByIdAndCompanyId);
+        // ASYA 1 AVRUPA 2  MOBİLİZ -1      ASYA- 3 AVRUPA -4 COMPANY -3
+        // ASYA AVRUPA MOBİLİZ              ASYA AVRUPA COMPANY -3 4
+        // ASYA MOBİLİZ                     ASYA MOBİLİZ -  1
+        // ASYA MOBİLİZ
+
+        // user ın company grubu var mı kontrol et
+        Optional<List<CompanyGroup>> companyGroupsFindByUserId = companyGroupRepository.findAllByUserId(userId);
+        // grubu varsa hangi gruba istek atıyor kontrol et
+        if (companyGroupsFindByUserId.isPresent()) {
+
+            for (CompanyGroup companyGroup : companyGroupsFindByUserId.get()) {
+                if (companyGroup.getId().equals(companyGroupId)) {
+                    return VehicleResponseStatus.USER_ALREADY_HAS;
+                } else {
+                    CompanyGroup savedCompany = companyGroupRepository
+                            .save(saveCompanyGroupUser(userCompanyGroupSaveRequest, companyGroupFoundByIdAndCompanyId));
+                    logger.info("Company Group user added : {}", savedCompany);
+                    return VehicleResponseStatus.ADDED;
+                }
+            }
         }
 
-        companyGroup.setUserId(userCompanyGroupSaveRequest.getUserId());
-        companyGroup.setFirstName(userCompanyGroupSaveRequest.getUserFirstName());
-        companyGroup.setSurName(userCompanyGroupSaveRequest.getUserSurName());
-        companyGroupRepository.save(companyGroup);
+        // gruplar aynıysa zaten ekli diye return geç
+        // değilse kaydet
+        CompanyGroup savedCompany = companyGroupRepository
+                .save(saveCompanyGroupUser(userCompanyGroupSaveRequest, companyGroupFoundByIdAndCompanyId));
+        logger.info("Company Group user added : {}", savedCompany);
         return VehicleResponseStatus.ADDED;
     }
 
-    public List<CompanyGroupResponse> getCompanyGroupsByDistrictGroupId(String header, Long districtGroupId) {
+    public List<CompanyGroupResponse> getCompanyGroupsByDistrictGroupId(String header, Long fleetId, Long districtGroupId) {
+        System.out.println("getCompanyGroupsByDistrictGroupId started");
+        Long companyId = findCompanyIdByHeaderToken(header);
 
-        List<CompanyGroup> companyGroups =  companyGroupRepository
-                .findAllByCompanyDistrictGroupId(districtGroupId)
+        List<CompanyGroup> companyGroups = companyGroupRepository
+                .findAllByCompanyIdCompanyDistrictGroupIdAndCompanyFleetId(companyId, districtGroupId, fleetId)
                 .orElseThrow(() -> new CompanyGroupNotExistException(Messages.CompanyGroup.NOT_EXISTS + districtGroupId));
+
+        System.out.println("-------------------------");
+        companyGroups.forEach(c -> System.out.println("getCompanyGroupsByDistrictGroupId companygroups " + c));
+        System.out.println("-------------------------");
+        System.out.println("getCompanyGroupsByDistrictGroupId finished");
+
         return companyGroupConverter.convert(companyGroups);
+    }
+
+    private Long findUserIdByHeaderToken(String header) {
+        String token = header.substring(7);
+        return Long.valueOf(jwtTokenService.getClaims(token).get("userId").toString());
     }
 }

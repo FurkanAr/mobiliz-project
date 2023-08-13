@@ -24,7 +24,10 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" object-ref="schemas/public/tables/company_group" />
+      <object connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" object-ref="schemas/public/tables/vehicle" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="786240d8-fa7e-47c3-a45f-57bb9073846c" dataset="public.company_fleet_group" active-filter-id="EMPTY_FILTER" />
@@ -41,6 +44,9 @@
     <filter-actions connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" dataset="public.company" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" dataset="public.vehicle_record" active-filter-id="EMPTY_FILTER" />
     <filter-actions connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" dataset="public.company_district_group" active-filter-id="EMPTY_FILTER" />
+  </component>
+  <component name="DBNavigator.Project.ExecutionManager">
+    <retain-sticky-names value="false" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />

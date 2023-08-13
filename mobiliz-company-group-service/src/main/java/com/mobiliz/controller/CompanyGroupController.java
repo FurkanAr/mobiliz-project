@@ -92,17 +92,20 @@ public class CompanyGroupController {
         VehicleResponseStatus status = companyGroupService
                 .saveCompanyGroupUser(header, companyGroupId, userCompanyGroupSaveRequest);
         return new ResponseEntity<>(status, HttpStatus.CREATED);
-
     }
+
 
     @GetMapping("/companydistrictgroups/{districtGroupId}")
     public ResponseEntity<List<CompanyGroupResponse>> getCompanyGroupsByDistrictGroupId(
             @RequestHeader("Authorization") String header,
+            @RequestParam Long fleetId,
             @PathVariable Long districtGroupId) {
 
         List<CompanyGroupResponse> companyGroupResponses = companyGroupService
-                .getCompanyGroupsByDistrictGroupId(header, districtGroupId);
+                .getCompanyGroupsByDistrictGroupId(header, fleetId, districtGroupId);
         return ResponseEntity.ok(companyGroupResponses);
     }
+
+
 
 }

@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
                 .antMatchers("/api/vehicles/**").hasAuthority("ADMIN")
-                .antMatchers("/api/global/vehicles/**").permitAll()
+                .antMatchers("/api/global/vehicles/**").hasAuthority("STANDARD")
                 .anyRequest()
                 .authenticated()
                 .and()

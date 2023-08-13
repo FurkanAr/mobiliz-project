@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers(HttpMethod.POST, "/api/districtgroups/**").hasAuthority("STANDARD")
                 .antMatchers("/api/districtgroups").hasAuthority("ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/districtgroups/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/districtgroups/**").hasAnyAuthority("STANDARD", "ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()

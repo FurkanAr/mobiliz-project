@@ -24,6 +24,7 @@ public interface CompanyGroupRepository extends JpaRepository<CompanyGroup, Long
             @Param("companyId") Long companyId,
             @Param("fleetId") Long fleetId,
             @Param("districtGroupId") Long districtGroupId);
+
     @Query(value = "SElECT * FROM Company_Group WHERE id = :id AND  company_id = :companyId AND company_fleet_id = :fleetId  AND company_district_group_id = :districtGroupId", nativeQuery = true)
     Optional<CompanyGroup> findByIdAndCompanyIdAndCompanyFleetIdAndCompanyDistrictGroupId(
             @Param("id") Long id,
@@ -32,4 +33,16 @@ public interface CompanyGroupRepository extends JpaRepository<CompanyGroup, Long
             @Param("districtGroupId") Long districtGroupId);
 
     Optional<CompanyGroup> findByUserId(Long userId);
+
+    @Query(value = "SElECT * FROM Company_Group WHERE company_id = :companyId AND company_fleet_id = :fleetId  AND company_district_group_id = :districtGroupId", nativeQuery = true)
+    Optional<List<CompanyGroup>> findAllByCompanyIdCompanyDistrictGroupIdAndCompanyFleetId(
+            @Param("companyId") Long companyId,
+            @Param("fleetId") Long fleetId,
+            @Param("districtGroupId") Long districtGroupId);
+
+    Optional<CompanyGroup> findByIdAndCompanyId(Long companyGroupId, Long companyId);
+
+    Optional<List<CompanyGroup>> findByCompanyId(Long companyId);
+
+    Optional<List<CompanyGroup>> findAllByUserId(Long userId);
 }
