@@ -5,7 +5,6 @@ import com.mobiliz.converter.CompanyFleetGroupConverter;
 import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupNameInUseException;
 import com.mobiliz.exception.companyFleetGroup.CompanyFleetGroupNotFoundException;
 import com.mobiliz.exception.messages.Messages;
-import com.mobiliz.exception.permission.UserHasNotPermissionException;
 import com.mobiliz.model.CompanyFleetGroup;
 import com.mobiliz.repository.CompanyFleetGroupRepository;
 import com.mobiliz.request.CompanyFleetGroupRequest;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyFleetGroupService {
@@ -30,44 +30,34 @@ public class CompanyFleetGroupService {
         this.jwtTokenService = jwtTokenService;
     }
 
-    public List<CompanyFleetGroupResponse> getCompanyFleetGroups(String header) {
-        Long companyId = findCompanyIdByHeaderToken(header);
+    public CompanyFleetGroupResponse getCompanyFleetById(String header) {
+        Long companyFleetId= findCompanyFleetIdByHeaderToken(header);
+        CompanyFleetGroup companyFleetGroup = getCompanyFleetGroupById(companyFleetId);
+        return companyFleetGroupConverter.convert(companyFleetGroup);
+    }
 
-        List<CompanyFleetGroup> companyFleetGroups = companyFleetGroupRepository.findAllByCompanyId(companyId)
-                .orElseThrow(() ->
-                        new CompanyFleetGroupNotFoundException(Messages.CompanyFleetGroup.NOT_EXISTS
-                                                + companyId));
-
+    public List<CompanyFleetGroupResponse> getCompanyFleetsByCompanyId(String header) {
+        Long companyId= findCompanyIdByHeaderToken(header);
+        List<CompanyFleetGroup> companyFleetGroups = companyFleetGroupRepository.findAllByCompanyId(companyId);
         return companyFleetGroupConverter.convert(companyFleetGroups);
     }
 
     @Transactional
-    public CompanyFleetGroupResponse createCompanyFleetGroup(String header,
-                                                             CompanyFleetGroupRequest companyFleetGroupRequest) {
-
-        Long companyId = findCompanyIdByHeaderToken(header);
-        String companyName = findCompanyNameByHeaderToken(header);
-
+    public void createCompanyFleetGroup(CompanyFleetGroupRequest companyFleetGroupRequest) {
+        Long companyId = companyFleetGroupRequest.getCompanyId();
         checkNameAvailable(companyId ,companyFleetGroupRequest.getName());
-
         CompanyFleetGroup companyFleetGroup = companyFleetGroupConverter.convert(companyFleetGroupRequest);
-        companyFleetGroup.setCompanyId(companyId);
-        companyFleetGroup.setCompanyName(companyName);
-
-        return companyFleetGroupConverter.convert(companyFleetGroupRepository.save(companyFleetGroup));
+        companyFleetGroupRepository.save(companyFleetGroup);
     }
 
     @Transactional
-    public CompanyFleetGroupResponse updateCompanyFleetGroup(String header,Long companyFleetGroupId,
+    public CompanyFleetGroupResponse updateCompanyFleetGroup(String header,
                                                              CompanyFleetUpdateRequest companyFleetUpdateRequest) {
 
+        Long companyFleetId= findCompanyFleetIdByHeaderToken(header);
         Long companyId = findCompanyIdByHeaderToken(header);
 
-        CompanyFleetGroup companyFleetGroupFoundById = getCompanyFleetGroupById(companyFleetGroupId);
-
-        if (!companyId.equals(companyFleetGroupFoundById.getCompanyId())){
-            throw new UserHasNotPermissionException(Messages.CompanyFleetGroup.USER_HAS_NO_PERMIT);
-        }
+        CompanyFleetGroup companyFleetGroupFoundById = getCompanyFleetGroupById(companyFleetId);
 
         checkNameAvailable(companyId, companyFleetUpdateRequest.getName());
 
@@ -77,25 +67,15 @@ public class CompanyFleetGroupService {
         return companyFleetGroupConverter.convert(companyFleetGroupRepository.save(companyFleetGroup));
     }
 
+
     @Transactional
-    public String deleteCompanyFleetGroup(String header, Long companyFleetGroupId) {
-        Long companyId = findCompanyIdByHeaderToken(header);
-        CompanyFleetGroup companyFleetGroupFoundById = getCompanyFleetGroupById(companyFleetGroupId);
-        if (!companyId.equals(companyFleetGroupFoundById.getCompanyId())){
-            throw new UserHasNotPermissionException(Messages.CompanyFleetGroup.USER_HAS_NO_PERMIT);
-        }
+    public String deleteCompanyFleetGroup(String header) {
+        Long companyFleetId= findCompanyFleetIdByHeaderToken(header);
+        CompanyFleetGroup companyFleetGroupFoundById = getCompanyFleetGroupById(companyFleetId);
         companyFleetGroupRepository.delete(companyFleetGroupFoundById);
         return Constants.COMPANY_FLEET_GROUP_DELETED;
     }
 
-    public CompanyFleetGroupResponse getCompanyFleetById(String header, Long fleetId) {
-        Long companyId = findCompanyIdByHeaderToken(header);
-        CompanyFleetGroup companyFleetGroup = getCompanyFleetGroupById(fleetId);
-        if (!companyId.equals(companyFleetGroup.getCompanyId())){
-            throw new UserHasNotPermissionException(Messages.CompanyFleetGroup.USER_HAS_NO_PERMIT);
-        }
-        return companyFleetGroupConverter.convert(companyFleetGroup);
-    }
 
     public CompanyFleetGroup getCompanyFleetGroupById(Long id) {
         return companyFleetGroupRepository.findById(id).orElseThrow(()
@@ -108,7 +88,11 @@ public class CompanyFleetGroupService {
             throw new CompanyFleetGroupNameInUseException(Messages.CompanyFleetGroup.NAME_IN_USE
                     + name);
         }
+    }
 
+    private Long findCompanyFleetIdByHeaderToken(String header){
+        String token = header.substring(7);
+        return Long.valueOf(jwtTokenService.getClaims(token).get("companyFleetId").toString());
     }
 
     private Long findCompanyIdByHeaderToken(String header){
@@ -116,9 +100,5 @@ public class CompanyFleetGroupService {
         return Long.valueOf(jwtTokenService.getClaims(token).get("companyId").toString());
     }
 
-    private String findCompanyNameByHeaderToken(String header){
-        String token = header.substring(7);
-        return jwtTokenService.getClaims(token).get("companyName").toString();
-    }
 
 }

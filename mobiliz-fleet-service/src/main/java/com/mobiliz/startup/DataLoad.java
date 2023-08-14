@@ -1,8 +1,5 @@
 package com.mobiliz.startup;
 
-import com.mobiliz.client.AuthServiceClient;
-import com.mobiliz.client.CompanyServiceClient;
-import com.mobiliz.client.request.TokenRequest;
 import com.mobiliz.request.CompanyFleetGroupRequest;
 import com.mobiliz.service.CompanyFleetGroupService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -15,40 +12,33 @@ import java.util.List;
 public class DataLoad {
 
     private final CompanyFleetGroupService companyFleetGroupService;
-    private final AuthServiceClient authServiceClient;
 
-    public DataLoad(CompanyFleetGroupService companyFleetGroupService, AuthServiceClient authServiceClient) {
+    public DataLoad(CompanyFleetGroupService companyFleetGroupService) {
         this.companyFleetGroupService = companyFleetGroupService;
-        this.authServiceClient = authServiceClient;
     }
-
-
-    public String setHeader(Long adminId){
-        TokenRequest tokenRequest = new TokenRequest(adminId);
-        return authServiceClient.token(tokenRequest);
-    }
-
 
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
 
+        CompanyFleetGroupRequest istanbulFiloMobiliz = new CompanyFleetGroupRequest(
+                "Istanbul Filo", 1L, "Mobiliz", 1L, "Funda" ,"Kar" );
+        CompanyFleetGroupRequest ankaraFiloMobiliz = new CompanyFleetGroupRequest(
+                "Ankara Filo", 1L, "Mobiliz", 2L, "Ali", "Aktar");
+        CompanyFleetGroupRequest bursaFiloMobiliz = new CompanyFleetGroupRequest(
+                "Bursa Filo", 1L, "Mobiliz", 3L, "Zeynep", "Sever");
 
+        CompanyFleetGroupRequest istanbulFiloNavigator = new CompanyFleetGroupRequest(
+                "Istanbul Filo", 2L, "Navigator", 4L, "Can", "Tok");
+        CompanyFleetGroupRequest ankaraFiloNavigator = new CompanyFleetGroupRequest(
+                "Ankara Filo", 2L, "Navigator", 5L, "Akif", "Bıcak");
 
-        CompanyFleetGroupRequest istanbulFiloMobiliz = new CompanyFleetGroupRequest("Istanbul Filo");
-        CompanyFleetGroupRequest ankaraFiloMobiliz = new CompanyFleetGroupRequest("Ankara Filo");
-        CompanyFleetGroupRequest bursaFiloMobiliz = new CompanyFleetGroupRequest("Bursa Filo");
+        CompanyFleetGroupRequest istanbulFiloTracker= new CompanyFleetGroupRequest(
+                "Istanbul Filo", 3L, "Tracker", 6L, "Gizem", "Ak");
 
-        CompanyFleetGroupRequest istanbulFiloNavigator = new CompanyFleetGroupRequest("Istanbul Filo");
-        CompanyFleetGroupRequest ankaraFiloNavigator = new CompanyFleetGroupRequest("Ankara Filo");
+        List<CompanyFleetGroupRequest> requestList = List.of(istanbulFiloMobiliz, ankaraFiloMobiliz, bursaFiloMobiliz,
+                istanbulFiloNavigator, ankaraFiloNavigator, istanbulFiloTracker);
 
-        List<CompanyFleetGroupRequest> companyFleetGroupRequestsMobiliz = List.of(istanbulFiloMobiliz, ankaraFiloMobiliz, bursaFiloMobiliz);
-
-        companyFleetGroupRequestsMobiliz.forEach(company -> companyFleetGroupService.createCompanyFleetGroup(setHeader(2L),  company));
-
-        List<CompanyFleetGroupRequest> companyFleetGroupRequestsNavigator = List.of(istanbulFiloNavigator, ankaraFiloNavigator);
-        companyFleetGroupRequestsNavigator.forEach(company -> companyFleetGroupService.createCompanyFleetGroup(setHeader(3L), company));
-
-
+        requestList.forEach(companyFleetGroupService::createCompanyFleetGroup);
 
     }
 

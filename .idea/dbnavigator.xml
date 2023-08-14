@@ -24,10 +24,7 @@
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" object-ref="schemas/public/tables/company_group" />
-      <object connection-id="295d2b78-73eb-4cb6-a320-b9ba4d05dd22" object-ref="schemas/public/tables/vehicle" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="786240d8-fa7e-47c3-a45f-57bb9073846c" dataset="public.company_fleet_group" active-filter-id="EMPTY_FILTER" />

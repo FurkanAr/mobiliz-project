@@ -1,9 +1,8 @@
 package com.mobiliz.controller.advice;
 
 
-import com.mobiliz.exception.CompanyFleetGroupNotFoundException;
+import com.mobiliz.exception.companyDistrictGroup.CompanyFleetGroupNotFoundException;
 import com.mobiliz.exception.companyDistrictGroup.*;
-import com.mobiliz.exception.permission.UserHasNotPermissionException;
 import com.mobiliz.exception.response.ExceptionResponse;
 import com.mobiliz.exception.response.ExceptionValidatorResponse;
 import org.springframework.http.HttpStatus;
@@ -40,22 +39,8 @@ public class GlobalExceptionHandler {
                         request.getServletPath()));
     }
 
-    @ExceptionHandler(CompanyDistrictGroupIdAndAdminIdNotMatchedException.class)
-    public ResponseEntity<ExceptionResponse> handle(CompanyDistrictGroupIdAndAdminIdNotMatchedException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
 
 
-    @ExceptionHandler(CompanyDistrictGroupAndCompanyFleetGroupNotMatchException.class)
-    public ResponseEntity<ExceptionResponse> handle(CompanyDistrictGroupAndCompanyFleetGroupNotMatchException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
 
 
     @ExceptionHandler(CompanyDistrictGroupNameInUseException.class)
@@ -66,37 +51,6 @@ public class GlobalExceptionHandler {
                         request.getServletPath()));
     }
 
-    @ExceptionHandler(CompanyFleetGroupIdAndCompanyIdNotMatchedException.class)
-    public ResponseEntity<ExceptionResponse> handle(CompanyFleetGroupIdAndCompanyIdNotMatchedException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
-
-    @ExceptionHandler(AdminNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handle(AdminNotFoundException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
-
-    @ExceptionHandler(CompanyFleetGroupIdAndAdminIdNotMatchedException.class)
-    public ResponseEntity<ExceptionResponse> handle(CompanyFleetGroupIdAndAdminIdNotMatchedException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
-
-    @ExceptionHandler(UserHasNotPermissionException.class)
-    public ResponseEntity<ExceptionResponse> handle(UserHasNotPermissionException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
 
     @ExceptionHandler(CompanyFleetGroupNotFoundException.class)
     public ResponseEntity<ExceptionResponse> handle(CompanyFleetGroupNotFoundException exception, HttpServletRequest request) {

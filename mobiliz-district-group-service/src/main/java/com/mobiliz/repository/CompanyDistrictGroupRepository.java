@@ -11,8 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface CompanyDistrictGroupRepository extends JpaRepository<CompanyDistrictGroup, Long> {
-    Optional<List<CompanyDistrictGroup>> findAllByCompanyId(Long id);
-
 
     @Query(value = "SElECT * FROM Company_District_Group WHERE company_id = :companyId AND name = :name ", nativeQuery = true)
     Optional<CompanyDistrictGroup> findByNameAndCompanyId(@Param("companyId") Long companyId,
@@ -22,8 +20,6 @@ public interface CompanyDistrictGroupRepository extends JpaRepository<CompanyDis
     Optional<List<CompanyDistrictGroup>> findAllByCompanyIdAndCompanyFleetId(@Param("companyId") Long companyId,
                                                                              @Param("fleetId") Long fleetId);
 
-    Optional<CompanyDistrictGroup> findByCompanyFleetId(Long companyFleetGroupId);
-
     Optional<List<CompanyDistrictGroup>> findAllByCompanyFleetId(Long companyFleetGroupId);
 
     @Query(value = "SElECT * FROM Company_District_Group WHERE id = :id AND company_id = :companyId AND company_fleet_id = :fleetId ", nativeQuery = true)
@@ -31,5 +27,16 @@ public interface CompanyDistrictGroupRepository extends JpaRepository<CompanyDis
             @Param("id") Long id, @Param("companyId") Long companyId,
             @Param("fleetId") Long fleetId);
 
-    Optional<CompanyDistrictGroup> findByUserId(Long userId);
+    @Query(value = "SElECT * FROM Company_District_Group WHERE id = :id", nativeQuery = true)
+    Optional<List<CompanyDistrictGroup>> findAllById(@Param("id") Long id);
+
+    @Query(value = "SElECT * FROM Company_District_Group WHERE id = :id AND company_fleet_id = :fleetId ", nativeQuery = true)
+    Optional<List<CompanyDistrictGroup>> findAllByIdAndCompanyFleetId(@Param("id") Long id,
+                                                                             @Param("fleetId") Long fleetId);
+
+    @Query(value = "SElECT * FROM Company_District_Group WHERE company_fleet_id = :companyFleetId AND name = :name ", nativeQuery = true)
+    Optional<CompanyDistrictGroup> findByNameAndCompanyFleetId(@Param("companyFleetId") Long companyFleetId,
+                                                          @Param("name") String name);
+
+    Optional<List<CompanyDistrictGroup>> findAllByUserId(Long userId);
 }

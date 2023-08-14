@@ -20,6 +20,11 @@ public class CompanyFleetGroupConverter {
     public CompanyFleetGroup convert(CompanyFleetGroupRequest companyFleetGroupRequest){
         CompanyFleetGroup companyFleetGroup = new CompanyFleetGroup();
         companyFleetGroup.setName(companyFleetGroupRequest.getName());
+        companyFleetGroup.setCompanyId(companyFleetGroupRequest.getCompanyId());
+        companyFleetGroup.setCompanyName(companyFleetGroupRequest.getCompanyName());
+        companyFleetGroup.setAdminId(companyFleetGroupRequest.getAdminId());
+        companyFleetGroup.setFirstName(companyFleetGroupRequest.getFirstName());
+        companyFleetGroup.setSurName(companyFleetGroupRequest.getSurName());
         return companyFleetGroup;
     }
 

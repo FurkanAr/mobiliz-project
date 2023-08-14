@@ -28,19 +28,21 @@ public class CompanyDistrictGroupController {
 
     @GetMapping
     public ResponseEntity<List<CompanyDistrictGroupResponse>> getCompanyDistrictGroupsByFleetId(
-            @RequestHeader("Authorization") String header, @RequestParam Long fleetId) {
+            @RequestHeader("Authorization") String header) {
 
         List<CompanyDistrictGroupResponse> companyDistrictGroups = companyDistrictGroupService
-                .getCompanyDistrictGroupsByFleetId(header, fleetId);
+                .getCompanyDistrictGroupsByFleetId(header);
 
         return ResponseEntity.ok(companyDistrictGroups);
     }
 
     @GetMapping("/{districtGroupId}")
     public ResponseEntity<CompanyDistrictGroupResponse> getCompanyDistrictGroupsByFleetIdAndDistrictId(
-            @RequestHeader("Authorization") String header, @RequestParam Long fleetId, @PathVariable Long districtGroupId) {
+            @RequestHeader("Authorization") String header,
+            @RequestParam Long fleetId,
+            @PathVariable Long districtGroupId) {
 
-       CompanyDistrictGroupResponse companyDistrictGroups = companyDistrictGroupService
+        CompanyDistrictGroupResponse companyDistrictGroups = companyDistrictGroupService
                 .getCompanyDistrictGroupsByFleetIdAndDistrictId(header, fleetId, districtGroupId);
 
         return ResponseEntity.ok(companyDistrictGroups);
@@ -49,22 +51,21 @@ public class CompanyDistrictGroupController {
     @PostMapping
     public ResponseEntity<CompanyDistrictGroupResponse> createCompanyDistrictGroup(
             @RequestHeader("Authorization") String header,
-            @RequestParam Long fleetId,
             @RequestBody @Valid CompanyDistrictGroupRequest companyDistrictGroupRequest) {
 
         CompanyDistrictGroupResponse companyDistrictGroup = companyDistrictGroupService
-                .createCompanyDistrictGroup(header, fleetId, companyDistrictGroupRequest);
+                .createCompanyDistrictGroup(header, companyDistrictGroupRequest);
 
         return new ResponseEntity<>(companyDistrictGroup, HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<CompanyDistrictGroupResponse> updateCompanyDistrictGroup(@RequestHeader("Authorization") String header,
-                                                                                   @RequestParam Long companyFleetGroupId,
+    public ResponseEntity<CompanyDistrictGroupResponse> updateCompanyDistrictGroup(@RequestHeader("Authorization")
+                                                                                       String header,
                                                                                    @RequestParam Long companyDistrictGroupId,
                                                                                    @RequestBody @Valid CompanyDistrictGroupUpdateRequest companyDistrictGroupUpdateRequest) {
         CompanyDistrictGroupResponse companyDistrictGroup = companyDistrictGroupService
-                .updateCompanyDistrictGroup(header, companyFleetGroupId, companyDistrictGroupId,
+                .updateCompanyDistrictGroup(header, companyDistrictGroupId,
                         companyDistrictGroupUpdateRequest);
 
         return ResponseEntity.ok(companyDistrictGroup);
@@ -72,10 +73,9 @@ public class CompanyDistrictGroupController {
 
     @DeleteMapping
     public ResponseEntity<String> deleteCompanyDistrictGroup(@RequestHeader("Authorization") String header,
-                                                             @RequestParam Long companyFleetGroupId,
                                                              @RequestParam Long companyDistrictGroupId) {
         String response = companyDistrictGroupService
-                .deleteCompanyFleetGroup(header, companyFleetGroupId, companyDistrictGroupId);
+                .deleteCompanyFleetGroup(header, companyDistrictGroupId);
 
         return ResponseEntity.ok(response);
     }
@@ -83,9 +83,10 @@ public class CompanyDistrictGroupController {
     @PostMapping("/{districtGroupId}")
     public ResponseEntity<VehicleResponseStatus> saveCompanyDistrictGroupUser(@RequestHeader("Authorization") String header,
                                                                               @PathVariable Long districtGroupId,
-                                                                              @RequestBody UserCompanyDistrictGroupSaveRequest request){
+                                                                              @RequestParam Long fleetId,
+                                                                              @RequestBody UserCompanyDistrictGroupSaveRequest request) {
         VehicleResponseStatus status = companyDistrictGroupService
-                .saveCompanyDistrictGroupUser(header, districtGroupId, request);
+                .saveCompanyDistrictGroupUser(header, districtGroupId, fleetId, request);
         return new ResponseEntity<>(status, HttpStatus.CREATED);
 
     }

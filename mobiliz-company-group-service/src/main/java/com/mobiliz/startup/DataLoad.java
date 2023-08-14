@@ -33,9 +33,9 @@ public class DataLoad {
         CompanyGroupRequest asyaKuryeMobiliz = new CompanyGroupRequest("Asya Kurye");
         CompanyGroupRequest avrupaKuryeNavigator = new CompanyGroupRequest("Avrupa Kurye");
 
-        companyGroupService.createCompanyGroup(setHeader(2L),1L, 1L ,avrupaKuryeMobiliz);
-        companyGroupService.createCompanyGroup(setHeader(2L),1L, 2L ,asyaKuryeMobiliz);
-        companyGroupService.createCompanyGroup(setHeader(3L),4L, 4L ,asyaKuryeMobiliz);
+        companyGroupService.createCompanyGroup(setHeader(1L),1L, avrupaKuryeMobiliz);
+        companyGroupService.createCompanyGroup(setHeader(1L),2L,  asyaKuryeMobiliz);
+        companyGroupService.createCompanyGroup(setHeader(4L),4L,  avrupaKuryeNavigator);
 
 
     }

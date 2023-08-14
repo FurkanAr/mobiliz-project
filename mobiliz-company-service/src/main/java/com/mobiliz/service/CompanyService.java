@@ -7,9 +7,10 @@ import com.mobiliz.exception.messages.Messages;
 import com.mobiliz.model.Company;
 import com.mobiliz.repository.CompanyRepository;
 import com.mobiliz.request.CompanyRequest;
-import com.mobiliz.request.CompanyUpdateRequest;
 import com.mobiliz.response.CompanyResponse;
 import com.mobiliz.security.JwtTokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyConverter companyConverter;
     private final JwtTokenService tokenService;
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     public CompanyService(CompanyRepository companyRepository, CompanyConverter companyConverter, JwtTokenService tokenService) {
         this.companyRepository = companyRepository;
@@ -27,52 +29,23 @@ public class CompanyService {
     }
 
     @Transactional
-    public CompanyResponse createCompany(String header, CompanyRequest companyRequest) {
-        String token = header.substring(7);
-        Long userId = Long.valueOf(tokenService.getClaims(token).get("userId").toString());
-        String name = tokenService.getClaims(token).get("name").toString();
-        String surname = tokenService.getClaims(token).get("surname").toString();
-
-        if (companyRepository.findByAdminId(userId).isPresent()){
-            throw new AdminAlreadyHasCompanyException(Messages.Company.ADMIN_IN_USE + userId);
-        }
-
+    public String createCompany(CompanyRequest companyRequest) {
         if (companyRepository.findByName(companyRequest.getName()).isPresent()){
             throw new CompanyNameInUseException(Messages.Company.NAME_IN_USE + companyRequest.getName());
         }
 
         Company company = companyConverter.convert(companyRequest);
-        company.setAdminId(userId);
-        company.setAdminName(name);
-        company.setAdminSurname(surname);
-        company = companyRepository.save(company);
-        return companyConverter.convert(companyRepository.save(company));
-    }
-
-    @Transactional
-    public CompanyResponse updateCompany(String header, CompanyUpdateRequest companyRequest) {
-        Long companyId = findCompanyByHeaderToken(header);
-
-        if (companyRepository.findByName(companyRequest.getName()).isPresent()){
-            throw new CompanyNameInUseException(Messages.Company.NAME_IN_USE + companyRequest.getName());
-        }
-
-        Company company = companyConverter.update(findByCompanyId(companyId), companyRequest);
-
-        return companyConverter.convert(companyRepository.save(company));
-    }
-
-    @Transactional
-    public String deleteCompanyByAdminId(String header) {
-        Long companyId = findCompanyByHeaderToken(header);
-        Company foundCompany = findByCompanyId(companyId);
-        companyRepository.delete(foundCompany);
-        return Constants.COMPANY_DELETED;
+        companyRepository.save(company);
+        return Constants.COMPANY_CREATED;
     }
 
     public CompanyResponse getCompanyById(String header) {
+        logger.info("getCompanyById method started");
         Long companyId = findCompanyByHeaderToken(header);
+        logger.info("found company id: {}", companyId);
         Company foundCompanyById  = findByCompanyId(companyId);
+        logger.info("foundCompanyById: {}", foundCompanyById);
+        logger.info("getCompanyById method finished");
         return companyConverter.convert(foundCompanyById);
     }
 

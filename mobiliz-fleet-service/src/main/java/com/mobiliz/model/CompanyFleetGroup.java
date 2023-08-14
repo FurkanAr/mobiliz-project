@@ -16,8 +16,8 @@ public class CompanyFleetGroup {
     private Long companyId;
     @Column(name = "company_name")
     private String companyName;
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "admin_id")
+    private Long adminId;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "sur_name")
@@ -26,10 +26,13 @@ public class CompanyFleetGroup {
     public CompanyFleetGroup() {
     }
 
-    public CompanyFleetGroup(String name, Long companyId, String companyName) {
+    public CompanyFleetGroup(String name, Long companyId, String companyName, Long adminId, String firstName, String surName) {
         this.name = name;
         this.companyId = companyId;
         this.companyName = companyName;
+        this.adminId = adminId;
+        this.firstName = firstName;
+        this.surName = surName;
     }
 
     public Long getId() {
@@ -56,12 +59,12 @@ public class CompanyFleetGroup {
         this.companyId = companyId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getAdminId() {
+        return adminId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setAdminId(Long adminId) {
+        this.adminId = adminId;
     }
 
     public String getFirstName() {

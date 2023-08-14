@@ -2,7 +2,6 @@ package com.mobiliz.controller.advice;
 
 
 import com.mobiliz.exception.companyFleetGroup.*;
-import com.mobiliz.exception.permission.UserHasNotPermissionException;
 import com.mobiliz.exception.response.ExceptionResponse;
 import com.mobiliz.exception.response.ExceptionValidatorResponse;
 import org.springframework.http.HttpStatus;
@@ -48,12 +47,5 @@ public class GlobalExceptionHandler {
                         request.getServletPath()));
     }
 
-    @ExceptionHandler(UserHasNotPermissionException.class)
-    public ResponseEntity<ExceptionResponse> handle(UserHasNotPermissionException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
 
 }

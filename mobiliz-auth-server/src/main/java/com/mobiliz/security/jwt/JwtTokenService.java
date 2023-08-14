@@ -65,8 +65,13 @@ public class JwtTokenService {
     public String generateToken(User user) {
         logger.info("generateToken method started");
 
-        Map<String, String> claims = Map.ofEntries(entry("userId", user.getId().toString()), entry("name", user.getName()), entry("surname", user.getSurName()),
-                entry("companyId", user.getCompanyId().toString()), entry("companyName", user.getCompanyName()), entry("role", user.getRole().name())
+        Map<String, String> claims = Map.ofEntries(entry("userId", user.getId().toString()),
+                entry("name", user.getName()), entry("surname", user.getSurName()),
+                entry("companyId", user.getCompanyId().toString()),
+                entry("companyFleetId", user.getCompanyFleetId().toString()),
+                entry("companyName", user.getCompanyName()),
+                entry("companyFleetName", user.getCompanyFleetName()),
+                entry("role", user.getRole().name())
         );
 
 

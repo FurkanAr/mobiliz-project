@@ -39,12 +39,11 @@ public class DataLoad {
         CompanyDistrictGroupRequest avrupaGrubuNavigator = new CompanyDistrictGroupRequest("Avrupa Grubu");
         CompanyDistrictGroupRequest kuzeyAnkaraGrubuNavigator = new CompanyDistrictGroupRequest("Kuzey Ankara Grubu");
 
-        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(2L), 1L, avrupaGrubuMobiliz);
-        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(2L), 1L, asyaGrubuMobiliz);
-        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(2L), 2L, kuzeyAnkaraGrubuMobiliz);
-
-        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(3L), 4L, avrupaGrubuNavigator);
-        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(3L), 5L, kuzeyAnkaraGrubuNavigator);
+        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(1L), avrupaGrubuMobiliz);
+        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(1L), asyaGrubuMobiliz);
+        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(2L),  kuzeyAnkaraGrubuMobiliz);
+        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(4L),  avrupaGrubuNavigator);
+        companyGroupDistrictService.createCompanyDistrictGroup(setHeader(5L),  kuzeyAnkaraGrubuNavigator);
 
 
 

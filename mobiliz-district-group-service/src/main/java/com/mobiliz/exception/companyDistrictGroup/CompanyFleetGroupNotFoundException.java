@@ -1,4 +1,4 @@
-package com.mobiliz.exception;
+package com.mobiliz.exception.companyDistrictGroup;
 
 public class CompanyFleetGroupNotFoundException extends RuntimeException {
 

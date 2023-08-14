@@ -38,7 +38,6 @@ public class SecurityConfig {
                 .and()
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests()
-                .antMatchers(HttpMethod.POST, "/api/districtgroups/**").hasAuthority("STANDARD")
                 .antMatchers("/api/districtgroups").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/districtgroups/**").hasAnyAuthority("STANDARD", "ADMIN")
                 .anyRequest()

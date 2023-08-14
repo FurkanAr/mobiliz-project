@@ -11,9 +11,12 @@ import java.util.Optional;
 
 @Repository
 public interface CompanyFleetGroupRepository extends JpaRepository<CompanyFleetGroup, Long> {
-    Optional<List<CompanyFleetGroup>> findAllByCompanyId(Long id);
+
+    Optional<CompanyFleetGroup> findByName(String name);
+
+    List<CompanyFleetGroup> findAllByCompanyId(Long companyId);
+
 
     @Query(value = "SElECT * FROM Company_Fleet_Group WHERE company_id = :companyId AND name = :name ", nativeQuery = true)
     Optional<CompanyFleetGroup> findByNameAndCompanyId(@Param("companyId") Long companyId,
-                                                       @Param("name") String name);
-}
+                                                       @Param("name") String name);}

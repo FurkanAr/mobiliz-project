@@ -1,9 +1,9 @@
 package com.mobiliz.converter;
 
-import com.mobiliz.model.UserRole;
-import org.slf4j.Logger;
 import com.mobiliz.model.User;
+import com.mobiliz.model.UserRole;
 import com.mobiliz.request.UserRequest;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -30,6 +30,13 @@ public class UserConverter {
         user.setRole(UserRole.valueOf(userRequest.getRole()));
         user.setCompanyId(userRequest.getCompanyId());
         user.setCompanyName(userRequest.getCompanyName());
+        if (UserRole.STANDARD.equals(user.getRole())) {
+            user.setCompanyFleetId(0L);
+            user.setCompanyFleetName("no fleet id");
+        } else {
+            user.setCompanyFleetId(userRequest.getFleetId());
+            user.setCompanyFleetName(userRequest.getCompanyFleetName());
+        }
         logger.info("convert to User method successfully worked");
         return user;
     }

@@ -19,6 +19,10 @@ public class UserRequest {
     private Long companyId;
     @NotEmpty(message = "Please enter your companyName")
     private String companyName;
+    @NotNull(message = "Please enter your fleetId")
+    private Long fleetId;
+    @NotEmpty(message = "Please enter your company fleet name")
+    private String companyFleetName;
     @NotEmpty(message = "Please enter your Email")
     @Email(message = "Invalid Email. Please enter proper Email")
     private String email;
@@ -38,12 +42,16 @@ public class UserRequest {
     public UserRequest() {
     }
 
-    public UserRequest(String userName, String name, String surName, Long companyId, String companyName, String email, String password, String role) {
+    public UserRequest(String userName, String name, String surName, Long companyId,
+                       String companyName, Long fleetId, String companyFleetName,
+                       String email, String password, String role) {
         this.userName = userName;
         this.name = name;
         this.surName = surName;
         this.companyId = companyId;
         this.companyName = companyName;
+        this.fleetId = fleetId;
+        this.companyFleetName = companyFleetName;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -111,6 +119,22 @@ public class UserRequest {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Long getFleetId() {
+        return fleetId;
+    }
+
+    public void setFleetId(Long fleetId) {
+        this.fleetId = fleetId;
+    }
+
+    public String getCompanyFleetName() {
+        return companyFleetName;
+    }
+
+    public void setCompanyFleetName(String companyFleetName) {
+        this.companyFleetName = companyFleetName;
     }
 
     @Override

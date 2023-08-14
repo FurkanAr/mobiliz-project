@@ -28,11 +28,11 @@ public class CompanyGroupController {
 
     @GetMapping
     public ResponseEntity<List<CompanyGroupResponse>> getCompanyGroupsByDistrictGroupIdByFleetId(
-            @RequestHeader("Authorization") String header, @RequestParam Long fleetId,
+            @RequestHeader("Authorization") String header,
             @RequestParam Long districtGroupId) {
 
         List<CompanyGroupResponse> companyGroupResponses = companyGroupService
-                .getCompanyGroupsByDistrictGroupIdAndFleetId(header, fleetId, districtGroupId);
+                .getCompanyGroupsByDistrictGroupIdAndFleetId(header, districtGroupId);
         return ResponseEntity.ok(companyGroupResponses);
     }
 
@@ -50,37 +50,34 @@ public class CompanyGroupController {
     @PostMapping
     public ResponseEntity<CompanyGroupResponse> createCompanyGroup(
             @RequestHeader("Authorization") String header,
-            @RequestParam Long fleetId,
             @RequestParam Long districtGroupId,
             @RequestBody @Valid CompanyGroupRequest companyGroupRequest) {
 
         CompanyGroupResponse companyGroupResponse = companyGroupService
-                .createCompanyGroup(header, fleetId, districtGroupId, companyGroupRequest);
+                .createCompanyGroup(header, districtGroupId, companyGroupRequest);
 
         return new ResponseEntity<>(companyGroupResponse, HttpStatus.CREATED);
     }
 
     @PutMapping
     public ResponseEntity<CompanyGroupResponse> updateCompanyGroup(@RequestHeader("Authorization") String header,
-                                                                   @RequestParam Long fleetId,
                                                                    @RequestParam Long districtGroupId,
                                                                    @RequestParam Long companyGroupId,
                                                                    @RequestBody @Valid CompanyGroupUpdateRequest companyGroupUpdateRequest) {
 
         CompanyGroupResponse companyGroupResponse = companyGroupService
-                .updateCompanyGroup(header, fleetId, districtGroupId, companyGroupId, companyGroupUpdateRequest);
+                .updateCompanyGroup(header,  districtGroupId, companyGroupId, companyGroupUpdateRequest);
 
         return ResponseEntity.ok(companyGroupResponse);
     }
 
     @DeleteMapping
     public ResponseEntity<String> deleteCompanyGroup(@RequestHeader("Authorization") String header,
-                                                     @RequestParam Long companyFleetGroupId,
                                                      @RequestParam Long companyDistrictGroupId,
                                                      @RequestParam Long companyGroupId
     ) {
         String response = companyGroupService
-                .deleteCompany(header, companyFleetGroupId, companyDistrictGroupId, companyGroupId);
+                .deleteCompany(header,companyDistrictGroupId, companyGroupId);
 
         return ResponseEntity.ok(response);
     }
@@ -88,9 +85,12 @@ public class CompanyGroupController {
     @PostMapping("/{companyGroupId}")
     public ResponseEntity<VehicleResponseStatus> saveCompanyGroupUser(@RequestHeader("Authorization") String header,
                                                                       @PathVariable Long companyGroupId,
+                                                                      @RequestParam Long fleetId,
+                                                                      @RequestParam Long districtGroupId,
+
                                                                       @RequestBody UserCompanyGroupSaveRequest userCompanyGroupSaveRequest) {
         VehicleResponseStatus status = companyGroupService
-                .saveCompanyGroupUser(header, companyGroupId, userCompanyGroupSaveRequest);
+                .saveCompanyGroupUser(header, companyGroupId, fleetId, districtGroupId, userCompanyGroupSaveRequest);
         return new ResponseEntity<>(status, HttpStatus.CREATED);
     }
 

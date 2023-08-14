@@ -2,7 +2,6 @@ package com.mobiliz.converter;
 
 import com.mobiliz.model.Company;
 import com.mobiliz.request.CompanyRequest;
-import com.mobiliz.request.CompanyUpdateRequest;
 import com.mobiliz.response.CompanyResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +36,4 @@ public class CompanyConverter {
         return companyResponses;
     }
 
-    public Company update(Company company, CompanyUpdateRequest companyRequest) {
-        company.setName(companyRequest.getName());
-        return company;
-    }
 }

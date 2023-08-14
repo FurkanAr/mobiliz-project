@@ -25,50 +25,37 @@ public class CompanyFleetGroupController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CompanyFleetGroupResponse>> getAllCompanyFleetGroups(@RequestHeader("Authorization") String header) {
-        List<CompanyFleetGroupResponse> fleetGroupResponse = companyFleetGroupService
-                .getCompanyFleetGroups(header);
-        return ResponseEntity.ok(fleetGroupResponse);
-    }
-
-    @GetMapping("/{fleetId}")
-    public ResponseEntity<CompanyFleetGroupResponse> getCompanyFleetById(@RequestHeader("Authorization") String header,
-                                                                         @PathVariable Long fleetId) {
+    public ResponseEntity<CompanyFleetGroupResponse> getCompanyFleet(@RequestHeader("Authorization") String header) {
         CompanyFleetGroupResponse fleetGroupResponse = companyFleetGroupService
-                .getCompanyFleetById(header, fleetId);
-
+                .getCompanyFleetById(header);
         return ResponseEntity.ok(fleetGroupResponse);
-
     }
 
-    @PostMapping
-    public ResponseEntity<CompanyFleetGroupResponse> createCompanyFleetGroup(@RequestHeader("Authorization") String header,
-                                                                             @RequestBody @Valid CompanyFleetGroupRequest companyFleetGroupRequest) {
-        CompanyFleetGroupResponse companyFleetGroupResponse = companyFleetGroupService
-                .createCompanyFleetGroup(header, companyFleetGroupRequest);
+    @GetMapping("/companies")
+    public ResponseEntity<List<CompanyFleetGroupResponse>> getCompanyFleetsByCompanyId(
+            @RequestHeader("Authorization") String header) {
+        List<CompanyFleetGroupResponse> fleetGroupResponse = companyFleetGroupService
+                .getCompanyFleetsByCompanyId(header);
+        return ResponseEntity.ok(fleetGroupResponse);
 
-        return new ResponseEntity<>(companyFleetGroupResponse, HttpStatus.CREATED);
     }
 
     @PutMapping
     public ResponseEntity<CompanyFleetGroupResponse> updateCompanyFleetGroup(
             @RequestHeader("Authorization") String header,
-            @RequestParam Long companyFleetGroupId,
             @RequestBody @Valid CompanyFleetUpdateRequest companyFleetGroupRequest) {
 
         CompanyFleetGroupResponse companyFleetGroupResponse = companyFleetGroupService
-                .updateCompanyFleetGroup(header, companyFleetGroupId, companyFleetGroupRequest);
+                .updateCompanyFleetGroup(header, companyFleetGroupRequest);
 
         return ResponseEntity.ok(companyFleetGroupResponse);
     }
 
     @DeleteMapping
     public ResponseEntity<String> deleteCompanyFleetGroup(
-            @RequestHeader("Authorization") String header,
-            @RequestParam Long companyFleetGroupId) {
+            @RequestHeader("Authorization") String header) {
         String response = companyFleetGroupService
-                .deleteCompanyFleetGroup(header, companyFleetGroupId);
-
+                .deleteCompanyFleetGroup(header);
         return ResponseEntity.ok(response);
     }
 

@@ -37,14 +37,6 @@ public class GlobalExceptionHandler {
                         request.getServletPath()));
     }
 
-    @ExceptionHandler(AdminAlreadyHasCompanyException.class)
-    public ResponseEntity<ExceptionResponse> handle(AdminAlreadyHasCompanyException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
-
     @ExceptionHandler(CompanyNameInUseException.class)
     public ResponseEntity<ExceptionResponse> handle(CompanyNameInUseException exception, HttpServletRequest request) {
         return ResponseEntity

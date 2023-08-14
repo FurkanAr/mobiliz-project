@@ -56,6 +56,8 @@ public class JwtTokenService {
                 entry("surname", getClaims(token).get("surname").toString()),
                 entry("companyId", getClaims(token).get("companyId").toString()),
                 entry("companyName",getClaims(token).get("companyName").toString()),
+                entry("companyFleetId", getClaims(token).get("companyFleetId").toString()),
+                entry("companyFleetName", getClaims(token).get("companyFleetName").toString()),
                 entry("role", getClaims(token).get("role").toString())
         );
 
