@@ -8,14 +8,12 @@ import com.mobiliz.exception.messages.Messages;
 import com.mobiliz.model.CompanyFleetGroup;
 import com.mobiliz.repository.CompanyFleetGroupRepository;
 import com.mobiliz.request.CompanyFleetGroupRequest;
-import com.mobiliz.request.CompanyFleetUpdateRequest;
 import com.mobiliz.response.CompanyFleetGroupResponse;
 import com.mobiliz.security.JwtTokenService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CompanyFleetGroupService {
@@ -49,24 +47,6 @@ public class CompanyFleetGroupService {
         CompanyFleetGroup companyFleetGroup = companyFleetGroupConverter.convert(companyFleetGroupRequest);
         companyFleetGroupRepository.save(companyFleetGroup);
     }
-
-    @Transactional
-    public CompanyFleetGroupResponse updateCompanyFleetGroup(String header,
-                                                             CompanyFleetUpdateRequest companyFleetUpdateRequest) {
-
-        Long companyFleetId= findCompanyFleetIdByHeaderToken(header);
-        Long companyId = findCompanyIdByHeaderToken(header);
-
-        CompanyFleetGroup companyFleetGroupFoundById = getCompanyFleetGroupById(companyFleetId);
-
-        checkNameAvailable(companyId, companyFleetUpdateRequest.getName());
-
-        CompanyFleetGroup companyFleetGroup = companyFleetGroupConverter
-                .update(companyFleetGroupFoundById, companyFleetUpdateRequest);
-
-        return companyFleetGroupConverter.convert(companyFleetGroupRepository.save(companyFleetGroup));
-    }
-
 
     @Transactional
     public String deleteCompanyFleetGroup(String header) {
