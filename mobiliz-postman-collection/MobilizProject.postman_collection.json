@@ -1,0 +1,1110 @@
+{
+	"info": {
+		"_postman_id": "88dedd6f-a81f-44b8-a69a-8fee6a1d6095",
+		"name": "MobilizProject",
+		"description": "Mobiliz Şirketi mülakatı için hazırlanmıştır",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19630129"
+	},
+	"item": [
+		{
+			"name": "Authentication Service",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"funda-kar\",\r\n    \"password\": \"Test-password123\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9090/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Enter the user name and password to login to the system. Transact in services with token returned in output\n"
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\": \"ahmet\",\r\n    \"name\": \"ahmet\",\r\n    \"surName\": \"keser\",\r\n    \"companyId\": 1,\r\n    \"companyName\": \"Mobiliz\",\r\n    \"fleetId\": 1,\r\n    \"companyFleetName\": \"Istanbul Filo\",\r\n    \"email\": \"ahmet@gmail.com\",\r\n    \"password\": \"Test-password123\",\r\n    \"role\": \"STANDARD\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9090/api/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "When registering to the system, enter your username, name, surname, company number, company name, fleet number, fleet name, email, password and role."
+					},
+					"response": []
+				}
+			],
+			"description": "Service registered and logged into the system.  \nReturns jwt token after login."
+		},
+		{
+			"name": "Vehicle Service",
+			"item": [
+				{
+					"name": "get all vehicles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiU2VsaW0iLCJzdXJuYW1lIjoiQWsiLCJjb21wYW55RmxlZXRJZCI6IjEiLCJjb21wYW55RmxlZXROYW1lIjoiSXN0YW5idWwgRmlsbyIsInVzZXJJZCI6IjciLCJyb2xlIjoiU1RBTkRBUkQiLCJjb21wYW55SWQiOiIxIiwiaWF0IjoxNjkyMDYwNTk5LCJleHAiOjE2OTIwNjIwMzl9.9CKBXKY9U2PTpDObriLKmXInT1J9547upzlAibHF4Kc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/vehicles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"vehicles"
+							]
+						},
+						"description": "Returns vehicles in the region for which the admin is responsible"
+					},
+					"response": []
+				},
+				{
+					"name": "get vehicle by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjA0NjU3OCwiZXhwIjoxNjkyMDQ4MDE4fQ.5bSLZmbt24FLRbg5SGYzQmDJKD_bEGi40AUiI2vfdn4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/vehicles/9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"vehicles",
+								"9"
+							]
+						},
+						"description": "Returns the desired vehicle from the vehicles in the region where the admin is responsible"
+					},
+					"response": []
+				},
+				{
+					"name": "add vehicle by district group id and company group id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik5hdmlnYXRvciIsIm5hbWUiOiJDYW4iLCJzdXJuYW1lIjoiVG9rIiwiY29tcGFueUZsZWV0SWQiOiI0IiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiI0Iiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMiIsImlhdCI6MTY5MjA0NjY2MiwiZXhwIjoxNjkyMDQ4MTAyfQ.r7jTqRLTtvW0FZwbv4LzEXTmC3VDpYXozi46W5zQ9AI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"licencePlate\": \"34 XRS 454\",\r\n    \"vehicleIdentificationNumber\" : \"ADS12345\",\r\n    \"label\" : \"You must buy!!\",\r\n    \"brand\" : \"Honda\",\r\n    \"model\" : \"Civic\",\r\n    \"modelYear\" : \"2018\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9090/api/vehicles?districtGroupId=2&companyGroupId=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"vehicles"
+							],
+							"query": [
+								{
+									"key": "districtGroupId",
+									"value": "2"
+								},
+								{
+									"key": "companyGroupId",
+									"value": "2"
+								}
+							]
+						},
+						"description": "Admin can add vehicles to groups and regions in the region he is responsible for."
+					},
+					"response": []
+				},
+				{
+					"name": "add vehicle by district group id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjA2MDk3NSwiZXhwIjoxNjkyMDYyNDE1fQ._N-eGXDzuCxDiAml1rIwHY1sH_TK4zIq7zbIPAvonIM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"licencePlate\": \"34 XRS 454\",\r\n    \"vehicleIdentificationNumber\" : \"ADS12345\",\r\n    \"label\" : \"You must buy!!\",\r\n    \"brand\" : \"Honda\",\r\n    \"model\" : \"Civic\",\r\n    \"modelYear\" : \"2018\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9090/api/vehicles?districtGroupId=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"vehicles"
+							],
+							"query": [
+								{
+									"key": "districtGroupId",
+									"value": "2"
+								}
+							]
+						},
+						"description": "Admin can also add cars to regions"
+					},
+					"response": []
+				}
+			],
+			"description": "Only admin can use Vehicle service. Admin can only view his company's vehicles and add new vehicles"
+		},
+		{
+			"name": "Company Service",
+			"item": [
+				{
+					"name": "get company",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiU2VsaW0iLCJzdXJuYW1lIjoiQWsiLCJjb21wYW55RmxlZXRJZCI6IjEiLCJjb21wYW55RmxlZXROYW1lIjoiSXN0YW5idWwgRmlsbyIsInVzZXJJZCI6IjciLCJyb2xlIjoiU1RBTkRBUkQiLCJjb21wYW55SWQiOiIxIiwiaWF0IjoxNjkyMDA2OTkxLCJleHAiOjE2OTIwMDg0MzF9.pT4O7eX5BrJPoHrb_TTcY2mc9ZEXWa63oq75QYeItI4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/companies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"companies"
+							]
+						},
+						"description": "Returns admin's company"
+					},
+					"response": []
+				}
+			],
+			"description": "Admins display the companies they are working with"
+		},
+		{
+			"name": "CompanyFleetGroup Service",
+			"item": [
+				{
+					"name": "get company fleet by header",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjAyODE2MiwiZXhwIjoxNjkyMDI5NjAyfQ.N-fZof4uYLTo0AejXO_YplttWQ5Yrz-fo9XdaNRFVLY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/fleets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"fleets"
+							]
+						},
+						"description": "The fleet that the administrators are in charge of is shown"
+					},
+					"response": []
+				},
+				{
+					"name": "get company fleets by header",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjAxOTAxNCwiZXhwIjoxNjkyMDIwNDU0fQ.UbyXMwuH8pXMb1ts-5RY6j_7b2UQ8LR8IO98-D9up-4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/fleets/companies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"fleets",
+								"companies"
+							]
+						},
+						"description": "The screen where users see fleets"
+					},
+					"response": []
+				},
+				{
+					"name": "delete company by header",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjAxOTAxNCwiZXhwIjoxNjkyMDIwNDU0fQ.UbyXMwuH8pXMb1ts-5RY6j_7b2UQ8LR8IO98-D9up-4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/fleets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"fleets"
+							]
+						},
+						"description": "The screen where administrators delete the fleet they are in charge of"
+					},
+					"response": []
+				}
+			],
+			"description": "Service showing the fleets of companies"
+		},
+		{
+			"name": "CompanyDistrictGroup Service",
+			"item": [
+				{
+					"name": "get company district groups by header",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjAxOTAxNCwiZXhwIjoxNjkyMDIwNDU0fQ.UbyXMwuH8pXMb1ts-5RY6j_7b2UQ8LR8IO98-D9up-4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/districtgroups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"districtgroups"
+							]
+						},
+						"description": "Shows the regions where the fleet manager is in charge"
+					},
+					"response": []
+				},
+				{
+					"name": "create company district group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjAxNDYzOSwiZXhwIjoxNjkyMDE2MDc5fQ.2sGzCNDkeugUSuxAG9z7ECwOy02J6-AbwPXXXDe51yU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Anadolu Grubu\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9090/api/districtgroups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"districtgroups"
+							]
+						},
+						"description": "Fleet manager can add new regions to their fleet"
+					},
+					"response": []
+				},
+				{
+					"name": "update company district group by  district group id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik5hdmlnYXRvciIsIm5hbWUiOiJDYW4iLCJzdXJuYW1lIjoiVG9rIiwiY29tcGFueUZsZWV0SWQiOiI0IiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiI0Iiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMiIsImlhdCI6MTY5MjAxNDg0MiwiZXhwIjoxNjkyMDE2MjgyfQ.Q35inVUMPqXiHKid7BOchZJysCyazvKnRtvbsC42xis",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Güney Grubu\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9090/api/districtgroups?companyDistrictGroupId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"districtgroups"
+							],
+							"query": [
+								{
+									"key": "companyDistrictGroupId",
+									"value": "1"
+								}
+							]
+						},
+						"description": "The fleet manager can change the names of the regions in the fleet."
+					},
+					"response": []
+				},
+				{
+					"name": "delete company district group by district group id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjAxNDk4MCwiZXhwIjoxNjkyMDE2NDIwfQ.tUKUSiFraVXvRYaEyp3BErFUV5MtQoi4MMD0pFrxMlY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/districtgroups?companyDistrictGroupId=6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"districtgroups"
+							],
+							"query": [
+								{
+									"key": "companyDistrictGroupId",
+									"value": "6"
+								}
+							]
+						},
+						"description": "The fleet manager can delete regions in the fleet."
+					},
+					"response": []
+				},
+				{
+					"name": "get district group by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjAxOTAxNCwiZXhwIjoxNjkyMDIwNDU0fQ.UbyXMwuH8pXMb1ts-5RY6j_7b2UQ8LR8IO98-D9up-4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/districtgroups/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"districtgroups",
+								"1"
+							]
+						},
+						"description": "A single zone information is returned"
+					},
+					"response": []
+				},
+				{
+					"name": "add user info to district group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiU2VsaW0iLCJzdXJuYW1lIjoiQWsiLCJjb21wYW55RmxlZXRJZCI6IjEiLCJjb21wYW55RmxlZXROYW1lIjoiSXN0YW5idWwgRmlsbyIsInVzZXJJZCI6IjciLCJyb2xlIjoiU1RBTkRBUkQiLCJjb21wYW55SWQiOiIxIiwiaWF0IjoxNjkyMDE5NDgwLCJleHAiOjE2OTIwMjA5MjB9.tFvDje5IRx2ygnamA72UDVQH6O3H5vMyPOFFGwGx6Ds",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/districtgroups/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"districtgroups",
+								"5"
+							]
+						},
+						"description": "Users can request all vehicles in a region. If the vehicles are available, the vehicles will be authorized"
+					},
+					"response": []
+				},
+				{
+					"name": "get district group name and id by header",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjAxOTAxNCwiZXhwIjoxNjkyMDIwNDU0fQ.UbyXMwuH8pXMb1ts-5RY6j_7b2UQ8LR8IO98-D9up-4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/districtgroups/fleets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"districtgroups",
+								"fleets"
+							]
+						},
+						"description": "Zone information is returned to the user"
+					},
+					"response": []
+				}
+			],
+			"description": "Fleets have regions. This service enables operations on these regions."
+		},
+		{
+			"name": "CompanyGroup Service",
+			"item": [
+				{
+					"name": "get company group by header",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjAzMzcyOSwiZXhwIjoxNjkyMDM1MTY5fQ.1qYK254FP-1cSiN8cZ1t9sgHf7q1UCkA8JgpRvZT0pc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/companygroups",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"companygroups"
+							]
+						},
+						"description": "Returns groups connected to the fleet"
+					},
+					"response": []
+				},
+				{
+					"name": "create company group by district group id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik5hdmlnYXRvciIsIm5hbWUiOiJDYW4iLCJzdXJuYW1lIjoiVG9rIiwiY29tcGFueUZsZWV0SWQiOiI0IiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiI0Iiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMiIsImlhdCI6MTY5MjAzMzA3MywiZXhwIjoxNjkyMDM0NTEzfQ.gC4e_0J-pPf7DevwfCFwFKtX5r7My7v_nVIzHUGt5Lk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \" Grubu\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9090/api/companygroups?districtGroupId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"companygroups"
+							],
+							"query": [
+								{
+									"key": "districtGroupId",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Adds a new group to a region, only the fleet manager can do this job"
+					},
+					"response": []
+				},
+				{
+					"name": "update company group by district group id and group id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjAzMzcyOSwiZXhwIjoxNjkyMDM1MTY5fQ.1qYK254FP-1cSiN8cZ1t9sgHf7q1UCkA8JgpRvZT0pc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"S Grubu\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9090/api/companygroups?districtGroupId=2&companyGroupId=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"companygroups"
+							],
+							"query": [
+								{
+									"key": "districtGroupId",
+									"value": "2"
+								},
+								{
+									"key": "companyGroupId",
+									"value": "2"
+								}
+							]
+						},
+						"description": "The name of a group can be changed by fleet manager."
+					},
+					"response": []
+				},
+				{
+					"name": "delete company group by district group id and group id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiRnVuZGEiLCJzdXJuYW1lIjoiS2FyIiwiY29tcGFueUZsZWV0SWQiOiIxIiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxIiwicm9sZSI6IkFETUlOIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjAzMzcyOSwiZXhwIjoxNjkyMDM1MTY5fQ.1qYK254FP-1cSiN8cZ1t9sgHf7q1UCkA8JgpRvZT0pc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/companygroups?companyDistrictGroupId=2&companyGroupId=2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"companygroups"
+							],
+							"query": [
+								{
+									"key": "companyDistrictGroupId",
+									"value": "2"
+								},
+								{
+									"key": "companyGroupId",
+									"value": "2"
+								}
+							]
+						},
+						"description": "The group can be deleted by the fleet manager."
+					},
+					"response": []
+				},
+				{
+					"name": "get company group by id and district id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiU2VsaW0iLCJzdXJuYW1lIjoiQWsiLCJjb21wYW55RmxlZXRJZCI6IjEiLCJjb21wYW55RmxlZXROYW1lIjoiSXN0YW5idWwgRmlsbyIsInVzZXJJZCI6IjciLCJyb2xlIjoiU1RBTkRBUkQiLCJjb21wYW55SWQiOiIxIiwiaWF0IjoxNjkyMDM0MjcxLCJleHAiOjE2OTIwMzU3MTF9.uDLN4JbVRm0PYdWVuOoGxRn5AUt2AgtDA30oI9RknEo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/companygroups/companydistrictgroups/1?districtGroupId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"companygroups",
+								"companydistrictgroups",
+								"1"
+							],
+							"query": [
+								{
+									"key": "districtGroupId",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Returns the group information to the user"
+					},
+					"response": []
+				},
+				{
+					"name": "add user info to company group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik5hdmlnYXRvciIsIm5hbWUiOiJFemdpIiwic3VybmFtZSI6IkFrIiwiY29tcGFueUZsZWV0SWQiOiI0IiwiY29tcGFueUZsZWV0TmFtZSI6IklzdGFuYnVsIEZpbG8iLCJ1c2VySWQiOiIxMCIsInJvbGUiOiJTVEFOREFSRCIsImNvbXBhbnlJZCI6IjIiLCJpYXQiOjE2OTIwMzQ0MzYsImV4cCI6MTY5MjAzNTg3Nn0.WIyzONK2Wcfsu2rpj9laSLAabkKkrmdHTVcIXk8KbMI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/companygroups/3?districtGroupId=4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"companygroups",
+								"3"
+							],
+							"query": [
+								{
+									"key": "districtGroupId",
+									"value": "4"
+								}
+							]
+						},
+						"description": "Users may want to be manage to vehicles in a group."
+					},
+					"response": []
+				}
+			],
+			"description": "Regions can also have regions and groups within them."
+		},
+		{
+			"name": "Global Vehicle Service",
+			"item": [
+				{
+					"name": "get vehicles by header",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiZmFyLXVzZXIiLCJzdXJuYW1lIjoiZmFyLXVzZXIiLCJjb21wYW55RmxlZXRJZCI6IjEiLCJjb21wYW55RmxlZXROYW1lIjoiSXN0YW5idWwgRmlsbyIsInVzZXJJZCI6IjEyIiwicm9sZSI6IlNUQU5EQVJEIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjA1MzQyOSwiZXhwIjoxNjkyMDU0ODY5fQ._1fF1-TreT-Pxty2f56JOM8ptH5ymLbIAQHaiEBEbDA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/global/vehicles",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"global",
+								"vehicles"
+							]
+						},
+						"description": "Returns company vehicles"
+					},
+					"response": []
+				}
+			],
+			"description": "```\n      \nService where users interact with vehicles\n\n ```"
+		},
+		{
+			"name": "User Vehicle Registration Service",
+			"item": [
+				{
+					"name": "add user vehicles by user id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiZmFyLXVzZXIiLCJzdXJuYW1lIjoiZmFyLXVzZXIiLCJjb21wYW55RmxlZXRJZCI6IjEiLCJjb21wYW55RmxlZXROYW1lIjoiSXN0YW5idWwgRmlsbyIsInVzZXJJZCI6IjEyIiwicm9sZSI6IlNUQU5EQVJEIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjA1MDM3NSwiZXhwIjoxNjkyMDUxODE1fQ.gVlWmACTFSNyZ4kxLKHDaBHQ6q-r7Pv0UAq97NS6_Ho",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/uservehicles/8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"uservehicles",
+								"8"
+							]
+						},
+						"description": "User can use a vehicle"
+					},
+					"response": []
+				},
+				{
+					"name": "add user vehicles by company group id and district id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiU2VsaW0iLCJzdXJuYW1lIjoiQWsiLCJjb21wYW55RmxlZXRJZCI6IjEiLCJjb21wYW55RmxlZXROYW1lIjoiSXN0YW5idWwgRmlsbyIsInVzZXJJZCI6IjciLCJyb2xlIjoiU1RBTkRBUkQiLCJjb21wYW55SWQiOiIxIiwiaWF0IjoxNjkyMDUyMTI3LCJleHAiOjE2OTIwNTM1Njd9.SdKEhxb5DUg4ry3QIcQ-hvI--IxSQVE9sCylhg6ppTE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/uservehicles/companygroups/1?districtGroupId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"uservehicles",
+								"companygroups",
+								"1"
+							],
+							"query": [
+								{
+									"key": "districtGroupId",
+									"value": "1"
+								}
+							]
+						},
+						"description": "User can be authorized for vehicles of a group"
+					},
+					"response": []
+				},
+				{
+					"name": "add user vehicles by district group id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiZmFyLXVzZXIiLCJzdXJuYW1lIjoiZmFyLXVzZXIiLCJjb21wYW55RmxlZXRJZCI6IjEiLCJjb21wYW55RmxlZXROYW1lIjoiSXN0YW5idWwgRmlsbyIsInVzZXJJZCI6IjEyIiwicm9sZSI6IlNUQU5EQVJEIiwiY29tcGFueUlkIjoiMSIsImlhdCI6MTY5MjA1MjE0NCwiZXhwIjoxNjkyMDUzNTg0fQ.VVflpFgVgSsD-ILn4a11Z6aDPq2Y4OBS5zKcIiLFcVc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/uservehicles/districtgroups/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"uservehicles",
+								"districtgroups",
+								"2"
+							]
+						},
+						"description": "User can be authorized for all vehicles in a region"
+					},
+					"response": []
+				}
+			],
+			"description": "Service where users communicate with the vehicle service they request to manage vehicles"
+		},
+		{
+			"name": "Vehicle List Service",
+			"item": [
+				{
+					"name": "get user vehicles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiU2VsaW0iLCJzdXJuYW1lIjoiQWsiLCJjb21wYW55RmxlZXRJZCI6IjEiLCJjb21wYW55RmxlZXROYW1lIjoiSXN0YW5idWwgRmlsbyIsInVzZXJJZCI6IjciLCJyb2xlIjoiU1RBTkRBUkQiLCJjb21wYW55SWQiOiIxIiwiaWF0IjoxNjkyMDU5OTMyLCJleHAiOjE2OTIwNjEzNzJ9.7BAuK1ARwBD-z5DQldEx0o9hAGGxuwVkqB-GAjLUCC8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/vehiclelist",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"vehiclelist"
+							]
+						},
+						"description": "Returns the user's authorized vehicles as a list"
+					},
+					"response": []
+				}
+			],
+			"description": "Returns the user's vehicles"
+		},
+		{
+			"name": "Vehicle Tree Service",
+			"item": [
+				{
+					"name": "get user vehicles as tree",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJjb21wYW55TmFtZSI6Ik1vYmlsaXoiLCJuYW1lIjoiU2VsaW0iLCJzdXJuYW1lIjoiQWsiLCJjb21wYW55RmxlZXRJZCI6IjEiLCJjb21wYW55RmxlZXROYW1lIjoiSXN0YW5idWwgRmlsbyIsInVzZXJJZCI6IjciLCJyb2xlIjoiU1RBTkRBUkQiLCJjb21wYW55SWQiOiIxIiwiaWF0IjoxNjkyMDU5OTMyLCJleHAiOjE2OTIwNjEzNzJ9.7BAuK1ARwBD-z5DQldEx0o9hAGGxuwVkqB-GAjLUCC8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/api/vehicletree",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"api",
+								"vehicletree"
+							]
+						},
+						"description": "Returns the vehicles that the user is authorized in the form of a tree"
+					},
+					"response": []
+				}
+			],
+			"description": "Returns the user's vehicles"
+		}
+	]
+}
