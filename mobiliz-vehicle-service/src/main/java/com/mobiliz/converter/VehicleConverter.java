@@ -57,7 +57,6 @@ public class VehicleConverter {
         vehicle.setBrand(vehicleRequest.getBrand());
         vehicle.setModel(vehicleRequest.getModel());
         vehicle.setModelYear(vehicleRequest.getModelYear());
-        vehicle.setStatus(VehicleStatus.AVAILABLE);
         return vehicle;
     }
 

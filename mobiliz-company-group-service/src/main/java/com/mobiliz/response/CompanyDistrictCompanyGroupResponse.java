@@ -1,14 +1,14 @@
-package com.mobiliz.client.response;
+package com.mobiliz.response;
 
-public class CompanyResponse {
+public class CompanyDistrictCompanyGroupResponse {
 
     private Long id;
     private String name;
 
-    public CompanyResponse() {
+    public CompanyDistrictCompanyGroupResponse() {
     }
 
-    public CompanyResponse(Long id, String name) {
+    public CompanyDistrictCompanyGroupResponse(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -31,7 +31,7 @@ public class CompanyResponse {
 
     @Override
     public String toString() {
-        return "CompanyResponse{" +
+        return "CompanyDistrictCompanyGroupResponse{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

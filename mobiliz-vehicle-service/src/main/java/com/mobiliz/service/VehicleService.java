@@ -39,7 +39,34 @@ public class VehicleService {
     }
 
 
-    public VehicleResponse createVehicle(String header, Long fleetId,
+    public List<VehicleResponse> getCompanyVehicles(String header) {
+        Long companyId = findCompanyIdByHeaderToken(header);
+        Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
+
+        List<Vehicle> vehicles = getVehiclesByCompanyIdAndCompanyFleetId(companyId, companyFleetId);
+
+        return vehicleConverter.convert(vehicles);
+    }
+
+
+    public VehicleResponse getByVehicleId(String header, Long vehicleId) {
+        Long companyId = findCompanyIdByHeaderToken(header);
+        Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
+
+        List<Vehicle> vehicles = getVehiclesByCompanyIdAndCompanyFleetId(companyId, companyFleetId);
+
+        Vehicle vehicle = vehicleRepository
+                .findByIdAndCompanyIdAndCompanyFleetId(vehicleId, companyId, companyFleetId).orElseThrow(
+                () -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS + vehicleId));
+
+        checkCompanyDistrictGroupResponse(companyId, vehicle);
+
+        return vehicleConverter.convert(vehicle);
+    }
+
+
+
+    public VehicleResponse createVehicle(String header,
                                          Long districtGroupId, Optional<Long> companyGroupId,
                                          VehicleRequest vehicleRequest) {
         logger.info("createVehicle method started");
@@ -53,14 +80,10 @@ public class VehicleService {
 
         if (companyGroupId.isEmpty()) {
             CompanyDistrictGroupResponse companyDistrictGroupResponse = companyDistrictGroupServiceClient
-                    .getCompanyDistrictGroupsByFleetIdAndDistrictId(header, fleetId, districtGroupId);
+                    .getCompanyDistrictGroupsByFleetIdAndDistrictId(header, districtGroupId);
+
             checkCompanyDistrictGroupResponse(companyId, companyDistrictGroupResponse);
-            vehicle.setCompanyId(companyId);
-            vehicle.setCompanyName(companyName);
-            vehicle.setCompanyFleetId(companyDistrictGroupResponse.getCompanyFleetGroupId());
-            vehicle.setCompanyFleetName(companyDistrictGroupResponse.getCompanyFleetGroupName());
-            vehicle.setCompanyDistrictGroupId(companyDistrictGroupResponse.getId());
-            vehicle.setCompanyDistrictGroupName(companyDistrictGroupResponse.getName());
+            vehicle = saveVehicleByCompanyDistrictGroup(companyId, companyName, vehicle, companyDistrictGroupResponse);
 
             vehicle = vehicleRepository.save(vehicle);
             logger.info("vehicle created: {}", vehicle);
@@ -72,18 +95,13 @@ public class VehicleService {
 
         CompanyGroupResponse companyGroupResponse = companyGroupClient
                 .getCompanyGroupByDistrictGroupIAndFleetIdAndCompanyGroupId(
-                        header, fleetId, districtGroupId, companyGroupId.get());
+                        header, districtGroupId, companyGroupId.get());
+        logger.info("companyGroupResponse : {}", companyGroupResponse);
+        logger.info("companyId : {}", companyId);
 
         checkCompanyGroupResponse(companyId, companyGroupResponse);
 
-        vehicle.setCompanyId(companyId);
-        vehicle.setCompanyName(companyName);
-        vehicle.setCompanyFleetId(companyGroupResponse.getCompanyFleetGroupId());
-        vehicle.setCompanyFleetName(companyGroupResponse.getCompanyFleetGroupName());
-        vehicle.setCompanyDistrictGroupId(companyGroupResponse.getId());
-        vehicle.setCompanyDistrictGroupName(companyGroupResponse.getName());
-        vehicle.setCompanyGroupId(companyGroupResponse.getId());
-        vehicle.setCompanyGroupName(companyGroupResponse.getName());
+        vehicle = saveVehicleByCompanyGroup(companyId, companyName, vehicle, companyGroupResponse);
 
         vehicle = vehicleRepository.save(vehicle);
         logger.info("vehicle created: {}", vehicle);
@@ -92,25 +110,34 @@ public class VehicleService {
         return vehicleConverter.convert(vehicle);
     }
 
-    public VehicleResponse getByVehicleId(String header, Long vehicleId) {
-        Long companyId = findCompanyIdByHeaderToken(header);
-        Vehicle vehicle = vehicleRepository.findByIdAndCompanyId(vehicleId, companyId).orElseThrow(
-                () -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS));
-        checkCompanyDistrictGroupResponse(companyId, vehicle);
 
-        return vehicleConverter.convert(vehicle);
+    private Vehicle  saveVehicleByCompanyGroup(Long companyId, String companyName, Vehicle vehicle, CompanyGroupResponse companyGroupResponse) {
+        vehicle.setCompanyId(companyId);
+        vehicle.setCompanyName(companyName);
+        vehicle.setCompanyFleetId(companyGroupResponse.getCompanyFleetGroupId());
+        vehicle.setCompanyFleetName(companyGroupResponse.getCompanyFleetGroupName());
+        vehicle.setCompanyDistrictGroupId(companyGroupResponse.getId());
+        vehicle.setCompanyDistrictGroupName(companyGroupResponse.getName());
+        vehicle.setCompanyGroupId(companyGroupResponse.getId());
+        vehicle.setCompanyGroupName(companyGroupResponse.getName());
+        return vehicle;
     }
 
-    public List<VehicleResponse> getCompanyVehicles(String header) {
-        Long companyId = findCompanyIdByHeaderToken(header);
 
-        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyId(companyId).orElseThrow(()
+    private  Vehicle saveVehicleByCompanyDistrictGroup(Long companyId, String companyName, Vehicle vehicle, CompanyDistrictGroupResponse companyDistrictGroupResponse) {
+        vehicle.setCompanyId(companyId);
+        vehicle.setCompanyName(companyName);
+        vehicle.setCompanyFleetId(companyDistrictGroupResponse.getCompanyFleetGroupId());
+        vehicle.setCompanyFleetName(companyDistrictGroupResponse.getCompanyFleetGroupName());
+        vehicle.setCompanyDistrictGroupId(companyDistrictGroupResponse.getId());
+        vehicle.setCompanyDistrictGroupName(companyDistrictGroupResponse.getName());
+        return vehicle;
+    }
+    private List<Vehicle> getVehiclesByCompanyIdAndCompanyFleetId(Long companyId, Long companyFleetId) {
+        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyIdAndCompanyFleetId(companyId, companyFleetId).orElseThrow(()
                 -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_ID + companyId));
-
-        return vehicleConverter.convert(vehicles);
+        return vehicles;
     }
-
-
 
     private static void checkCompanyGroupResponse(Long companyId, CompanyGroupResponse companyGroupResponse) {
         if (!companyId.equals(companyGroupResponse.getCompanyId())) {
@@ -130,34 +157,19 @@ public class VehicleService {
         }
     }
 
-    public  Long findCompanyIdByHeaderToken(String header) {
+    private Long findCompanyFleetIdByHeaderToken(String header) {
+        String token = header.substring(7);
+        return Long.valueOf(jwtTokenService.getClaims(token).get("companyFleetId").toString());
+    }
+
+    private Long findCompanyIdByHeaderToken(String header) {
         String token = header.substring(7);
         return Long.valueOf(jwtTokenService.getClaims(token).get("companyId").toString());
     }
 
-    public Long findUserIdByHeaderToken(String header) {
-        String token = header.substring(7);
-        return Long.valueOf(jwtTokenService.getClaims(token).get("userId").toString());
-    }
-
-    public String findUserNameByHeaderToken(String header) {
-        String token = header.substring(7);
-        return jwtTokenService.getClaims(token).get("name").toString();
-    }
-
-    public String findUserSurNameByHeaderToken(String header) {
-        String token = header.substring(7);
-        return jwtTokenService.getClaims(token).get("surname").toString();
-    }
-
-    public String findCompanyNameByHeaderToken(String header) {
+    private String findCompanyNameByHeaderToken(String header) {
         String token = header.substring(7);
         return jwtTokenService.getClaims(token).get("companyName").toString();
-    }
-
-    public String findUserRoleByHeaderToken(String header) {
-        String token = header.substring(7);
-        return jwtTokenService.getClaims(token).get("role").toString();
     }
 
 

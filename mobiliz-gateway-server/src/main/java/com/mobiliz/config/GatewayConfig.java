@@ -41,6 +41,12 @@ public class GatewayConfig {
                 .route("user-vehicle-registration", r -> r.path("/api/uservehicles/**")
                         .filters(f -> f.filter(filter))
                         .uri("http://localhost:9097"))
+                .route("user-vehicle-list-shape", r -> r.path("/api/vehiclelist/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("http://localhost:9098"))
+                .route("user-vehicle-tree-shape", r -> r.path("/api/vehicletree/**")
+                        .filters(f -> f.filter(filter))
+                        .uri("http://localhost:9099"))
                 .build();
     }
 }

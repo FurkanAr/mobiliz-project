@@ -27,17 +27,17 @@ public class UserVehicleRegistrationController {
     @PostMapping("/companygroups/{companyGroupId}")
     public ResponseEntity<String> addCompanyGroupVehiclesToUser(
             @RequestHeader("Authorization") String header,
-            @PathVariable Long companyGroupId) {
-        String response = userVehicleRegistrationService.addCompanyGroupVehiclesToUser(header, companyGroupId);
+            @PathVariable Long companyGroupId,
+            @RequestParam Long districtGroupId) {
+        String response = userVehicleRegistrationService.addCompanyGroupVehiclesToUser(header, companyGroupId, districtGroupId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping("/districtgroups/{districtgroupId}")
+    @PostMapping("/districtgroups/{districtGroupId}")
     public ResponseEntity<String> addCompanyDistrictGroupVehiclesToUser(
             @RequestHeader("Authorization") String header,
-            @RequestParam Long fleetId,
-            @PathVariable Long districtgroupId) {
-        String response = userVehicleRegistrationService.addCompanyDistrictGroupVehiclesToUser(header,fleetId, districtgroupId);
+            @PathVariable Long districtGroupId) {
+        String response = userVehicleRegistrationService.addCompanyDistrictGroupVehiclesToUser(header, districtGroupId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

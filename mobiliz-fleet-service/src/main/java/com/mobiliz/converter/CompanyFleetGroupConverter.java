@@ -1,7 +1,9 @@
 package com.mobiliz.converter;
 
+import com.mobiliz.client.response.CompanyFleetDistrictGroupResponse;
 import com.mobiliz.model.CompanyFleetGroup;
 import com.mobiliz.request.CompanyFleetGroupRequest;
+import com.mobiliz.response.CompanyFleetDistrictsGroupResponse;
 import com.mobiliz.response.CompanyFleetGroupResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,4 +47,15 @@ public class CompanyFleetGroupConverter {
     }
 
 
+    public CompanyFleetDistrictsGroupResponse convertCompanyFleetDistrictsGroupResponse(
+            CompanyFleetGroup companyFleetGroup, List<CompanyFleetDistrictGroupResponse> fleetDistrictGroupResponses) {
+
+        CompanyFleetDistrictsGroupResponse response = new CompanyFleetDistrictsGroupResponse();
+        response.setId(companyFleetGroup.getId());
+        response.setName(companyFleetGroup.getName());
+        response.setCompanyId(companyFleetGroup.getCompanyId());
+        response.setCompanyName(companyFleetGroup.getCompanyName());
+        response.setCompanyDistrictGroups(fleetDistrictGroupResponses);
+        return response;
+    }
 }

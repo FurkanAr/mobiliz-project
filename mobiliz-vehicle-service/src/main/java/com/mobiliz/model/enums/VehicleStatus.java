@@ -2,6 +2,6 @@ package com.mobiliz.model.enums;
 
 public enum VehicleStatus {
 
-    AVAILABLE, IN_USE, IN_MAINTENANCE
+    AVAILABLE, IN_USE
 
 }

@@ -1,6 +1,7 @@
 package com.mobiliz.service;
 
-import com.mobiliz.client.request.UserCompanyDistrictGroupSaveRequest;
+import com.mobiliz.client.CompanyGroupClient;
+import com.mobiliz.client.response.CompanyDistrictCompanyGroupResponse;
 import com.mobiliz.client.response.VehicleResponseStatus;
 import com.mobiliz.constant.Constants;
 import com.mobiliz.converter.CompanyDistrictGroupConverter;
@@ -8,18 +9,22 @@ import com.mobiliz.exception.companyDistrictGroup.CompanyDistrictGroupNameInUseE
 import com.mobiliz.exception.companyDistrictGroup.CompanyDistrictGroupNotFoundException;
 import com.mobiliz.exception.messages.Messages;
 import com.mobiliz.model.CompanyDistrictGroup;
+import com.mobiliz.model.enums.DistrictStatus;
 import com.mobiliz.repository.CompanyDistrictGroupRepository;
 import com.mobiliz.request.CompanyDistrictGroupRequest;
 import com.mobiliz.request.CompanyDistrictGroupUpdateRequest;
 import com.mobiliz.response.CompanyDistrictGroupResponse;
+import com.mobiliz.response.CompanyFleetDistrictGroupResponse;
 import com.mobiliz.security.JwtTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -28,55 +33,44 @@ public class CompanyDistrictGroupService {
     private final CompanyDistrictGroupRepository companyDistrictGroupRepository;
     private final CompanyDistrictGroupConverter companyDistrictGroupConverter;
     private final JwtTokenService jwtTokenService;
+    private final CompanyGroupClient companyGroupClient;
     Logger logger = LoggerFactory.getLogger(getClass());
 
 
-    public CompanyDistrictGroupService(CompanyDistrictGroupRepository companyDistrictGroupRepository, CompanyDistrictGroupConverter companyDistrictGroupConverter, JwtTokenService jwtTokenService) {
+    public CompanyDistrictGroupService(CompanyDistrictGroupRepository companyDistrictGroupRepository, CompanyDistrictGroupConverter companyDistrictGroupConverter, JwtTokenService jwtTokenService, CompanyGroupClient companyGroupClient) {
         this.companyDistrictGroupRepository = companyDistrictGroupRepository;
         this.companyDistrictGroupConverter = companyDistrictGroupConverter;
         this.jwtTokenService = jwtTokenService;
+        this.companyGroupClient = companyGroupClient;
     }
 
     public List<CompanyDistrictGroupResponse> getCompanyDistrictGroupsByFleetId(String header) {
-        Long companyFleetGroupId = findCompanyFleetIdByHeaderToken(header);
+        Long companyId = findCompanyIdByHeaderToken(header);
+        Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
 
-        List<CompanyDistrictGroup> companyDistrictGroups = companyDistrictGroupRepository
-                .findAllByCompanyFleetId(companyFleetGroupId)
-                .orElseThrow(() ->
-                        new CompanyDistrictGroupNotFoundException(
-                                Messages.CompanyDistrictGroup.NOT_EXISTS + companyFleetGroupId));
+        List<CompanyDistrictGroup> companyDistrictGroups =
+                getCompanyDistrictGroupsByCompanyIdAndFleetGroupId(companyId, companyFleetId);
 
         return companyDistrictGroupConverter.convert(companyDistrictGroups);
     }
 
     public CompanyDistrictGroupResponse getCompanyDistrictGroupsByFleetIdAndDistrictId(
-            String header, Long fleetId, Long districtGroupId) {
+            String header, Long districtGroupId) {
+
         Long companyId = findCompanyIdByHeaderToken(header);
+        Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
+
         logger.info("companyId : {}", companyId);
 
         List<CompanyDistrictGroup> companyDistrictGroupsFoundByFleetId =
-                companyDistrictGroupRepository.findAllByCompanyFleetId(fleetId)
-                        .orElseThrow(() ->
-                                new CompanyDistrictGroupNotFoundException(
-                                        Messages.CompanyDistrictGroup.NOT_EXISTS_BY_GIVEN_FLEET_ID + fleetId));
+                getCompanyDistrictGroupsByCompanyIdAndFleetGroupId(companyId, companyFleetId);
+
         logger.info("companyDistrictGroupsFoundByFleetId : {}", companyDistrictGroupsFoundByFleetId);
 
-        List<CompanyDistrictGroup> companyDistrictGroupsFoundByDistrictGroupId =
-                companyDistrictGroupRepository.findAllById(districtGroupId)
-                        .orElseThrow(() ->
-                                new CompanyDistrictGroupNotFoundException(
-                                        Messages.CompanyDistrictGroup.NOT_EXISTS + districtGroupId));
-        logger.info("companyDistrictGroupsFoundByDistrictGroupId : {}", companyDistrictGroupsFoundByDistrictGroupId);
+        CompanyDistrictGroup companyDistrictGroup =
+                checkByIdAndCompanyIdAndCompanyFleetId(districtGroupId, companyId, companyFleetId);
 
-        List<CompanyDistrictGroup> companyDistrictGroupsFoundByFleetIdAndDistrictGroupId =
-                companyDistrictGroupRepository.findAllByIdAndCompanyFleetId(districtGroupId, fleetId)
-                        .orElseThrow(() ->
-                                new CompanyDistrictGroupNotFoundException(
-                                        Messages.CompanyDistrictGroup.NOT_EXISTS_BY_GIVEN_ID_AND_FLEET_ID
-                                                + districtGroupId));
-        logger.info("companyDistrictGroupsFoundByFleetIdAndDistrictGroupId : {}", companyDistrictGroupsFoundByFleetIdAndDistrictGroupId);
-
-        CompanyDistrictGroup companyDistrictGroup = checkByIdAndCompanyIdAndCompanyFleetId(districtGroupId, companyId, fleetId);
+        logger.info("companyDistrictGroup : {}", companyDistrictGroup);
 
         return companyDistrictGroupConverter.convert(companyDistrictGroup);
     }
@@ -89,6 +83,11 @@ public class CompanyDistrictGroupService {
         String companyName = findCompanyNameByHeaderToken(header);
         Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
         String companyFleetName = findCompanyFleetNameByHeaderToken(header);
+
+        List<CompanyDistrictGroup> companyDistrictGroupsFoundByFleetId =
+                getCompanyDistrictGroupsByCompanyIdAndFleetGroupId(companyId, companyFleetId);
+
+        logger.info("companyDistrictGroupsFoundByFleetId : {}", companyDistrictGroupsFoundByFleetId);
 
         checkNameAvailable(companyFleetId, companyDistrictGroupRequest.getName());
 
@@ -105,13 +104,21 @@ public class CompanyDistrictGroupService {
 
     @Transactional
     public CompanyDistrictGroupResponse updateCompanyDistrictGroup(String header,
-                                                                   Long companyDistrictGroupId,
+                                                                   Long districtGroupId,
                                                                    CompanyDistrictGroupUpdateRequest companyDistrictGroupUpdateRequest) {
         Long companyId = findCompanyIdByHeaderToken(header);
         Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
 
-        CompanyDistrictGroup companyDistrictGroup = checkByIdAndCompanyIdAndCompanyFleetId(
-                companyDistrictGroupId, companyId, companyFleetId);
+        List<CompanyDistrictGroup> companyDistrictGroupsFoundByFleetId =
+                getCompanyDistrictGroupsByCompanyIdAndFleetGroupId(companyId, companyFleetId);
+
+        logger.info("companyDistrictGroupsFoundByFleetId : {}", companyDistrictGroupsFoundByFleetId);
+
+        CompanyDistrictGroup companyDistrictGroup =
+                checkByIdAndCompanyIdAndCompanyFleetId(districtGroupId, companyId, companyFleetId);
+
+        logger.info("companyDistrictGroup : {}", companyDistrictGroup);
+
 
         checkNameAvailable(companyFleetId, companyDistrictGroupUpdateRequest.getName());
 
@@ -122,13 +129,20 @@ public class CompanyDistrictGroupService {
     }
 
     @Transactional
-    public String deleteCompanyFleetGroup(String header, Long companyDistrictGroupId) {
+    public String deleteCompanyFleetGroup(String header, Long districtGroupId) {
 
         Long companyId = findCompanyIdByHeaderToken(header);
         Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
 
-        CompanyDistrictGroup companyDistrictGroup = checkByIdAndCompanyIdAndCompanyFleetId(
-                companyDistrictGroupId, companyId, companyFleetId);
+        List<CompanyDistrictGroup> companyDistrictGroupsFoundByFleetId =
+                getCompanyDistrictGroupsByCompanyIdAndFleetGroupId(companyId, companyFleetId);
+
+        logger.info("companyDistrictGroupsFoundByFleetId : {}", companyDistrictGroupsFoundByFleetId);
+
+        CompanyDistrictGroup companyDistrictGroup =
+                checkByIdAndCompanyIdAndCompanyFleetId(districtGroupId, companyId, companyFleetId);
+
+        logger.info("companyDistrictGroup : {}", companyDistrictGroup);
 
         companyDistrictGroupRepository.delete(companyDistrictGroup);
 
@@ -136,47 +150,83 @@ public class CompanyDistrictGroupService {
     }
 
     @Transactional
-    public VehicleResponseStatus saveCompanyDistrictGroupUser(String header, Long districtGroupId, Long fleetId,
-                                                              UserCompanyDistrictGroupSaveRequest request) {
+    public VehicleResponseStatus saveCompanyDistrictGroupUser(String header, Long districtGroupId) {
 
         Long companyId = findCompanyIdByHeaderToken(header);
+        Long userId = findUserIdByHeaderToken(header);
+        String userName = findUserNameByHeaderToken(header);
+        String userSurname = findUserSurNameByHeaderToken(header);
+        Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
+
+        // kullanıcının company fleet districtleri neler
+        // böyle bir fleet district var mı
+
+        List<CompanyDistrictGroup> companyDistrictGroupsFoundByFleetId =
+                getCompanyDistrictGroupsByCompanyIdAndFleetGroupId(companyId, companyFleetId);
+
+        logger.info("companyDistrictGroupsFoundByFleetId : {}", companyDistrictGroupsFoundByFleetId);
+
+        Optional<CompanyDistrictGroup> companyDistrictGroup =
+                companyDistrictGroupRepository.findByIdAndCompanyIdAndCompanyFleetId(
+                        districtGroupId, companyId, companyFleetId);
+
+        if (companyDistrictGroup.isEmpty()) {
+            logger.warn("Company district group can't found with given id: {} and fleet id: {} ",
+                    districtGroupId, companyFleetId);
+
+            return VehicleResponseStatus.DISTRICT_NOT_FOUND;
+        }
+        logger.info("companyDistrictGroup : {}", companyDistrictGroup.get());
 
 
-        CompanyDistrictGroup companyDistrictGroupFoundByIdAndCompanyIdAndFleetId = checkByIdAndCompanyIdAndCompanyFleetId(
-                districtGroupId, companyId, fleetId);
-
-        Optional<List<CompanyDistrictGroup>> companyDistrictGroupsFoundByUserId = companyDistrictGroupRepository
-                .findAllByUserId(request.getUserId());
-
-        if (companyDistrictGroupsFoundByUserId.isPresent()) {
-
-            for (CompanyDistrictGroup companyDistrictGroup : companyDistrictGroupsFoundByUserId.get()) {
-                if (companyDistrictGroup.getId().equals(districtGroupId)) {
-                    return VehicleResponseStatus.USER_ALREADY_HAS;
-                } else {
-                    CompanyDistrictGroup savedCompany = companyDistrictGroupRepository
-                            .save(saveUser(request, companyDistrictGroupFoundByIdAndCompanyIdAndFleetId));
-                    logger.info("Company District Group user added : {}", savedCompany);
-
-                    return VehicleResponseStatus.ADDED;
-                }
+        // varsa kullanımda mı
+        // eğer kullanıcı kullanıyorsa already has
+        // başka kullanıcı kullanıyorsa already_in_use_someone
+        if (DistrictStatus.IN_USE.equals(companyDistrictGroup.get().getStatus())) {
+            if (userId.equals(companyDistrictGroup.get().getUserId())) {
+                logger.warn("user already has: {} ",  companyDistrictGroup.get());
+                return VehicleResponseStatus.USER_ALREADY_HAS;
             }
+            logger.warn("not available: {} ",  companyDistrictGroup.get());
+            return VehicleResponseStatus.NOT_AVAILABLE;
         }
 
-        // gruplar aynıysa zaten ekli diye return geç
-        // değilse kaydet
+        // araç kulanımda değilse kullanıcıya ekle
+
         CompanyDistrictGroup savedCompany = companyDistrictGroupRepository
-                .save(saveUser(request, companyDistrictGroupFoundByIdAndCompanyIdAndFleetId));
+                .save(saveUserDistrict(userId, userName, userSurname, companyDistrictGroup.get()));
+        logger.info("Company District Group user added : {}", savedCompany);
         return VehicleResponseStatus.ADDED;
 
     }
 
-    private CompanyDistrictGroup saveUser(UserCompanyDistrictGroupSaveRequest request,
-                                          CompanyDistrictGroup companyDistrictGroup) {
-        companyDistrictGroup.setUserId(request.getUserId());
-        companyDistrictGroup.setFirstName(request.getUserFirstName());
-        companyDistrictGroup.setSurName(request.getUserSurName());
+    private CompanyDistrictGroup saveUserDistrict(Long userId, String userName, String userSurname,
+                                                  CompanyDistrictGroup companyDistrictGroup) {
+        companyDistrictGroup.setUserId(userId);
+        companyDistrictGroup.setFirstName(userName);
+        companyDistrictGroup.setSurName(userSurname);
+        companyDistrictGroup.setStatus(DistrictStatus.IN_USE);
         return companyDistrictGroup;
+    }
+
+    public List<CompanyFleetDistrictGroupResponse> getCompanyFleetDistrictGroupsByFleetId(String header) {
+        Long companyId = findCompanyIdByHeaderToken(header);
+        Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
+
+        List<CompanyDistrictGroup> companyDistrictGroups =
+                getCompanyDistrictGroupsByCompanyIdAndFleetGroupId(companyId, companyFleetId);
+
+        return  companyDistrictGroupConverter.convertFleetResponses(companyDistrictGroups);
+    }
+
+
+    private List<CompanyDistrictGroup> getCompanyDistrictGroupsByCompanyIdAndFleetGroupId(Long companyId, Long companyFleetGroupId) {
+        List<CompanyDistrictGroup> companyDistrictGroups = companyDistrictGroupRepository
+                .findAllByCompanyIdAndCompanyFleetId(companyId, companyFleetGroupId)
+                .orElseThrow(() ->
+                        new CompanyDistrictGroupNotFoundException(
+                                Messages.CompanyDistrictGroup.NOT_EXISTS_BY_GIVEN_FLEET_ID + companyFleetGroupId));
+        return companyDistrictGroups;
     }
 
     private CompanyDistrictGroup checkByIdAndCompanyIdAndCompanyFleetId(Long id, Long companyId, Long companyFleetId) {
@@ -189,6 +239,15 @@ public class CompanyDistrictGroupService {
         return companyDistrictGroup;
     }
 
+    private CompanyDistrictGroup getCompanyDistrictGroups(Long districtGroupId, Long companyFleetId) {
+        CompanyDistrictGroup companyDistrictGroup =
+                companyDistrictGroupRepository.findAllByIdAndCompanyFleetId(districtGroupId, companyFleetId)
+                        .orElseThrow(() ->
+                                new CompanyDistrictGroupNotFoundException(
+                                        Messages.CompanyDistrictGroup.NOT_EXISTS_BY_GIVEN_ID_AND_FLEET_ID
+                                                + districtGroupId));
+        return companyDistrictGroup;
+    }
 
     private void checkNameAvailable(Long companyFleetId, String name) {
 
@@ -218,5 +277,26 @@ public class CompanyDistrictGroupService {
         String token = header.substring(7);
         return jwtTokenService.getClaims(token).get("companyFleetName").toString();
     }
+
+    private String findRoleByHeaderToken(String header) {
+        String token = header.substring(7);
+        return jwtTokenService.getClaims(token).get("role").toString();
+    }
+
+    private Long findUserIdByHeaderToken(String header) {
+        String token = header.substring(7);
+        return Long.valueOf(jwtTokenService.getClaims(token).get("userId").toString());
+    }
+
+    private String findUserNameByHeaderToken(String header) {
+        String token = header.substring(7);
+        return jwtTokenService.getClaims(token).get("name").toString();
+    }
+
+    private String findUserSurNameByHeaderToken(String header) {
+        String token = header.substring(7);
+        return jwtTokenService.getClaims(token).get("surname").toString();
+    }
+
 
 }

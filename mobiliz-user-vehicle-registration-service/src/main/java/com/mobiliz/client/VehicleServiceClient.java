@@ -18,12 +18,12 @@ public interface VehicleServiceClient {
     @PostMapping("/global/vehicles/companygroups/{companyGroupId}")
     public String addVehicleToUserByCompanyGroupId(
             @RequestHeader("Authorization") String header,
-            @PathVariable Long companyGroupId);
+            @PathVariable Long companyGroupId,
+            @RequestParam Long districtGroupId);
 
     @PostMapping("/global/vehicles/districtgroups/{districtGroupId}")
     public String addVehicleToUserByCompanyDistrictGroupId(
             @RequestHeader("Authorization") String header,
-            @RequestParam Long fleetId,
             @PathVariable Long districtGroupId);
 
 }

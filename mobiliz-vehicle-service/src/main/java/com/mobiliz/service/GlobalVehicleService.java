@@ -2,14 +2,11 @@ package com.mobiliz.service;
 
 import com.mobiliz.client.CompanyDistrictGroupServiceClient;
 import com.mobiliz.client.CompanyGroupClient;
-import com.mobiliz.client.request.UserCompanyDistrictGroupSaveRequest;
-import com.mobiliz.client.request.UserCompanyGroupSaveRequest;
-import com.mobiliz.client.response.CompanyGroupResponse;
+import com.mobiliz.client.response.CompanyDistrictCompanyGroupResponse;
 import com.mobiliz.client.response.VehicleResponseStatus;
 import com.mobiliz.constant.Constants;
 import com.mobiliz.converter.VehicleConverter;
 import com.mobiliz.exception.messages.Messages;
-import com.mobiliz.exception.vehicle.VehicleNotAvailableException;
 import com.mobiliz.exception.vehicle.VehicleNotFoundException;
 import com.mobiliz.model.Vehicle;
 import com.mobiliz.model.VehicleRecord;
@@ -36,7 +33,10 @@ public class GlobalVehicleService {
     private final CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient;
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    public GlobalVehicleService(JwtTokenService jwtTokenService, VehicleRepository vehicleRepository, VehicleConverter vehicleConverter, VehicleRecordRepository vehicleRecordRepository, CompanyGroupClient companyGroupClient, CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient) {
+    public GlobalVehicleService(JwtTokenService jwtTokenService, VehicleRepository vehicleRepository,
+                                VehicleConverter vehicleConverter, VehicleRecordRepository vehicleRecordRepository,
+                                CompanyGroupClient companyGroupClient,
+                                CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient) {
         this.jwtTokenService = jwtTokenService;
         this.vehicleRepository = vehicleRepository;
         this.vehicleConverter = vehicleConverter;
@@ -47,12 +47,29 @@ public class GlobalVehicleService {
 
     public List<VehicleResponse> getCompanyVehicles(String header) {
         Long companyId = findCompanyIdByHeaderToken(header);
+        Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
 
-        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyId(companyId).orElseThrow(()
-                -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_ID + companyId));
+        List<Vehicle> vehicles = getVehiclesByCompanyIdAndCompanyFleetId(companyId, companyFleetId);
 
         return vehicleConverter.convert(vehicles);
     }
+
+    public List<VehicleResponse> getUserVehiclesList(String header) {
+        Long userId = findUserIdByHeaderToken(header);
+
+        List<Vehicle> vehicles = getUserVehicles(userId);
+
+        return vehicleConverter.convert(vehicles);
+    }
+
+    public List<VehicleResponse> getUserVehiclesTree(String header) {
+        Long userId = findUserIdByHeaderToken(header);
+
+        List<Vehicle> vehicles = getUserVehicles(userId);
+
+        return vehicleConverter.convert(vehicles);
+    }
+
 
     public String addVehicleToUserByVehicleId(String header, Long vehicleId) {
         logger.info("addVehicleToUser method started");
@@ -60,133 +77,162 @@ public class GlobalVehicleService {
         String userName = findUserNameByHeaderToken(header);
         String userSurname = findUserSurNameByHeaderToken(header);
         Long companyId = findCompanyIdByHeaderToken(header);
+        Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
 
-        Vehicle vehicleFoundById = checkVehicleIsExist(vehicleId);
+        List<Vehicle> vehicles = getVehiclesByCompanyIdAndCompanyFleetId(companyId, companyFleetId);
 
-        checkVehicleIdAndCompanyIdMatch(vehicleId, companyId);
+        Optional<Vehicle> foundVehicle = vehicleRepository.findByIdAndCompanyIdAndCompanyFleetId(
+                vehicleId, companyId, companyFleetId);
 
-        if (checkUserHasVehicle(userId, vehicleFoundById)) {
-            logger.warn("User already has vehicle: {}", userId);
-            return Constants.USER_HAS_ALREADY_VEHICLE + vehicleFoundById.getId();
+        if (foundVehicle.isEmpty()) {
+            logger.warn("Vehicle can't found with given id: {}", vehicleId);
+
+            return Constants.VEHICLE_NOT_FOUND_BY_GIVEN_ID;
         }
 
-        Vehicle vehicleFoundByIdAndCompanyIdAndStatus = vehicleRepository.findByIdAndCompanyIdAndStatusAvailable(
-                vehicleId, companyId, VehicleStatus.AVAILABLE.name()).orElseThrow(
-                () -> new VehicleNotAvailableException(Messages.Vehicle.VEHICLE_IN_USE_EXCEPTION + vehicleId));
+        logger.info("foundVehicle : {}", foundVehicle.get());
 
-        logger.info("vehicleFoundByIdAndCompanyIdAndStatus : {}", vehicleFoundByIdAndCompanyIdAndStatus);
+        if (VehicleStatus.IN_USE.equals(foundVehicle.get().getStatus())) {
+            if (userId.equals(foundVehicle.get().getUserId())) {
+                logger.warn("User already has vehicle: {}", foundVehicle.get());
+                return Constants.USER_HAS_ALREADY_VEHICLE + foundVehicle.get().getId();
+            }
+            return Constants.VEHICLE_NOT_AVAILABLE;
+        }
 
-        saveVehicleAndVehicleRecord(vehicleFoundByIdAndCompanyIdAndStatus, userId, userName, userSurname);
+        saveVehicleAndVehicleRecord(foundVehicle.get(), userId, userName, userSurname);
         logger.info("addVehicleToUser method finished");
         return Constants.VEHICLE_IDENTIFIED_TO_USER;
     }
 
-    public String addVehicleToUserByCompanyGroupId(String header, Long companyGroupId) {
-        logger.info("addVehicleToUser method started");
+    public String addVehicleToUserByCompanyGroupId(String header, Long companyGroupId, Long districtGroupId) {
+        logger.info("addVehicleToUserByCompanyGroupId method started");
         Long userId = findUserIdByHeaderToken(header);
-        String userName = findUserNameByHeaderToken(header);
-        String userSurname = findUserSurNameByHeaderToken(header);
         Long companyId = findCompanyIdByHeaderToken(header);
+        Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
 
-        List<Vehicle> vehicleFoundByCompanyId = checkVehicleIsExistByCompanyId(companyId);
+        List<Vehicle> vehiclesFoundByCompanyAndCompanyFleet =
+                getVehiclesByCompanyIdAndCompanyFleetId(companyId, companyFleetId);
 
-        vehicleFoundByCompanyId.forEach(vehicle -> logger.info("vehicleFoundByCompanyId: {}", vehicle));
+        logger.info("vehiclesFoundByCompanyAndCompanyFleet : {}", vehiclesFoundByCompanyAndCompanyFleet);
 
-        List<Vehicle> vehiclesFoundByCompanyGroupId = checkVehicleIsExistByCompanyGroupId(companyGroupId);
+        List<Vehicle> vehiclesFoundByCompanyDistrictAndCompanyFleetAndCompany =
+                getVehiclesFoundByCompanyDistrictAndCompanyFleetAndCompany(districtGroupId,
+                        companyId, companyFleetId);
 
-        vehiclesFoundByCompanyGroupId.forEach(vehicle -> logger.info("vehiclesFoundByCompanyGroupId: {}", vehicle));
-
-        List<Vehicle> vehiclesFoundByCompanyIdAndGroupId = vehicleRepository.
-                findAllByCompanyIdAndCompanyGroupId(companyId, companyGroupId)
-                .orElseThrow(() ->
-                        new VehicleNotFoundException(
-                                Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_GROUP_ID
-                                        + companyGroupId));
-
-        vehiclesFoundByCompanyIdAndGroupId.forEach(vehicle -> logger.info("vehiclesFoundByCompanyIdAndGroupId: {}", vehicle));
+        logger.info("vehiclesFoundByCompanyDistrictAndCompanyFleetAndCompany : {}",
+                vehiclesFoundByCompanyDistrictAndCompanyFleetAndCompany);
 
 
-        for (Vehicle vehicle : vehiclesFoundByCompanyIdAndGroupId) {
-            if (userId.equals(vehicle.getUserId())) {
-                logger.warn("User already has vehicle: {}", userId);
-                return Constants.USER_HAS_ALREADY_VEHICLE + vehicle.getId();
+        List<Vehicle> foundVehicles = getVehiclesByCompanyGroupId(companyGroupId, districtGroupId, companyId, companyFleetId);
+
+        logger.info("foundVehicles : {}", foundVehicles);
+
+        for (Vehicle vehicle : foundVehicles) {
+            if (VehicleStatus.IN_USE.equals(vehicle.getStatus())) {
+                if (userId.equals(vehicle.getUserId())) {
+                    logger.warn("User already has vehicle: {}", userId);
+                    return Constants.USER_HAS_ALREADY_VEHICLE + vehicle.getId();
+                }
+                return Constants.VEHICLE_NOT_AVAILABLE;
             }
-            logger.info("Found vehicle by companyId and groupId: {}", vehicle);
+
         }
 
-        List<Vehicle> vehicles = vehicleRepository
-                .findAllByCompanyIdAndCompanyGroupIdAndStatusAvailable(
-                        companyId, companyGroupId, VehicleStatus.AVAILABLE.name())
-                .orElseThrow(() ->
-                        new VehicleNotFoundException(
-                                Constants.VEHICLE_NOT_FOUND_BY_GIVEN_COMPANY_GROUP_ID + companyGroupId));
-
-        vehicles.forEach(vehicle -> System.out.println("---vehicle inside company group: " + vehicle));
-
-        UserCompanyGroupSaveRequest request = new UserCompanyGroupSaveRequest(userId, userName, userSurname);
         VehicleResponseStatus responseStatus = companyGroupClient
-                .saveCompanyGroupUser(header, companyGroupId, request);
+                .saveCompanyGroupUser(header, companyGroupId, districtGroupId);
+
+        logger.info("responseStatus : {}", responseStatus.toString());
 
         switch (responseStatus) {
-            case REJECTED:
+            case COMPANY_GROUP_NOT_FOUND:
                 logger.info("addVehicleToUser method finished");
-                return Constants.VEHICLES_NOT_IDENTIFIED_TO_USER;
+                return Constants.VEHICLES_COMPANY_GROUP_NOT_FOUND + companyGroupId;
             case USER_ALREADY_HAS:
                 logger.info("addVehicleToUser method finished");
                 return Constants.VEHICLES_USER_ALREADY_HAS;
+            case NOT_AVAILABLE:
+                logger.info("addVehicleToUser method finished");
+                return Constants.VEHICLE_NOT_AVAILABLE;
             default:
                 logger.info("addVehicleToUser method finished");
                 // saveVehiclesAndVehicleRecords(vehicles, userId, userName, userSurname);
-                vehicles.forEach(vehicle -> addVehicleToUserByVehicleId(header, vehicle.getId()));
-                //
+                foundVehicles.forEach(vehicle -> addVehicleToUserByVehicleId(header, vehicle.getId()));
                 return Constants.VEHICLES_IDENTIFIED_TO_USER;
         }
     }
 
+    private List<Vehicle> getVehiclesByCompanyGroupId(Long companyGroupId, Long districtGroupId, Long companyId, Long companyFleetId) {
+        List<Vehicle> foundVehicles = vehicleRepository.
+                findByCompanyGroupIdAndCompanyDistrictGroupIdAndCompanyFleetIdAndCompanyId(
+                        companyGroupId, districtGroupId, companyFleetId, companyId)
+                .orElseThrow(() ->
+                        new VehicleNotFoundException(
+                                Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_GROUP_ID
+                                        + companyGroupId));
+        return foundVehicles;
+    }
 
-    public String addVehicleToUserByCompanyDistrictGroupId(String header, Long fleetId, Long districtGroupId) {
+
+    public String addVehicleToUserByCompanyDistrictGroupId(String header, Long districtGroupId) {
         logger.info("addVehicleToUser method started");
         Long userId = findUserIdByHeaderToken(header);
-        String userName = findUserNameByHeaderToken(header);
-        String userSurname = findUserSurNameByHeaderToken(header);
         Long companyId = findCompanyIdByHeaderToken(header);
-        String role = findUserRoleByHeaderToken(header);
+        Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
+
+        List<Vehicle> vehiclesFoundByCompanyAndCompanyFleet =
+                getVehiclesByCompanyIdAndCompanyFleetId(companyId, companyFleetId);
+
+        logger.info("vehiclesFoundByCompanyAndCompanyFleet : {}", vehiclesFoundByCompanyAndCompanyFleet);
 
 
-        List<Vehicle> vehicles = vehicleRepository
-                .findAllByCompanyIdAndCompanyDistrictGroupIdAndStatusAvailable(
-                        companyId, districtGroupId, VehicleStatus.AVAILABLE.name())
+        List<Vehicle> vehicles = vehicleRepository.
+                findAllByCompanyDistrictGroupIdAndCompanyFleetGroupIdAndCompanyId(districtGroupId, companyFleetId, companyId)
                 .orElseThrow(() ->
-                        new VehicleNotFoundException(Constants.VEHICLE_NOT_FOUND_BY_GIVEN_COMPANY_DISTRICT_GROUP_ID + districtGroupId));
+                        new VehicleNotFoundException(
+                                Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_DISTRICT_GROUP_ID
+                                        + districtGroupId));
 
-        vehicles.forEach(vehicle -> System.out.println("------vehicle inside company district group: " + vehicle));
+        logger.info("vehicles : {}", vehicles);
 
-        List<CompanyGroupResponse> companyGroupResponses = companyGroupClient
-                .getCompanyGroupsByDistrictGroupId(header, fleetId, districtGroupId);
+        for (Vehicle vehicle : vehicles) {
+            if (VehicleStatus.IN_USE.equals(vehicle.getStatus())) {
+                if (userId.equals(vehicle.getUserId())) {
+                    logger.warn("User already has vehicle: {}", vehicle);
+                    return Constants.USER_HAS_ALREADY_VEHICLE + vehicle.getId();
+                }
+                logger.warn("Vehicle not available: {}", vehicle);
+                return Constants.VEHICLE_NOT_AVAILABLE;
+            }
 
-/*
+        }
+
+        List<CompanyDistrictCompanyGroupResponse> companyGroupResponses = companyGroupClient
+                .getCompanyGroupsByFleetGroupId(header, districtGroupId);
+        logger.info("companyGroupResponses : {}", companyGroupResponses);
+
+
         companyGroupResponses.forEach(companyGroupResponse ->
-                addVehicleToUserByCompanyGroupId(header, fleetId, districtGroupId, companyGroupResponse.getId()));
+                addVehicleToUserByCompanyGroupId(header, companyGroupResponse.getId(), districtGroupId));
 
-
- */
-        saveVehiclesAndVehicleRecords(vehicles, userId, userName, userSurname);
-
-        UserCompanyDistrictGroupSaveRequest districtGroupSaveRequest =
-                new UserCompanyDistrictGroupSaveRequest(userId, userName, userSurname);
 
         VehicleResponseStatus vehicleResponseStatus = companyDistrictGroupServiceClient
-                .saveCompanyDistrictGroupUser(header, districtGroupId, districtGroupSaveRequest);
+                .saveCompanyDistrictGroupUser(header, districtGroupId);
+        logger.info("vehicleResponseStatus : {}", vehicleResponseStatus.toString());
 
         switch (vehicleResponseStatus) {
-            case REJECTED:
+            case DISTRICT_NOT_FOUND:
                 logger.info("addVehicleToUser method finished");
-                return Constants.VEHICLES_NOT_IDENTIFIED_TO_USER;
+                return Constants.VEHICLE_NOT_FOUND_BY_GIVEN_COMPANY_DISTRICT_GROUP_ID;
             case USER_ALREADY_HAS:
                 logger.info("addVehicleToUser method finished");
                 return Constants.VEHICLES_USER_ALREADY_HAS;
+            case NOT_AVAILABLE:
+                logger.info("addVehicleToUser method finished");
+                return Constants.VEHICLE_NOT_AVAILABLE;
             default:
                 logger.info("addVehicleToUser method finished");
+                vehicles.forEach(vehicle -> addVehicleToUserByVehicleId(header, vehicle.getId()));
                 return Constants.VEHICLES_IDENTIFIED_TO_USER;
         }
 
@@ -215,6 +261,26 @@ public class GlobalVehicleService {
 
     }
 
+
+    private List<Vehicle> getVehiclesFoundByCompanyDistrictAndCompanyFleetAndCompany(
+            Long districtGroupId,
+            Long companyId,
+            Long companyFleetId) {
+
+        return vehicleRepository.
+                findAllByCompanyDistrictGroupIdAndCompanyFleetGroupIdAndCompanyId(districtGroupId, companyFleetId, companyId)
+                .orElseThrow(() ->
+                        new VehicleNotFoundException(
+                                Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_DISTRICT_GROUP_ID
+                                        + districtGroupId));
+    }
+
+    private List<Vehicle> getVehiclesByCompanyIdAndCompanyFleetId(Long companyId, Long companyFleetId) {
+        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyIdAndCompanyFleetId(companyId, companyFleetId).orElseThrow(()
+                -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_ID + companyId));
+        return vehicles;
+    }
+
     private List<Vehicle> checkVehicleIsExistByCompanyId(Long companyId) {
         List<Vehicle> vehicleFoundByCompanyId = vehicleRepository.findAllByCompanyGroupId(companyId)
                 .orElseThrow(() -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_ID + companyId));
@@ -230,14 +296,15 @@ public class GlobalVehicleService {
         return vehicleFoundByCompanyGroupId;
     }
 
-    private boolean checkUserHasVehicle(Long userId, Vehicle vehicle) {
-        return userId.equals(vehicle.getUserId());
-    }
 
-    private void checkVehicleIdAndCompanyIdMatch(Long vehicleId, Long companyId) {
-        Vehicle vehicleFoundByIdAndCompanyId = vehicleRepository.findByIdAndCompanyId(vehicleId, companyId).orElseThrow(
-                () -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_ID + companyId));
-        logger.info("vehicleFoundByIdAndCompanyId : {}", vehicleFoundByIdAndCompanyId);
+    private Vehicle getVehicleByIdAndCompanyAndCompanyFleet(Long vehicleId, Long companyId, Long companyFleetId) {
+        Vehicle foundVehicle = vehicleRepository.findByIdAndCompanyIdAndCompanyFleetId(
+                        vehicleId, companyId, companyFleetId)
+                .orElseThrow(()
+                        -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS + vehicleId));
+        logger.info("vehicleFoundByIdAndCompanyId : {}", foundVehicle);
+        return foundVehicle;
+
     }
 
     private Vehicle checkVehicleIsExist(Long vehicleId) {
@@ -248,15 +315,37 @@ public class GlobalVehicleService {
         return vehicleFoundById;
     }
 
+    private List<Vehicle> getUserVehicles(Long userId) {
+        List<Vehicle> vehicles = vehicleRepository.findAllByUserId(userId).orElseThrow(
+                () -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXIST_BY_GIVEN_USER_ID + userId));
+        return vehicles;
+    }
+
+
+
+    private Long findUserIdByHeaderToken(String header) {
+        String token = header.substring(7);
+        return Long.valueOf(jwtTokenService.getClaims(token).get("userId").toString());
+    }
+
+    private Long findCompanyFleetIdByHeaderToken(String header) {
+        String token = header.substring(7);
+        return Long.valueOf(jwtTokenService.getClaims(token).get("companyFleetId").toString());
+    }
 
     private Long findCompanyIdByHeaderToken(String header) {
         String token = header.substring(7);
         return Long.valueOf(jwtTokenService.getClaims(token).get("companyId").toString());
     }
 
-    private Long findUserIdByHeaderToken(String header) {
+    private String findCompanyNameByHeaderToken(String header) {
         String token = header.substring(7);
-        return Long.valueOf(jwtTokenService.getClaims(token).get("userId").toString());
+        return jwtTokenService.getClaims(token).get("companyName").toString();
+    }
+
+    private String findCompanyFleetNameByHeaderToken(String header) {
+        String token = header.substring(7);
+        return jwtTokenService.getClaims(token).get("companyFleetName").toString();
     }
 
     private String findUserNameByHeaderToken(String header) {
@@ -269,15 +358,6 @@ public class GlobalVehicleService {
         return jwtTokenService.getClaims(token).get("surname").toString();
     }
 
-    private String findCompanyNameByHeaderToken(String header) {
-        String token = header.substring(7);
-        return jwtTokenService.getClaims(token).get("companyName").toString();
-    }
-
-    private String findUserRoleByHeaderToken(String header) {
-        String token = header.substring(7);
-        return jwtTokenService.getClaims(token).get("role").toString();
-    }
 
 
 }

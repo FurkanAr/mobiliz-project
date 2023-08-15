@@ -30,13 +30,9 @@ public class UserConverter {
         user.setRole(UserRole.valueOf(userRequest.getRole()));
         user.setCompanyId(userRequest.getCompanyId());
         user.setCompanyName(userRequest.getCompanyName());
-        if (UserRole.STANDARD.equals(user.getRole())) {
-            user.setCompanyFleetId(0L);
-            user.setCompanyFleetName("no fleet id");
-        } else {
-            user.setCompanyFleetId(userRequest.getFleetId());
-            user.setCompanyFleetName(userRequest.getCompanyFleetName());
-        }
+        user.setCompanyFleetId(userRequest.getFleetId());
+        user.setCompanyFleetName(userRequest.getCompanyFleetName());
+
         logger.info("convert to User method successfully worked");
         return user;
     }

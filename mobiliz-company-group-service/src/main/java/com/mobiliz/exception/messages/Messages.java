@@ -13,6 +13,7 @@ public class Messages {
                 "district group id: ";
 
         public static final String NOT_EXISTS_BY_GIVEN_FLEET_ID = "Company group cannot find with given fleet id: ";
+        public static final String NOT_EXIST_BY_USER_ID = "Company group can't find with given user id: ";
     }
 
 

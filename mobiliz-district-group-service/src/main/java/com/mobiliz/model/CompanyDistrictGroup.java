@@ -1,6 +1,9 @@
 package com.mobiliz.model;
 
+import com.mobiliz.model.enums.DistrictStatus;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "company_district_group")
@@ -26,6 +29,10 @@ public class CompanyDistrictGroup {
     private String firstName;
     @Column(name = "sur_name")
     private String surName;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private DistrictStatus status;
+
 
     public CompanyDistrictGroup() {
     }
@@ -36,6 +43,7 @@ public class CompanyDistrictGroup {
         this.companyName = companyName;
         this.companyFleetId = companyFleetId;
         this.companyFleetName = companyFleetName;
+        this.status = DistrictStatus.AVAILABLE;
     }
 
     public Long getId() {
@@ -110,6 +118,14 @@ public class CompanyDistrictGroup {
         this.companyFleetName = companyFleetName;
     }
 
+    public DistrictStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(DistrictStatus status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "CompanyDistrictGroup{" +
@@ -121,4 +137,17 @@ public class CompanyDistrictGroup {
                 ", companyFleetName='" + companyFleetName + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CompanyDistrictGroup that = (CompanyDistrictGroup) o;
+        return id.equals(that.id) && name.equals(that.name) && companyId.equals(that.companyId)
+                && companyName.equals(that.companyName) && companyFleetId.equals(that.companyFleetId)
+                && companyFleetName.equals(that.companyFleetName) && Objects.equals(userId, that.userId)
+                && Objects.equals(firstName, that.firstName) && Objects.equals(surName, that.surName);
+    }
+
+
 }

@@ -54,14 +54,15 @@ public class Vehicle {
     private VehicleRecord vehicleRecord;
 
     public Vehicle() {
+        this.status = VehicleStatus.AVAILABLE;
     }
 
-    public Vehicle(String licencePlate, String brand, String model, String modelYear, VehicleStatus status) {
+    public Vehicle(String licencePlate, String brand, String model, String modelYear) {
         this.licencePlate = licencePlate;
         this.brand = brand;
         this.model = model;
         this.modelYear = modelYear;
-        this.status = status;
+        this.status = VehicleStatus.AVAILABLE;
     }
 
     public Long getId() {

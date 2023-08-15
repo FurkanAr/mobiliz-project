@@ -36,19 +36,33 @@ public class GlobalVehicleController {
     @PostMapping("/companygroups/{companyGroupId}")
     public ResponseEntity<String> addVehicleToUserByCompanyGroupId(
             @RequestHeader("Authorization") String header,
-            @PathVariable Long companyGroupId) {
-        String response = globalVehicleService.addVehicleToUserByCompanyGroupId(header, companyGroupId);
+            @PathVariable Long companyGroupId,
+            @RequestParam Long districtGroupId) {
+        String response = globalVehicleService.addVehicleToUserByCompanyGroupId(header, companyGroupId, districtGroupId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/districtgroups/{districtGroupId}")
     public ResponseEntity<String> addVehicleToUserByCompanyDistrictGroupId(
             @RequestHeader("Authorization") String header,
-            @RequestParam Long fleetId,
             @PathVariable Long districtGroupId) {
-        String response = globalVehicleService.addVehicleToUserByCompanyDistrictGroupId(header, fleetId, districtGroupId);
+        String response = globalVehicleService.addVehicleToUserByCompanyDistrictGroupId(header, districtGroupId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @GetMapping("/vehicle/list")
+    public ResponseEntity<List<VehicleResponse>> getUserVehiclesList(@RequestHeader("Authorization") String header) {
+        List<VehicleResponse> vehicleResponses = globalVehicleService.getUserVehiclesList(header);
+        return ResponseEntity.ok(vehicleResponses);
+    }
+
+    @GetMapping("/vehicle/tree")
+    public ResponseEntity<List<VehicleResponse>> getUserVehiclesTree(@RequestHeader("Authorization") String header) {
+        List<VehicleResponse> vehicleResponses = globalVehicleService.getUserVehiclesTree(header);
+        return ResponseEntity.ok(vehicleResponses);
+    }
+
+
 
 
 }

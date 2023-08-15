@@ -1,5 +1,6 @@
 package com.mobiliz.controller;
 
+import com.mobiliz.response.CompanyFleetDistrictsGroupResponse;
 import com.mobiliz.response.CompanyFleetGroupResponse;
 import com.mobiliz.service.CompanyFleetGroupService;
 import org.slf4j.Logger;
@@ -21,17 +22,17 @@ public class CompanyFleetGroupController {
     }
 
     @GetMapping
-    public ResponseEntity<CompanyFleetGroupResponse> getCompanyFleet(@RequestHeader("Authorization") String header) {
-        CompanyFleetGroupResponse fleetGroupResponse = companyFleetGroupService
+    public ResponseEntity<CompanyFleetDistrictsGroupResponse> getCompanyFleet(@RequestHeader("Authorization") String header) {
+        CompanyFleetDistrictsGroupResponse fleetGroupResponse = companyFleetGroupService
                 .getCompanyFleetById(header);
         return ResponseEntity.ok(fleetGroupResponse);
     }
 
     @GetMapping("/companies")
-    public ResponseEntity<List<CompanyFleetGroupResponse>> getCompanyFleetsByCompanyId(
+    public ResponseEntity<CompanyFleetGroupResponse> getCompanyFleetsByFleetId(
             @RequestHeader("Authorization") String header) {
-        List<CompanyFleetGroupResponse> fleetGroupResponse = companyFleetGroupService
-                .getCompanyFleetsByCompanyId(header);
+        CompanyFleetGroupResponse fleetGroupResponse = companyFleetGroupService
+                .getCompanyFleetsByFleetId(header);
         return ResponseEntity.ok(fleetGroupResponse);
 
     }

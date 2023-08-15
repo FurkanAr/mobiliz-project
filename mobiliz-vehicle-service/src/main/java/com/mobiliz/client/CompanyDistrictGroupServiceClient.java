@@ -12,12 +12,10 @@ public interface CompanyDistrictGroupServiceClient {
     @GetMapping(value = "/districtgroups/{districtGroupId}")
     public CompanyDistrictGroupResponse getCompanyDistrictGroupsByFleetIdAndDistrictId(@RequestHeader("Authorization")
                                                                                        String header,
-                                                                                       @RequestParam Long fleetId,
                                                                                        @PathVariable Long districtGroupId
     );
 
     @PostMapping(value = "/districtgroups/{districtGroupId}")
     public VehicleResponseStatus saveCompanyDistrictGroupUser(@RequestHeader("Authorization") String header,
-                                                              @RequestParam Long districtGroupId,
-                                                              @RequestBody UserCompanyDistrictGroupSaveRequest request);
+                                                              @RequestParam Long districtGroupId);
 }

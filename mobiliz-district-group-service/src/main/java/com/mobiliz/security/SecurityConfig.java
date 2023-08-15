@@ -40,6 +40,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers("/api/districtgroups").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/districtgroups/**").hasAnyAuthority("STANDARD", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/districtgroups/**").hasAnyAuthority("STANDARD")
+                .antMatchers(HttpMethod.GET, "/api/districtgroups/fleets").hasAnyAuthority( "ADMIN")
                 .anyRequest()
                 .authenticated()
                 .and()

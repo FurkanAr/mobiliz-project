@@ -1,9 +1,9 @@
 package com.mobiliz.controller;
 
-import com.mobiliz.client.request.UserCompanyGroupSaveRequest;
 import com.mobiliz.client.response.VehicleResponseStatus;
 import com.mobiliz.request.CompanyGroupRequest;
 import com.mobiliz.request.CompanyGroupUpdateRequest;
+import com.mobiliz.response.CompanyDistrictCompanyGroupResponse;
 import com.mobiliz.response.CompanyGroupResponse;
 import com.mobiliz.service.CompanyGroupService;
 import org.slf4j.Logger;
@@ -27,25 +27,24 @@ public class CompanyGroupController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CompanyGroupResponse>> getCompanyGroupsByDistrictGroupIdByFleetId(
-            @RequestHeader("Authorization") String header,
-            @RequestParam Long districtGroupId) {
-
+    public ResponseEntity<List<CompanyGroupResponse>> getCompanyGroupsByCompanyIdAndFleetId(
+            @RequestHeader("Authorization") String header) {
         List<CompanyGroupResponse> companyGroupResponses = companyGroupService
-                .getCompanyGroupsByDistrictGroupIdAndFleetId(header, districtGroupId);
+                .getCompanyGroupsByCompanyIdAndFleetId(header);
         return ResponseEntity.ok(companyGroupResponses);
     }
 
     @GetMapping("/{companyGroupId}")
     public ResponseEntity<CompanyGroupResponse> getCompanyGroupByDistrictGroupIAndFleetIdAndCompanyGroupId(
-            @RequestHeader("Authorization") String header, @RequestParam Long fleetId,
+            @RequestHeader("Authorization") String header,
             @RequestParam Long districtGroupId,
             @PathVariable Long companyGroupId) {
 
         CompanyGroupResponse companyGroupResponse = companyGroupService
-                .getCompanyGroupByDistrictGroupIAndFleetIdAndCompanyGroupId(header, fleetId, districtGroupId, companyGroupId);
+                .getCompanyGroupByDistrictGroupIAndFleetIdAndCompanyGroupId(header, districtGroupId, companyGroupId);
         return ResponseEntity.ok(companyGroupResponse);
     }
+
 
     @PostMapping
     public ResponseEntity<CompanyGroupResponse> createCompanyGroup(
@@ -66,7 +65,7 @@ public class CompanyGroupController {
                                                                    @RequestBody @Valid CompanyGroupUpdateRequest companyGroupUpdateRequest) {
 
         CompanyGroupResponse companyGroupResponse = companyGroupService
-                .updateCompanyGroup(header,  districtGroupId, companyGroupId, companyGroupUpdateRequest);
+                .updateCompanyGroup(header, districtGroupId, companyGroupId, companyGroupUpdateRequest);
 
         return ResponseEntity.ok(companyGroupResponse);
     }
@@ -74,10 +73,9 @@ public class CompanyGroupController {
     @DeleteMapping
     public ResponseEntity<String> deleteCompanyGroup(@RequestHeader("Authorization") String header,
                                                      @RequestParam Long companyDistrictGroupId,
-                                                     @RequestParam Long companyGroupId
-    ) {
+                                                     @RequestParam Long companyGroupId) {
         String response = companyGroupService
-                .deleteCompany(header,companyDistrictGroupId, companyGroupId);
+                .deleteCompany(header, companyDistrictGroupId, companyGroupId);
 
         return ResponseEntity.ok(response);
     }
@@ -85,27 +83,21 @@ public class CompanyGroupController {
     @PostMapping("/{companyGroupId}")
     public ResponseEntity<VehicleResponseStatus> saveCompanyGroupUser(@RequestHeader("Authorization") String header,
                                                                       @PathVariable Long companyGroupId,
-                                                                      @RequestParam Long fleetId,
-                                                                      @RequestParam Long districtGroupId,
-
-                                                                      @RequestBody UserCompanyGroupSaveRequest userCompanyGroupSaveRequest) {
+                                                                      @RequestParam Long districtGroupId) {
         VehicleResponseStatus status = companyGroupService
-                .saveCompanyGroupUser(header, companyGroupId, fleetId, districtGroupId, userCompanyGroupSaveRequest);
+                .saveCompanyGroupUser(header, companyGroupId, districtGroupId);
         return new ResponseEntity<>(status, HttpStatus.CREATED);
     }
 
-
     @GetMapping("/companydistrictgroups/{districtGroupId}")
-    public ResponseEntity<List<CompanyGroupResponse>> getCompanyGroupsByDistrictGroupId(
+    public ResponseEntity<List<CompanyDistrictCompanyGroupResponse>> getCompanyGroupsByFleetGroupId(
             @RequestHeader("Authorization") String header,
-            @RequestParam Long fleetId,
             @PathVariable Long districtGroupId) {
 
-        List<CompanyGroupResponse> companyGroupResponses = companyGroupService
-                .getCompanyGroupsByDistrictGroupId(header, fleetId, districtGroupId);
+        List<CompanyDistrictCompanyGroupResponse> companyGroupResponses = companyGroupService
+                .getCompanyGroupsByFleetGroupId(header, districtGroupId);
         return ResponseEntity.ok(companyGroupResponses);
     }
-
 
 
 }

@@ -27,7 +27,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
                                            @Param("companyId") Long companyId);
 
 
-
     @Query(value = "SElECT * FROM Vehicle  WHERE id = :id AND company_id = :companyId AND status = :status",
             nativeQuery = true)
     Optional<Vehicle> findByIdAndCompanyIdAndStatusAvailable(
@@ -52,5 +51,32 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     Optional<Vehicle> findByUserId(Long userId);
 
     Optional<List<Vehicle>> findAllByUserId(Long userId);
+
     Optional<List<Vehicle>> findAllByCompanyIdAndCompanyGroupId(Long companyId, Long companyGroupId);
+
+    Optional<List<Vehicle>> findAllByCompanyIdAndCompanyFleetId(Long companyId, Long companyFleetId);
+
+    @Query(value = "SElECT * FROM Vehicle WHERE id = :id AND company_id = :companyId AND company_fleet_id = :companyFleetId",
+            nativeQuery = true)
+    Optional<Vehicle> findByIdAndCompanyIdAndCompanyFleetId(
+            @Param("id") Long id,
+            @Param("companyId") Long companyId,
+            @Param("companyFleetId") Long companyFleetId);
+
+    @Query(value = "SElECT * FROM Vehicle WHERE company_district_group_id = :districtGroupId AND company_fleet_id = :companyFleetId AND company_id = :companyId",
+            nativeQuery = true)
+    Optional<List<Vehicle>> findAllByCompanyDistrictGroupIdAndCompanyFleetGroupIdAndCompanyId(
+            @Param("districtGroupId") Long districtGroupId,
+            @Param("companyFleetId") Long companyFleetId,
+            @Param("companyId") Long companyId);
+
+    @Query(value = "SElECT * FROM Vehicle WHERE company_group_id = :companyGroupId AND company_district_group_id = :districtGroupId" +
+            " AND company_fleet_id = :companyFleetId AND company_id = :companyId", nativeQuery = true)
+    Optional<List<Vehicle>> findByCompanyGroupIdAndCompanyDistrictGroupIdAndCompanyFleetIdAndCompanyId(
+            @Param("companyGroupId") Long companyGroupId,
+            @Param("districtGroupId") Long districtGroupId,
+            @Param("companyFleetId") Long companyFleetId,
+            @Param("companyId") Long companyId);
+
+
 }

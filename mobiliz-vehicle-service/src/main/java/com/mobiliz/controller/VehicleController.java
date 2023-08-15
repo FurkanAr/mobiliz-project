@@ -39,11 +39,10 @@ public class VehicleController {
 
     @PostMapping
     public ResponseEntity<VehicleResponse> createNewVehicle(@RequestHeader("Authorization") String header,
-                                                            @RequestParam Long fleetId,
                                                             @RequestParam Long districtGroupId,
                                                             @RequestParam Optional<Long> companyGroupId,
                                                             @RequestBody @Valid VehicleRequest vehicleRequest) {
-        VehicleResponse vehicleResponse = vehicleService.createVehicle(header, fleetId,
+        VehicleResponse vehicleResponse = vehicleService.createVehicle(header,
                 districtGroupId, companyGroupId, vehicleRequest);
         return new ResponseEntity<>(vehicleResponse, HttpStatus.CREATED);
     }

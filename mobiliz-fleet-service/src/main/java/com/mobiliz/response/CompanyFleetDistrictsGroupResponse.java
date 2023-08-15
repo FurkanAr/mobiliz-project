@@ -1,21 +1,27 @@
-package com.mobiliz.client.response;
+package com.mobiliz.response;
 
+import com.mobiliz.client.response.CompanyFleetDistrictGroupResponse;
 
-public class CompanyFleetGroupResponse {
+import java.util.List;
+
+public class CompanyFleetDistrictsGroupResponse {
 
     private Long id;
     private String name;
     private Long companyId;
     private String companyName;
+    private List<CompanyFleetDistrictGroupResponse> companyDistrictGroups;
 
-    public CompanyFleetGroupResponse() {
+    public CompanyFleetDistrictsGroupResponse() {
     }
 
-    public CompanyFleetGroupResponse(Long id, String name, Long companyId, String companyName) {
+    public CompanyFleetDistrictsGroupResponse(Long id, String name, Long companyId, String companyName,
+                                              List<CompanyFleetDistrictGroupResponse> companyDistrictGroups) {
         this.id = id;
         this.name = name;
         this.companyId = companyId;
         this.companyName = companyName;
+        this.companyDistrictGroups = companyDistrictGroups;
     }
 
     public Long getId() {
@@ -50,12 +56,21 @@ public class CompanyFleetGroupResponse {
         this.companyName = companyName;
     }
 
+    public List<CompanyFleetDistrictGroupResponse> getCompanyDistrictGroups() {
+        return companyDistrictGroups;
+    }
+
+    public void setCompanyDistrictGroups(List<CompanyFleetDistrictGroupResponse> companyDistrictGroups) {
+        this.companyDistrictGroups = companyDistrictGroups;
+    }
+
     @Override
     public String toString() {
-        return "CompanyFleetGroupResponse{" +
+        return "CompanyFleetDistrictsGroupResponse{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", companyId=" + companyId +
+                ", companyName='" + companyName + '\'' +
                 '}';
     }
 }

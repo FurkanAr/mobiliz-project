@@ -1,10 +1,10 @@
 package com.mobiliz.controller;
 
-import com.mobiliz.client.request.UserCompanyDistrictGroupSaveRequest;
 import com.mobiliz.client.response.VehicleResponseStatus;
 import com.mobiliz.request.CompanyDistrictGroupRequest;
 import com.mobiliz.request.CompanyDistrictGroupUpdateRequest;
 import com.mobiliz.response.CompanyDistrictGroupResponse;
+import com.mobiliz.response.CompanyFleetDistrictGroupResponse;
 import com.mobiliz.service.CompanyDistrictGroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,17 +36,6 @@ public class CompanyDistrictGroupController {
         return ResponseEntity.ok(companyDistrictGroups);
     }
 
-    @GetMapping("/{districtGroupId}")
-    public ResponseEntity<CompanyDistrictGroupResponse> getCompanyDistrictGroupsByFleetIdAndDistrictId(
-            @RequestHeader("Authorization") String header,
-            @RequestParam Long fleetId,
-            @PathVariable Long districtGroupId) {
-
-        CompanyDistrictGroupResponse companyDistrictGroups = companyDistrictGroupService
-                .getCompanyDistrictGroupsByFleetIdAndDistrictId(header, fleetId, districtGroupId);
-
-        return ResponseEntity.ok(companyDistrictGroups);
-    }
 
     @PostMapping
     public ResponseEntity<CompanyDistrictGroupResponse> createCompanyDistrictGroup(
@@ -61,9 +50,11 @@ public class CompanyDistrictGroupController {
 
     @PutMapping
     public ResponseEntity<CompanyDistrictGroupResponse> updateCompanyDistrictGroup(@RequestHeader("Authorization")
-                                                                                       String header,
+                                                                                   String header,
                                                                                    @RequestParam Long companyDistrictGroupId,
-                                                                                   @RequestBody @Valid CompanyDistrictGroupUpdateRequest companyDistrictGroupUpdateRequest) {
+                                                                                   @RequestBody @Valid
+                                                                                   CompanyDistrictGroupUpdateRequest
+                                                                                           companyDistrictGroupUpdateRequest) {
         CompanyDistrictGroupResponse companyDistrictGroup = companyDistrictGroupService
                 .updateCompanyDistrictGroup(header, companyDistrictGroupId,
                         companyDistrictGroupUpdateRequest);
@@ -82,13 +73,31 @@ public class CompanyDistrictGroupController {
 
     @PostMapping("/{districtGroupId}")
     public ResponseEntity<VehicleResponseStatus> saveCompanyDistrictGroupUser(@RequestHeader("Authorization") String header,
-                                                                              @PathVariable Long districtGroupId,
-                                                                              @RequestParam Long fleetId,
-                                                                              @RequestBody UserCompanyDistrictGroupSaveRequest request) {
+                                                                              @PathVariable Long districtGroupId) {
         VehicleResponseStatus status = companyDistrictGroupService
-                .saveCompanyDistrictGroupUser(header, districtGroupId, fleetId, request);
+                .saveCompanyDistrictGroupUser(header, districtGroupId);
         return new ResponseEntity<>(status, HttpStatus.CREATED);
 
     }
+
+    @GetMapping("/{districtGroupId}")
+    public ResponseEntity<CompanyDistrictGroupResponse> getCompanyDistrictGroupsByFleetIdAndDistrictId(
+            @RequestHeader("Authorization") String header,
+            @PathVariable Long districtGroupId) {
+        CompanyDistrictGroupResponse companyDistrictGroups = companyDistrictGroupService
+                .getCompanyDistrictGroupsByFleetIdAndDistrictId(header, districtGroupId);
+
+        return ResponseEntity.ok(companyDistrictGroups);
+    }
+
+    @GetMapping("/fleets")
+    public ResponseEntity<List<CompanyFleetDistrictGroupResponse>> getCompanyFleetDistrictGroupsByFleetId(
+            @RequestHeader("Authorization") String header) {
+        List<CompanyFleetDistrictGroupResponse> companyDistrictGroups = companyDistrictGroupService
+                .getCompanyFleetDistrictGroupsByFleetId(header);
+
+        return ResponseEntity.ok(companyDistrictGroups);
+    }
+
 
 }

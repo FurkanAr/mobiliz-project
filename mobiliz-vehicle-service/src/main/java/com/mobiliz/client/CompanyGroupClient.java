@@ -1,6 +1,7 @@
 package com.mobiliz.client;
 
 import com.mobiliz.client.request.UserCompanyGroupSaveRequest;
+import com.mobiliz.client.response.CompanyDistrictCompanyGroupResponse;
 import com.mobiliz.client.response.CompanyGroupResponse;
 import com.mobiliz.client.response.VehicleResponseStatus;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,7 +15,6 @@ public interface CompanyGroupClient {
     @GetMapping(value = "/companygroups/{companyGroupId}")
     public CompanyGroupResponse getCompanyGroupByDistrictGroupIAndFleetIdAndCompanyGroupId(
             @RequestHeader("Authorization") String header,
-            @RequestParam Long fleetId,
             @RequestParam Long districtGroupId,
             @PathVariable Long companyGroupId
     );
@@ -23,13 +23,12 @@ public interface CompanyGroupClient {
     public VehicleResponseStatus saveCompanyGroupUser(
             @RequestHeader("Authorization") String header,
             @PathVariable Long companyGroupId,
-            @RequestBody UserCompanyGroupSaveRequest request);
+            @RequestParam Long districtGroupId);
 
 
     @GetMapping(value = "/companygroups/companydistrictgroups/{districtGroupId}")
-    public List<CompanyGroupResponse> getCompanyGroupsByDistrictGroupId(
+    public List<CompanyDistrictCompanyGroupResponse> getCompanyGroupsByFleetGroupId(
             @RequestHeader("Authorization") String header,
-            @RequestParam Long fleetId,
             @PathVariable Long districtGroupId
     );
 

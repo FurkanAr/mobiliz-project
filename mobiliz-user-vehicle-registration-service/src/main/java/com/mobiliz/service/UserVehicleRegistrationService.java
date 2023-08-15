@@ -17,11 +17,11 @@ public class UserVehicleRegistrationService {
     }
 
 
-    public String addCompanyGroupVehiclesToUser(String header, Long companyGroupId) {
-        return vehicleServiceClient.addVehicleToUserByCompanyGroupId(header, companyGroupId);
+    public String addCompanyGroupVehiclesToUser(String header, Long companyGroupId, Long districtGroupId) {
+        return vehicleServiceClient.addVehicleToUserByCompanyGroupId(header, companyGroupId, districtGroupId);
     }
 
-    public String addCompanyDistrictGroupVehiclesToUser(String header, Long fleetId, Long districtgroupId) {
-        return vehicleServiceClient.addVehicleToUserByCompanyDistrictGroupId(header, fleetId, districtgroupId);
+    public String addCompanyDistrictGroupVehiclesToUser(String header, Long districtGroupId) {
+        return vehicleServiceClient.addVehicleToUserByCompanyDistrictGroupId(header, districtGroupId);
     }
 }

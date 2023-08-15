@@ -1,5 +1,7 @@
 package com.mobiliz.model;
 
+import com.mobiliz.model.enums.CompanyGroupStatus;
+
 import javax.persistence.*;
 
 @Entity
@@ -30,8 +32,12 @@ public class CompanyGroup {
     private String firstName;
     @Column(name = "sur_name")
     private String surName;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private CompanyGroupStatus status;
 
     public CompanyGroup() {
+        this.status = CompanyGroupStatus.AVAILABLE;
     }
 
     public CompanyGroup(String name, Long companyId, String companyName, Long companyFleetId,
@@ -43,6 +49,7 @@ public class CompanyGroup {
         this.companyFleetName = companyFleetName;
         this.companyDistrictGroupId = companyDistrictGroupId;
         this.companyDistrictGroupName = companyDistrictGroupName;
+        this.status = CompanyGroupStatus.AVAILABLE;
     }
 
     public Long getId() {
@@ -131,6 +138,14 @@ public class CompanyGroup {
 
     public void setSurName(String surName) {
         this.surName = surName;
+    }
+
+    public CompanyGroupStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(CompanyGroupStatus status) {
+        this.status = status;
     }
 
     @Override
