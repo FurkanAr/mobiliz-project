@@ -1,7 +1,6 @@
 package com.mobiliz.controller.advice;
 
 
-import com.mobiliz.exception.companyDistrictGroup.CompanyFleetGroupNotFoundException;
 import com.mobiliz.exception.companyDistrictGroup.*;
 import com.mobiliz.exception.response.ExceptionResponse;
 import com.mobiliz.exception.response.ExceptionValidatorResponse;
@@ -40,9 +39,6 @@ public class GlobalExceptionHandler {
     }
 
 
-
-
-
     @ExceptionHandler(CompanyDistrictGroupNameInUseException.class)
     public ResponseEntity<ExceptionResponse> handle(CompanyDistrictGroupNameInUseException exception, HttpServletRequest request) {
         return ResponseEntity
@@ -52,11 +48,4 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(CompanyFleetGroupNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handle(CompanyFleetGroupNotFoundException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
 }

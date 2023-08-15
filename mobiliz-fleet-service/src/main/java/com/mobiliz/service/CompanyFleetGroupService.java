@@ -13,6 +13,8 @@ import com.mobiliz.request.CompanyFleetGroupRequest;
 import com.mobiliz.response.CompanyFleetDistrictsGroupResponse;
 import com.mobiliz.response.CompanyFleetGroupResponse;
 import com.mobiliz.security.JwtTokenService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,7 @@ public class CompanyFleetGroupService {
     private final CompanyFleetGroupConverter companyFleetGroupConverter;
     private final JwtTokenService jwtTokenService;
     private final CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient;
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     public CompanyFleetGroupService(CompanyFleetGroupRepository companyFleetGroupRepository, CompanyFleetGroupConverter companyFleetGroupConverter, JwtTokenService jwtTokenService, CompanyDistrictGroupServiceClient companyDistrictGroupServiceClient) {
         this.companyFleetGroupRepository = companyFleetGroupRepository;
@@ -34,59 +37,79 @@ public class CompanyFleetGroupService {
     }
 
     public CompanyFleetDistrictsGroupResponse getCompanyFleetById(String header) {
+        logger.info("getCompanyFleetById method started");
         Long companyFleetId= findCompanyFleetIdByHeaderToken(header);
         CompanyFleetGroup companyFleetGroup = getCompanyFleetGroupById(companyFleetId);
         List<CompanyFleetDistrictGroupResponse> response = companyDistrictGroupServiceClient
                 .getCompanyFleetDistrictGroupsByFleetId(header);
+        logger.info("response : {}", response);
+        logger.info("getCompanyFleetById method finished");
         return companyFleetGroupConverter.convertCompanyFleetDistrictsGroupResponse(companyFleetGroup, response);
     }
 
     public CompanyFleetGroupResponse getCompanyFleetsByFleetId(String header) {
-        Long companyId= findCompanyIdByHeaderToken(header);
+        logger.info("getCompanyFleetsByFleetId method started");
         Long companyFleetId= findCompanyFleetIdByHeaderToken(header);
         CompanyFleetGroup companyFleetGroup = getCompanyFleetGroupById(companyFleetId);
+        logger.info("companyFleetGroup : {}", companyFleetGroup);
+        logger.info("getCompanyFleetsByFleetId method finished");
         return companyFleetGroupConverter.convert(companyFleetGroup);
     }
 
     @Transactional
     public void createCompanyFleetGroup(CompanyFleetGroupRequest companyFleetGroupRequest) {
+        logger.info("createCompanyFleetGroup method started");
         Long companyId = companyFleetGroupRequest.getCompanyId();
         checkNameAvailable(companyId ,companyFleetGroupRequest.getName());
         CompanyFleetGroup companyFleetGroup = companyFleetGroupConverter.convert(companyFleetGroupRequest);
+        logger.info("companyFleetGroup : {}", companyFleetGroup);
+        logger.info("createCompanyFleetGroup method finished");
         companyFleetGroupRepository.save(companyFleetGroup);
     }
 
     @Transactional
     public String deleteCompanyFleetGroup(String header) {
+        logger.info("deleteCompanyFleetGroup method started");
         Long companyFleetId= findCompanyFleetIdByHeaderToken(header);
         CompanyFleetGroup companyFleetGroupFoundById = getCompanyFleetGroupById(companyFleetId);
         companyFleetGroupRepository.delete(companyFleetGroupFoundById);
+        logger.info("companyFleetGroup : {}", companyFleetId);
+        logger.info("deleteCompanyFleetGroup method finished");
         return Constants.COMPANY_FLEET_GROUP_DELETED;
     }
 
 
     public CompanyFleetGroup getCompanyFleetGroupById(Long id) {
-        return companyFleetGroupRepository.findById(id).orElseThrow(()
+        logger.info("getCompanyFleetGroupById method started");
+        CompanyFleetGroup companyFleetGroup =companyFleetGroupRepository.findById(id).orElseThrow(()
                 -> new CompanyFleetGroupNotFoundException(Messages.CompanyFleetGroup.NOT_EXISTS + id));
+        logger.info("companyFleetGroup : {}", companyFleetGroup);
+        logger.info("getCompanyFleetGroupById method finished");
+        return companyFleetGroup;
     }
 
     private void checkNameAvailable(Long companyId, String name) {
+        logger.info("checkNameAvailable method started");
 
         if (companyFleetGroupRepository.findByNameAndCompanyId(companyId, name).isPresent()) {
             throw new CompanyFleetGroupNameInUseException(Messages.CompanyFleetGroup.NAME_IN_USE
                     + name);
         }
+        logger.info("checkNameAvailable method finished");
+
     }
 
-    private Long findCompanyFleetIdByHeaderToken(String header){
+    private Long findCompanyFleetIdByHeaderToken(String header) {
+        logger.info("findCompanyFleetIdByHeaderToken method started");
         String token = header.substring(7);
-        return Long.valueOf(jwtTokenService.getClaims(token).get("companyFleetId").toString());
+        Long companyFleetId = Long.valueOf(jwtTokenService.getClaims(token).get("companyFleetId").toString());
+        logger.info("companyFleetId : {}", companyFleetId);
+        logger.info("findCompanyFleetIdByHeaderToken method finished");
+        return companyFleetId;
     }
 
-    private Long findCompanyIdByHeaderToken(String header){
-        String token = header.substring(7);
-        return Long.valueOf(jwtTokenService.getClaims(token).get("companyId").toString());
-    }
+
+
 
 
 }

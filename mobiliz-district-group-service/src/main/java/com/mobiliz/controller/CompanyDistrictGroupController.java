@@ -75,7 +75,7 @@ public class CompanyDistrictGroupController {
         logger.info("deleteCompanyDistrictGroup method started");
 
         String response = companyDistrictGroupService
-                .deleteCompanyFleetGroup(header, companyDistrictGroupId);
+                .deleteCompanyDistrictGroup(header, companyDistrictGroupId);
         logger.info("response : {}", response);
         logger.info("deleteCompanyDistrictGroup method finished");
         return ResponseEntity.ok(response);

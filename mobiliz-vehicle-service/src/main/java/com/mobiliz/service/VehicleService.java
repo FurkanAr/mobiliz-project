@@ -40,27 +40,35 @@ public class VehicleService {
 
 
     public List<VehicleResponse> getCompanyVehicles(String header) {
+        logger.info("getCompanyVehicles method started");
         Long companyId = findCompanyIdByHeaderToken(header);
         Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
 
         List<Vehicle> vehicles = getVehiclesByCompanyIdAndCompanyFleetId(companyId, companyFleetId);
 
+        logger.info("companyId : {}", companyId);
+        logger.info("getCompanyVehicles method finished");
         return vehicleConverter.convert(vehicles);
     }
 
 
     public VehicleResponse getByVehicleId(String header, Long vehicleId) {
+        logger.info("getByVehicleId method started");
         Long companyId = findCompanyIdByHeaderToken(header);
         Long companyFleetId = findCompanyFleetIdByHeaderToken(header);
 
         List<Vehicle> vehicles = getVehiclesByCompanyIdAndCompanyFleetId(companyId, companyFleetId);
+        logger.info("vehicles : {}", vehicles);
 
         Vehicle vehicle = vehicleRepository
                 .findByIdAndCompanyIdAndCompanyFleetId(vehicleId, companyId, companyFleetId).orElseThrow(
                 () -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS + vehicleId));
 
+        logger.info("vehicle : {}", vehicle);
+
         checkCompanyDistrictGroupResponse(companyId, vehicle);
 
+        logger.info("getByVehicleId method finished");
         return vehicleConverter.convert(vehicle);
     }
 
@@ -101,17 +109,18 @@ public class VehicleService {
 
         checkCompanyGroupResponse(companyId, companyGroupResponse);
 
-        vehicle = saveVehicleByCompanyGroup(companyId, companyName, vehicle, companyGroupResponse);
+        Vehicle vehicleResponse = saveVehicleByCompanyGroup(companyId, companyName, vehicle, companyGroupResponse);
 
-        vehicle = vehicleRepository.save(vehicle);
-        logger.info("vehicle created: {}", vehicle);
+        Vehicle savedVehicle = vehicleRepository.save(vehicleResponse);
+        logger.info("vehicle created: {}", savedVehicle);
 
         logger.info("createVehicle method successfully worked");
-        return vehicleConverter.convert(vehicle);
+        return vehicleConverter.convert(savedVehicle);
     }
 
 
     private Vehicle  saveVehicleByCompanyGroup(Long companyId, String companyName, Vehicle vehicle, CompanyGroupResponse companyGroupResponse) {
+        logger.info("saveVehicleByCompanyGroup method started");
         vehicle.setCompanyId(companyId);
         vehicle.setCompanyName(companyName);
         vehicle.setCompanyFleetId(companyGroupResponse.getCompanyFleetGroupId());
@@ -120,56 +129,87 @@ public class VehicleService {
         vehicle.setCompanyDistrictGroupName(companyGroupResponse.getName());
         vehicle.setCompanyGroupId(companyGroupResponse.getId());
         vehicle.setCompanyGroupName(companyGroupResponse.getName());
+        logger.info("saveVehicleByCompanyGroup method successfully worked");
         return vehicle;
     }
 
 
     private  Vehicle saveVehicleByCompanyDistrictGroup(Long companyId, String companyName, Vehicle vehicle, CompanyDistrictGroupResponse companyDistrictGroupResponse) {
+        logger.info("saveVehicleByCompanyDistrictGroup method started");
         vehicle.setCompanyId(companyId);
         vehicle.setCompanyName(companyName);
         vehicle.setCompanyFleetId(companyDistrictGroupResponse.getCompanyFleetGroupId());
         vehicle.setCompanyFleetName(companyDistrictGroupResponse.getCompanyFleetGroupName());
         vehicle.setCompanyDistrictGroupId(companyDistrictGroupResponse.getId());
         vehicle.setCompanyDistrictGroupName(companyDistrictGroupResponse.getName());
+        logger.info("saveVehicleByCompanyDistrictGroup method successfully worked");
         return vehicle;
     }
     private List<Vehicle> getVehiclesByCompanyIdAndCompanyFleetId(Long companyId, Long companyFleetId) {
-        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyIdAndCompanyFleetId(companyId, companyFleetId).orElseThrow(()
-                -> new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_ID + companyId));
+        logger.info("getVehiclesByCompanyIdAndCompanyFleetId method started");
+
+        List<Vehicle> vehicles = vehicleRepository.findAllByCompanyIdAndCompanyFleetId(companyId, companyFleetId)
+                .orElseThrow(() ->
+                        new VehicleNotFoundException(Messages.Vehicle.NOT_EXISTS_BY_GIVEN_COMPANY_ID + companyId));
+
+        logger.info("vehicles: {}", vehicles);
+        logger.info("getVehiclesByCompanyIdAndCompanyFleetId method successfully worked");
         return vehicles;
     }
 
-    private static void checkCompanyGroupResponse(Long companyId, CompanyGroupResponse companyGroupResponse) {
+    private  void checkCompanyGroupResponse(Long companyId, CompanyGroupResponse companyGroupResponse) {
+        logger.info("checkCompanyGroupResponse method started");
         if (!companyId.equals(companyGroupResponse.getCompanyId())) {
+            logger.warn("User has not permission: {}", companyId);
             throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
         }
+        logger.info("checkCompanyGroupResponse method successfully worked");
+
     }
 
-    private static void checkCompanyDistrictGroupResponse(Long companyId, Vehicle vehicle) {
+    private  void checkCompanyDistrictGroupResponse(Long companyId, Vehicle vehicle) {
+        logger.info("checkCompanyDistrictGroupResponse method started");
         if (!companyId.equals(vehicle.getCompanyId())) {
+            logger.warn("User has not permission to vehicle: {}", vehicle);
             throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
         }
+        logger.info("checkCompanyDistrictGroupResponse method successfully worked");
     }
 
-    private static void checkCompanyDistrictGroupResponse(Long companyId, CompanyDistrictGroupResponse companyDistrictGroupResponse) {
+    private void checkCompanyDistrictGroupResponse(Long companyId, CompanyDistrictGroupResponse companyDistrictGroupResponse) {
+        logger.info("checkCompanyDistrictGroupResponse method started");
         if (!companyId.equals(companyDistrictGroupResponse.getCompanyId())) {
+            logger.warn("User has not permission: {}", companyId);
             throw new UserHasNotPermissionException(Messages.Vehicle.USER_HAS_NO_PERMIT);
         }
-    }
-
-    private Long findCompanyFleetIdByHeaderToken(String header) {
-        String token = header.substring(7);
-        return Long.valueOf(jwtTokenService.getClaims(token).get("companyFleetId").toString());
+        logger.info("checkCompanyDistrictGroupResponse method successfully worked");
     }
 
     private Long findCompanyIdByHeaderToken(String header) {
+        logger.info("findCompanyIdByHeaderToken method started");
         String token = header.substring(7);
-        return Long.valueOf(jwtTokenService.getClaims(token).get("companyId").toString());
+        Long companyId = Long.valueOf(jwtTokenService.getClaims(token).get("companyId").toString());
+        logger.info("companyId : {}", companyId);
+        logger.info("findCompanyIdByHeaderToken method finished");
+        return companyId;
+    }
+
+    private Long findCompanyFleetIdByHeaderToken(String header) {
+        logger.info("findCompanyFleetIdByHeaderToken method started");
+        String token = header.substring(7);
+        Long companyFleetId = Long.valueOf(jwtTokenService.getClaims(token).get("companyFleetId").toString());
+        logger.info("companyFleetId : {}", companyFleetId);
+        logger.info("findCompanyFleetIdByHeaderToken method finished");
+        return companyFleetId;
     }
 
     private String findCompanyNameByHeaderToken(String header) {
+        logger.info("findCompanyNameByHeaderToken method started");
         String token = header.substring(7);
-        return jwtTokenService.getClaims(token).get("companyName").toString();
+        String companyName = jwtTokenService.getClaims(token).get("companyName").toString();
+        logger.info("companyName : {}", companyName);
+        logger.info("findCompanyNameByHeaderToken method finished");
+        return companyName;
     }
 
 

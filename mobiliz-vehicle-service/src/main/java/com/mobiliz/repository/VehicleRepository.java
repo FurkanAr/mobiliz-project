@@ -11,16 +11,11 @@ import java.util.Optional;
 
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
-    Optional<List<Vehicle>> findAllByCompanyGroupId(Long id);
-
-    Optional<List<Vehicle>> findAllByCompanyDistrictGroupId(Long id);
 
     @Query(value = "SElECT * FROM Vehicle WHERE company_district_group_id = :id AND status = :status",
             nativeQuery = true)
     Optional<List<Vehicle>> findAllByCompanyDistrictGroupIdAndStatusAvailable(@Param("id") Long id,
                                                                               @Param("status") String AVAILABLE);
-
-    Optional<List<Vehicle>> findAllByCompanyId(Long id);
 
     @Query(value = "SElECT * FROM Vehicle WHERE id = :id AND company_id = :companyId", nativeQuery = true)
     Optional<Vehicle> findByIdAndCompanyId(@Param("id") Long id,
@@ -48,11 +43,9 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
             @Param("companyGroupId") Long companyGroupId,
             @Param("status") String AVAILABLE);
 
-    Optional<Vehicle> findByUserId(Long userId);
 
     Optional<List<Vehicle>> findAllByUserId(Long userId);
 
-    Optional<List<Vehicle>> findAllByCompanyIdAndCompanyGroupId(Long companyId, Long companyGroupId);
 
     Optional<List<Vehicle>> findAllByCompanyIdAndCompanyFleetId(Long companyId, Long companyFleetId);
 

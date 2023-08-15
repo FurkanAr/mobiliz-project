@@ -7,7 +7,7 @@ public class CompanyFleetDistrictGroupResponse {
     private Long id;
     private String name;
 
-    private List<CompanyDistrictCompanyGroupResponse> companyGroups;
+        private List<CompanyDistrictCompanyGroupResponse> companyGroups;
     public CompanyFleetDistrictGroupResponse() {
     }
 

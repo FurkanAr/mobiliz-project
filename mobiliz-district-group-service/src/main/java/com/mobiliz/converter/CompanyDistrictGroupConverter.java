@@ -19,12 +19,15 @@ public class CompanyDistrictGroupConverter {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     public CompanyDistrictGroup convert(CompanyDistrictGroupRequest companyDistrictGroupRequest) {
+        logger.info("convert method started");
         CompanyDistrictGroup companyDistrictGroup = new CompanyDistrictGroup();
         companyDistrictGroup.setName(companyDistrictGroupRequest.getName());
+        logger.info("convert method finished");
         return companyDistrictGroup;
     }
 
     public CompanyDistrictGroupResponse convert(CompanyDistrictGroup companyDistrictGroup) {
+        logger.info("convert method started");
         CompanyDistrictGroupResponse response = new CompanyDistrictGroupResponse();
         response.setId(companyDistrictGroup.getId());
         response.setName(companyDistrictGroup.getName());
@@ -32,6 +35,7 @@ public class CompanyDistrictGroupConverter {
         response.setCompanyName(companyDistrictGroup.getCompanyName());
         response.setCompanyFleetGroupId(companyDistrictGroup.getCompanyFleetId());
         response.setCompanyFleetGroupName(companyDistrictGroup.getCompanyFleetName());
+        logger.info("convert method finished");
         return response;
     }
 
@@ -45,16 +49,20 @@ public class CompanyDistrictGroupConverter {
 
 
     public CompanyDistrictGroup update(CompanyDistrictGroup companyDistrictGroup, CompanyDistrictGroupUpdateRequest companyDistrictGroupUpdateRequest) {
+        logger.info("update method started");
         companyDistrictGroup.setName(companyDistrictGroupUpdateRequest.getName());
+        logger.info("update method finished");
         return companyDistrictGroup;
     }
 
     public CompanyFleetDistrictGroupResponse convertFleetResponse(
             CompanyDistrictGroup companyDistrictGroup) {
+        logger.info("convertFleetResponse method started");
 
         CompanyFleetDistrictGroupResponse response = new CompanyFleetDistrictGroupResponse();
         response.setId(companyDistrictGroup.getId());
         response.setName(companyDistrictGroup.getName());
+        logger.info("convertFleetResponse method finished");
         return response;
     }
 

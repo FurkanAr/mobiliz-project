@@ -18,6 +18,7 @@ public class VehicleConverter {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     public VehicleResponse convert(Vehicle vehicle) {
+        logger.info("convert method started");
         VehicleResponse vehicleResponse = new VehicleResponse();
         vehicleResponse.setId(vehicle.getId());
         vehicleResponse.setLicencePlate(vehicle.getLicencePlate());
@@ -34,10 +35,12 @@ public class VehicleConverter {
         vehicleResponse.setCompanyDistrictGroupName(vehicle.getCompanyDistrictGroupName());
         vehicleResponse.setCompanyGroupId(vehicle.getCompanyGroupId());
         vehicleResponse.setCompanyGroupName(vehicle.getCompanyGroupName());
+        logger.info("convert method finished");
         return vehicleResponse;
     }
 
     public Vehicle convert(VehicleRequest vehicleRequest) {
+        logger.info("convert method started");
         Vehicle vehicle = new Vehicle();
         vehicle.setLicencePlate(vehicleRequest.getLicencePlate());
 
@@ -57,6 +60,7 @@ public class VehicleConverter {
         vehicle.setBrand(vehicleRequest.getBrand());
         vehicle.setModel(vehicleRequest.getModel());
         vehicle.setModelYear(vehicleRequest.getModelYear());
+        logger.info("convert method finished");
         return vehicle;
     }
 

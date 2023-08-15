@@ -29,7 +29,10 @@ public class UserVehicleTreeController {
 
     @GetMapping
     public ResponseEntity<List<VehicleResponse>> getUserVehicles(@RequestHeader("Authorization") String header) {
+        logger.info("getUserVehicles method started");
         List<VehicleResponse> userVehicles = userVehicleTreeService.getUserVehicles(header);
+        logger.info("userVehicles : {}", userVehicles);
+        logger.info("getUserVehicles method finished");
         return ResponseEntity.ok(userVehicles);
     }
 

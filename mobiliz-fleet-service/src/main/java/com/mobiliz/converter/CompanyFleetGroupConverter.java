@@ -19,6 +19,7 @@ public class CompanyFleetGroupConverter {
 
 
     public CompanyFleetGroup convert(CompanyFleetGroupRequest companyFleetGroupRequest){
+        logger.info("convert method started");
         CompanyFleetGroup companyFleetGroup = new CompanyFleetGroup();
         companyFleetGroup.setName(companyFleetGroupRequest.getName());
         companyFleetGroup.setCompanyId(companyFleetGroupRequest.getCompanyId());
@@ -26,15 +27,18 @@ public class CompanyFleetGroupConverter {
         companyFleetGroup.setAdminId(companyFleetGroupRequest.getAdminId());
         companyFleetGroup.setFirstName(companyFleetGroupRequest.getFirstName());
         companyFleetGroup.setSurName(companyFleetGroupRequest.getSurName());
+        logger.info("convert method finished");
         return companyFleetGroup;
     }
 
     public CompanyFleetGroupResponse convert(CompanyFleetGroup companyFleetGroup){
+        logger.info("convert method started");
         CompanyFleetGroupResponse response = new CompanyFleetGroupResponse();
         response.setId(companyFleetGroup.getId());
         response.setName(companyFleetGroup.getName());
         response.setCompanyId(companyFleetGroup.getCompanyId());
         response.setCompanyName(companyFleetGroup.getCompanyName());
+        logger.info("convert method finished");
         return response;
     }
 
@@ -49,13 +53,14 @@ public class CompanyFleetGroupConverter {
 
     public CompanyFleetDistrictsGroupResponse convertCompanyFleetDistrictsGroupResponse(
             CompanyFleetGroup companyFleetGroup, List<CompanyFleetDistrictGroupResponse> fleetDistrictGroupResponses) {
-
+        logger.info("convertCompanyFleetDistrictsGroupResponse method started");
         CompanyFleetDistrictsGroupResponse response = new CompanyFleetDistrictsGroupResponse();
         response.setId(companyFleetGroup.getId());
         response.setName(companyFleetGroup.getName());
         response.setCompanyId(companyFleetGroup.getCompanyId());
         response.setCompanyName(companyFleetGroup.getCompanyName());
         response.setCompanyDistrictGroups(fleetDistrictGroupResponses);
+        logger.info("convertCompanyFleetDistrictsGroupResponse method finished");
         return response;
     }
 }

@@ -27,13 +27,20 @@ public class VehicleController {
 
     @GetMapping
     public ResponseEntity<List<VehicleResponse>> getVehicles(@RequestHeader("Authorization") String header) {
+        logger.info("getVehicles method started");
         List<VehicleResponse> vehicleResponses = vehicleService.getCompanyVehicles(header);
+        logger.info("vehicleResponses : {}", vehicleResponses);
+        logger.info("getVehicles method finished");
         return ResponseEntity.ok(vehicleResponses);
     }
 
     @GetMapping("/{vehicleId}")
-    public ResponseEntity<VehicleResponse> getVehicle(@RequestHeader("Authorization") String header, @PathVariable Long vehicleId) {
+    public ResponseEntity<VehicleResponse> getVehicle(@RequestHeader("Authorization") String header,
+                                                      @PathVariable Long vehicleId) {
+        logger.info("getVehicle method started");
         VehicleResponse vehicleResponse = vehicleService.getByVehicleId(header, vehicleId);
+        logger.info("vehicleResponse : {}", vehicleResponse);
+        logger.info("getVehicle method finished");
         return ResponseEntity.ok(vehicleResponse);
     }
 
@@ -42,8 +49,11 @@ public class VehicleController {
                                                             @RequestParam Long districtGroupId,
                                                             @RequestParam Optional<Long> companyGroupId,
                                                             @RequestBody @Valid VehicleRequest vehicleRequest) {
+        logger.info("createNewVehicle method started");
         VehicleResponse vehicleResponse = vehicleService.createVehicle(header,
                 districtGroupId, companyGroupId, vehicleRequest);
+        logger.info("vehicleResponse : {}", vehicleResponse);
+        logger.info("createNewVehicle method finished");
         return new ResponseEntity<>(vehicleResponse, HttpStatus.CREATED);
     }
 

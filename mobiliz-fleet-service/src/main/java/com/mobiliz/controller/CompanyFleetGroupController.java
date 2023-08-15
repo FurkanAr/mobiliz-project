@@ -22,25 +22,34 @@ public class CompanyFleetGroupController {
     }
 
     @GetMapping
-    public ResponseEntity<CompanyFleetDistrictsGroupResponse> getCompanyFleet(@RequestHeader("Authorization") String header) {
+    public ResponseEntity<CompanyFleetDistrictsGroupResponse> getCompanyFleet(@RequestHeader("Authorization")
+                                                                                  String header) {
+        logger.info("getCompanyFleet method started");
         CompanyFleetDistrictsGroupResponse fleetGroupResponse = companyFleetGroupService
                 .getCompanyFleetById(header);
+        logger.info("fleetGroupResponse : {}", fleetGroupResponse);
+        logger.info("getCompanyFleet method finished");
         return ResponseEntity.ok(fleetGroupResponse);
     }
 
     @GetMapping("/companies")
-    public ResponseEntity<CompanyFleetGroupResponse> getCompanyFleetsByFleetId(
-            @RequestHeader("Authorization") String header) {
+    public ResponseEntity<CompanyFleetGroupResponse> getCompanyFleetsByFleetId(@RequestHeader("Authorization")
+                                                                                   String header) {
+        logger.info("getCompanyFleetsByFleetId method started");
         CompanyFleetGroupResponse fleetGroupResponse = companyFleetGroupService
                 .getCompanyFleetsByFleetId(header);
+        logger.info("fleetGroupResponse : {}", fleetGroupResponse);
+        logger.info("getCompanyFleetsByFleetId method finished");
         return ResponseEntity.ok(fleetGroupResponse);
 
     }
     @DeleteMapping
     public ResponseEntity<String> deleteCompanyFleetGroup(
             @RequestHeader("Authorization") String header) {
-        String response = companyFleetGroupService
-                .deleteCompanyFleetGroup(header);
+        logger.info("deleteCompanyFleetGroup method started");
+        String response = companyFleetGroupService.deleteCompanyFleetGroup(header);
+        logger.info("response : {}", response);
+        logger.info("deleteCompanyFleetGroup method finished");
         return ResponseEntity.ok(response);
     }
 
