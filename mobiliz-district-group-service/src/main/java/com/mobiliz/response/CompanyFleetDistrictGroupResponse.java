@@ -1,7 +1,5 @@
 package com.mobiliz.response;
 
-import com.mobiliz.client.response.CompanyDistrictCompanyGroupResponse;
-
 import java.util.List;
 
 public class CompanyFleetDistrictGroupResponse {

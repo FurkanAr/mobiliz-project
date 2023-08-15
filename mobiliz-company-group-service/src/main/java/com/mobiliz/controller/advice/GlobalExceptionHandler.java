@@ -1,6 +1,5 @@
 package com.mobiliz.controller.advice;
 
-import com.mobiliz.exception.Permission.UserHasNotPermissionException;
 import com.mobiliz.exception.companyGroup.*;
 import com.mobiliz.exception.response.ExceptionResponse;
 import com.mobiliz.exception.response.ExceptionValidatorResponse;
@@ -37,32 +36,6 @@ public class GlobalExceptionHandler {
                         request.getServletPath()));
     }
 
-    @ExceptionHandler(UserHasNotPermissionException.class)
-    public ResponseEntity<ExceptionResponse> handle(UserHasNotPermissionException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
-
-
-    @ExceptionHandler(CompanyGroupIdAndAdminIdNotMatchedException.class)
-    public ResponseEntity<ExceptionResponse> handle(CompanyGroupIdAndAdminIdNotMatchedException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
-
-
-    @ExceptionHandler(CompanyGroupAndCompanyDistrictGroupNotMatchException.class)
-    public ResponseEntity<ExceptionResponse> handle(CompanyGroupAndCompanyDistrictGroupNotMatchException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
-
 
     @ExceptionHandler(CompanyGroupNameInUseException.class)
     public ResponseEntity<ExceptionResponse> handle(CompanyGroupNameInUseException exception, HttpServletRequest request) {
@@ -71,12 +44,6 @@ public class GlobalExceptionHandler {
                         HttpStatus.BAD_REQUEST.value(),
                         request.getServletPath()));
     }
-    @ExceptionHandler(CompanyGroupVehiclesInUseException.class)
-    public ResponseEntity<ExceptionResponse> handle(CompanyGroupVehiclesInUseException exception, HttpServletRequest request) {
-        return ResponseEntity
-                .ok(new ExceptionResponse(exception.getMessage(),
-                        HttpStatus.BAD_REQUEST.value(),
-                        request.getServletPath()));
-    }
+
 
 }

@@ -29,8 +29,12 @@ public class CompanyGroupController {
     @GetMapping
     public ResponseEntity<List<CompanyGroupResponse>> getCompanyGroupsByCompanyIdAndFleetId(
             @RequestHeader("Authorization") String header) {
+
+        logger.info("getCompanyGroupsByCompanyIdAndFleetId method started");
         List<CompanyGroupResponse> companyGroupResponses = companyGroupService
                 .getCompanyGroupsByCompanyIdAndFleetId(header);
+        logger.info("companyGroupResponses: {}", companyGroupResponses);
+        logger.info("getCompanyGroupsByCompanyIdAndFleetId method finished");
         return ResponseEntity.ok(companyGroupResponses);
     }
 
@@ -39,9 +43,11 @@ public class CompanyGroupController {
             @RequestHeader("Authorization") String header,
             @RequestParam Long districtGroupId,
             @PathVariable Long companyGroupId) {
-
+        logger.info("getCompanyGroupByDistrictGroupIAndFleetIdAndCompanyGroupId method started");
         CompanyGroupResponse companyGroupResponse = companyGroupService
                 .getCompanyGroupByDistrictGroupIAndFleetIdAndCompanyGroupId(header, districtGroupId, companyGroupId);
+        logger.info("companyGroupResponse: {}", companyGroupResponse);
+        logger.info("getCompanyGroupByDistrictGroupIAndFleetIdAndCompanyGroupId method finished");
         return ResponseEntity.ok(companyGroupResponse);
     }
 
@@ -51,10 +57,11 @@ public class CompanyGroupController {
             @RequestHeader("Authorization") String header,
             @RequestParam Long districtGroupId,
             @RequestBody @Valid CompanyGroupRequest companyGroupRequest) {
-
+        logger.info("createCompanyGroup method started");
         CompanyGroupResponse companyGroupResponse = companyGroupService
                 .createCompanyGroup(header, districtGroupId, companyGroupRequest);
-
+        logger.info("companyGroupResponse created: {}", companyGroupResponse);
+        logger.info("createCompanyGroup method finished");
         return new ResponseEntity<>(companyGroupResponse, HttpStatus.CREATED);
     }
 
@@ -63,10 +70,12 @@ public class CompanyGroupController {
                                                                    @RequestParam Long districtGroupId,
                                                                    @RequestParam Long companyGroupId,
                                                                    @RequestBody @Valid CompanyGroupUpdateRequest companyGroupUpdateRequest) {
+        logger.info("updateCompanyGroup method started");
 
         CompanyGroupResponse companyGroupResponse = companyGroupService
                 .updateCompanyGroup(header, districtGroupId, companyGroupId, companyGroupUpdateRequest);
-
+        logger.info("companyGroupResponse updated: {}", companyGroupResponse);
+        logger.info("updateCompanyGroup method finished");
         return ResponseEntity.ok(companyGroupResponse);
     }
 
@@ -74,9 +83,11 @@ public class CompanyGroupController {
     public ResponseEntity<String> deleteCompanyGroup(@RequestHeader("Authorization") String header,
                                                      @RequestParam Long companyDistrictGroupId,
                                                      @RequestParam Long companyGroupId) {
+        logger.info("deleteCompanyGroup method started");
         String response = companyGroupService
                 .deleteCompany(header, companyDistrictGroupId, companyGroupId);
-
+        logger.info("response deleted: {}", response);
+        logger.info("deleteCompanyGroup method finished");
         return ResponseEntity.ok(response);
     }
 
@@ -84,8 +95,11 @@ public class CompanyGroupController {
     public ResponseEntity<VehicleResponseStatus> saveCompanyGroupUser(@RequestHeader("Authorization") String header,
                                                                       @PathVariable Long companyGroupId,
                                                                       @RequestParam Long districtGroupId) {
+        logger.info("saveCompanyGroupUser method started");
         VehicleResponseStatus status = companyGroupService
                 .saveCompanyGroupUser(header, companyGroupId, districtGroupId);
+        logger.info("status : {}", status);
+        logger.info("saveCompanyGroupUser method finished");
         return new ResponseEntity<>(status, HttpStatus.CREATED);
     }
 
@@ -93,9 +107,12 @@ public class CompanyGroupController {
     public ResponseEntity<List<CompanyDistrictCompanyGroupResponse>> getCompanyGroupsByFleetGroupId(
             @RequestHeader("Authorization") String header,
             @PathVariable Long districtGroupId) {
+        logger.info("getCompanyGroupsByFleetGroupId method started");
 
         List<CompanyDistrictCompanyGroupResponse> companyGroupResponses = companyGroupService
                 .getCompanyGroupsByFleetGroupId(header, districtGroupId);
+        logger.info("companyGroupResponses : {}", companyGroupResponses);
+        logger.info("getCompanyGroupsByFleetGroupId method finished");
         return ResponseEntity.ok(companyGroupResponses);
     }
 

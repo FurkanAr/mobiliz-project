@@ -22,9 +22,11 @@ public class CompanyController {
 
     @GetMapping
     public ResponseEntity<CompanyResponse> getCompany(@RequestHeader("Authorization") String header) {
+        logger.info("getCompany method started");
 
         CompanyResponse companyResponse = companyService.getCompanyById(header);
-
+        logger.info("companyResponse : {}", companyResponse);
+        logger.info("getCompany method finished");
         return ResponseEntity.ok(companyResponse);
     }
 

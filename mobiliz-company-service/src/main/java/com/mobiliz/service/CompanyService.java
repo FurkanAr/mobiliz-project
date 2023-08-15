@@ -30,12 +30,16 @@ public class CompanyService {
 
     @Transactional
     public String createCompany(CompanyRequest companyRequest) {
+        logger.info("createCompany method started");
+
         if (companyRepository.findByName(companyRequest.getName()).isPresent()){
             throw new CompanyNameInUseException(Messages.Company.NAME_IN_USE + companyRequest.getName());
         }
 
         Company company = companyConverter.convert(companyRequest);
         companyRepository.save(company);
+        logger.info("company : {}", company);
+        logger.info("createCompany method finished");
         return Constants.COMPANY_CREATED;
     }
 
@@ -50,7 +54,6 @@ public class CompanyService {
     }
 
     private Company findByCompanyId(Long id) {
-
         return companyRepository.findById(id).orElseThrow(
                 () -> new CompanyNotFoundException(Messages.Company.NOT_EXISTS + id));
     }

@@ -1,7 +1,5 @@
 package com.mobiliz.service;
 
-import com.mobiliz.client.CompanyGroupClient;
-import com.mobiliz.client.response.CompanyDistrictCompanyGroupResponse;
 import com.mobiliz.client.response.VehicleResponseStatus;
 import com.mobiliz.constant.Constants;
 import com.mobiliz.converter.CompanyDistrictGroupConverter;
@@ -21,10 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service

@@ -18,12 +18,15 @@ public class CompanyGroupConverter {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     public CompanyGroup convert(CompanyGroupRequest companyGroupRequest){
+        logger.info("convert method started");
         CompanyGroup companyGroup = new CompanyGroup();
         companyGroup.setName(companyGroupRequest.getName());
+        logger.info("convert method finished");
         return companyGroup;
     }
 
     public CompanyGroupResponse convert(CompanyGroup companyGroup){
+        logger.info("convert method started");
         CompanyGroupResponse companyGroupResponse = new CompanyGroupResponse();
         companyGroupResponse.setId(companyGroup.getId());
         companyGroupResponse.setName(companyGroup.getName());
@@ -33,6 +36,7 @@ public class CompanyGroupConverter {
         companyGroupResponse.setCompanyFleetGroupName(companyGroup.getCompanyFleetName());
         companyGroupResponse.setCompanyDistrictGroupId(companyGroup.getCompanyDistrictGroupId());
         companyGroupResponse.setCompanyDistrictGroupName(companyGroup.getCompanyDistrictGroupName());
+        logger.info("convert method finished");
         return  companyGroupResponse;
     }
 
@@ -45,15 +49,20 @@ public class CompanyGroupConverter {
     }
 
     public CompanyGroup update(CompanyGroup companyGroup, CompanyGroupUpdateRequest companyGroupUpdateRequest) {
+        logger.info("update method started");
         companyGroup.setName(companyGroupUpdateRequest.getName());
+        logger.info("update method finished");
+
         return companyGroup;
     }
 
 
     public CompanyDistrictCompanyGroupResponse convertDistrictCompanyGroupResponse(CompanyGroup companyGroup){
         CompanyDistrictCompanyGroupResponse response = new CompanyDistrictCompanyGroupResponse();
+        logger.info("convertDistrictCompanyGroupResponse method started");
         response.setId(companyGroup.getId());
         response.setName(companyGroup.getName());
+        logger.info("convertDistrictCompanyGroupResponse finished");
         return  response;
     }
 

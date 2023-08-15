@@ -1,6 +1,5 @@
 package com.mobiliz.converter;
 
-import com.mobiliz.client.response.CompanyDistrictCompanyGroupResponse;
 import com.mobiliz.model.CompanyDistrictGroup;
 import com.mobiliz.request.CompanyDistrictGroupRequest;
 import com.mobiliz.request.CompanyDistrictGroupUpdateRequest;

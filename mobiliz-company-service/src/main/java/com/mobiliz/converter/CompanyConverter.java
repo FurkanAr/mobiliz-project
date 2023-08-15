@@ -16,15 +16,21 @@ public class CompanyConverter {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     public Company convert(CompanyRequest companyRequest){
+        logger.info("convert method started");
+
         Company company = new Company();
         company.setName(companyRequest.getName());
+        logger.info("convert method finished");
+
         return company;
     }
 
     public CompanyResponse convert(Company company){
+        logger.info("convert method started");
         CompanyResponse companyResponse = new CompanyResponse();
         companyResponse.setId(company.getId());
         companyResponse.setName(company.getName());
+        logger.info("convert method finished");
         return companyResponse;
     }
 
