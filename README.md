@@ -37,7 +37,7 @@ It is a microservice prepared with java, spring boot where you can keep vehicle 
 
 • A group can contain vehicles and/or groups under it.
 
-• If the user is authorized to a group, it is added under that group. vehicles are automatically authorized.
+• If new vehicles are added to the group to which the user is authorized, the user will also be authorized to those vehicles.
 
 ## Used technologies:
 
