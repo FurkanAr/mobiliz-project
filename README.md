@@ -12,7 +12,7 @@ It is a microservice prepared with java, spring boot where you can keep vehicle 
 
 • Users must be able to register and login to the system.
 
-• User authentication should be resolved at API gateway level and sent to microservices in "request header".
+• User authentication should be resolved at API gateway level and sent to microservices in jwt token.
 
 • Company Admin should only be able to make transactions for vehicles belonging to her/his company.
 
