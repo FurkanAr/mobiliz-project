@@ -7,8 +7,7 @@ It is a microservice prepared with java, spring boot where you can keep vehicle 
 ## Microservice diagram
 
 
-![mobiliz_microservice_diagram_created](https://github.com/FurkanAr/mobiliz-project/assets/63981707/4e64b8f2-3005-4347-a873-3260fbd1a8d5)
-
+![mobiliz_microservice_diagram_created](https://github.com/FurkanAr/mobiliz-project/assets/63981707/da8e522c-7c0d-4975-8506-d154c98ab58a)
 ## Requirements
 
 • Users must be able to register and login to the system.
